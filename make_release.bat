@@ -51,21 +51,6 @@ echo   }
 echo }
 )>"%OUTPUT_FOLDER%\KerbalSimpitRevamped.version"
 
-REM Copy all the files
-
-xcopy /q %ProjectDir%%OutDir%KerbalSimpit.dll %OUTPUT_FOLDER%  
-xcopy /q %ProjectDir%%OutDir%WindowsInput.dll %OUTPUT_FOLDER%
-
-xcopy /q %ProjectDir%distrib\icon\Simpit_icon_green.png %OUTPUT_FOLDER%
-xcopy /q %ProjectDir%distrib\icon\Simpit_icon_orange.png %OUTPUT_FOLDER%
-xcopy /q %ProjectDir%distrib\icon\Simpit_icon_red.png %OUTPUT_FOLDER%
-
-xcopy /q %ProjectDir%distrib\Localisation\en-us.cfg %OUTPUT_FOLDER%
-xcopy /q %ProjectDir%distrib\Localisation\fr-fr.cfg %OUTPUT_FOLDER%
-xcopy /q %ProjectDir%distrib\Localisation\de-de.cfg %OUTPUT_FOLDER%
-
-xcopy /q %ProjectDir%distrib\PluginData\Settings.cfg.sample %OUTPUT_FOLDER%
-
 REM now include the Arduino lib.
 
 set ARDUINOLIB_FOLDER=%ProjectDir%..\KerbalSimpitRevamped-Arduino\
