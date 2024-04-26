@@ -51,9 +51,12 @@ echo   }
 echo }
 )>"%OUTPUT_FOLDER%\KerbalSimpitRevamped.version"
 
+REM Copy all the files
+xcopy /q %ProjectDir%%OutDir% %OUTPUT_FOLDER% 
+
 REM now include the Arduino lib.
 
-set ARDUINOLIB_FOLDER=%ProjectDir%..\KerbalSimpitRevamped-Arduino\
+set ARDUINOLIB_FOLDER=%ProjectDir%\libraries\KerbalSimpitRevamped-Arduino\
 
 echo %ARDUINOLIB_FOLDER%
 
