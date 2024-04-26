@@ -1,7 +1,6 @@
+using PimDeWitte.UnityMainThreadDispatcher;
 using System;
 using System.Linq;
-using System.Runtime.InteropServices;
-using KSP.IO;
 using UnityEngine;
 
 namespace KerbalSimpit.Providers
@@ -34,21 +33,24 @@ namespace KerbalSimpit.Providers
 
             //deal with event related to a new vessel being controlled
 
-            GameEvents.onVesselDocking.Add((vesselOld, vesselNew) => {
+            GameEvents.onVesselDocking.Add((vesselOld, vesselNew) =>
+            {
                 if (controlledVesselChangeEvent != null)
                 {
                     controlledVesselChangeEvent.Fire(OutboundPackets.VesselChange, VesselChangeValues.docking);
                 }
             });
 
-            GameEvents.onVesselsUndocking.Add((vesselOld, vesselNew) => {
+            GameEvents.onVesselsUndocking.Add((vesselOld, vesselNew) =>
+            {
                 if (controlledVesselChangeEvent != null)
                 {
                     controlledVesselChangeEvent.Fire(OutboundPackets.VesselChange, VesselChangeValues.undocking);
                 }
             });
 
-            GameEvents.onVesselSwitching.Add((vesselOld, vesselNew) => {
+            GameEvents.onVesselSwitching.Add((vesselOld, vesselNew) =>
+            {
                 if (controlledVesselChangeEvent != null)
                 {
                     controlledVesselChangeEvent.Fire(OutboundPackets.VesselChange, VesselChangeValues.switching);
@@ -84,7 +86,7 @@ namespace KerbalSimpit.Providers
             byte logStatus = payload[0];
             String message = System.Text.Encoding.UTF8.GetString(payload.Skip(1).ToArray());
 
-            if((logStatus & CustomLogBits.NoHeader) == 0)
+            if ((logStatus & CustomLogBits.NoHeader) == 0)
             {
                 message = "Simpit : " + message;
             }

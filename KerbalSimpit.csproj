@@ -40,6 +40,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="libraries\UnityMainThreadDispatcher\Runtime\*.cs" Link="%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="$(KSP_DIR)\KSP_x64_Data\Managed\Assembly*.dll">
       <Private>False</Private>
     </Reference>
@@ -63,7 +68,6 @@
     <Compile Include="KerbalSimpit\Console\KerbalSimpitConsole.cs" />
     <Compile Include="KerbalSimpit\Console\KerbalSimpitConsole_HelpCommand.cs" />
     <Compile Include="KerbalSimpit\Console\KerbalSimpitConsole_SerialCommand.cs" />
-    <Compile Include="KerbalSimpit\Contrib\UnityMainThreadDispatcher\UnityMainThreadDispatcher.cs" />
     <Compile Include="KerbalSimpit\External\ARPWrapper.cs" />
     <Compile Include="KerbalSimpit\External\CRPWrapper.cs" />
     <Compile Include="KerbalSimpit\External\KeyboardEmulator.cs" />

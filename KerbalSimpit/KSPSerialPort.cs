@@ -1,16 +1,11 @@
+using PimDeWitte.UnityMainThreadDispatcher;
 using System;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-
-using KSP.IO;
-using UnityEngine;
-
 using System.IO.Ports;
-using KerbalSimpit.Console;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
+using UnityEngine;
 
 namespace KerbalSimpit.Serial
 {
@@ -24,7 +19,7 @@ namespace KerbalSimpit.Serial
         private KSPit k_simpit;
         public string PortName;
         private int BaudRate;
-        public  byte ID;
+        public byte ID;
 
         private List<int> subscribedPackets = new List<int>();
 
@@ -48,7 +43,7 @@ namespace KerbalSimpit.Serial
         private Queue<byte[]> packetQueue = new Queue<byte[]>();
 
         private SerialPort Port;
-    
+
         // Packet buffer related fields. At least 32 is needed for the CAGSTATUS message.
         private const int MaxPayloadSize = 32;
         // This is *total* packet size, including all headers.
@@ -65,10 +60,10 @@ namespace KerbalSimpit.Serial
         // pn: port number
         // br: baud rate
         // idx: a unique identifier for this port
-        public KSPSerialPort(KSPit k_simpit, string pn, int br): this(k_simpit, pn, br, 37, false)
+        public KSPSerialPort(KSPit k_simpit, string pn, int br) : this(k_simpit, pn, br, 37, false)
         {
         }
-        public KSPSerialPort(KSPit k_simpit, string pn, int br, byte idx): this(k_simpit, pn, br, idx, false)
+        public KSPSerialPort(KSPit k_simpit, string pn, int br, byte idx) : this(k_simpit, pn, br, idx, false)
         {
         }
         public KSPSerialPort(KSPit k_simpit, string pn, int br, byte idx, bool vb)
@@ -93,7 +88,8 @@ namespace KerbalSimpit.Serial
         }
 
         // Open the serial port
-        public bool open() {
+        public bool open()
+        {
             if (!Port.IsOpen)
             {
                 try
@@ -109,7 +105,7 @@ namespace KerbalSimpit.Serial
 
                     SerialReadThread.Start();
                     SerialWriteThread.Start();
-                    while (!SerialReadThread.IsAlive || !SerialWriteThread.IsAlive);
+                    while (!SerialReadThread.IsAlive || !SerialWriteThread.IsAlive) ;
                 }
                 catch (Exception e)
                 {
@@ -123,7 +119,8 @@ namespace KerbalSimpit.Serial
         }
 
         // Close the serial port
-        public void close() {
+        public void close()
+        {
             removeAllPacketSubscriptionRecords();
 
             if (Port.IsOpen)
@@ -132,7 +129,8 @@ namespace KerbalSimpit.Serial
                 DoSerial = false;
                 Thread.Sleep(500);
                 Port.Close();
-            } else if(portStatus == KSPSerialPort.ConnectionStatus.ERROR)
+            }
+            else if (portStatus == KSPSerialPort.ConnectionStatus.ERROR)
             {
                 portStatus = KSPSerialPort.ConnectionStatus.CLOSED;
                 DoSerial = false;
@@ -344,11 +342,13 @@ namespace KerbalSimpit.Serial
             if (Data.GetType().Name == "Byte[]")
             {
                 buf = (byte[])Data;
-            } else {
+            }
+            else
+            {
                 buf = ObjectToByteArray(Data);
             }
 
-            if(buf.Length > MaxPayloadSize)
+            if (buf.Length > MaxPayloadSize)
             {
                 Debug.Log("Simpit, packet of type " + Type + " too big. Truncating it");
                 buf = buf.Take(MaxPayloadSize).ToArray();
@@ -357,7 +357,7 @@ namespace KerbalSimpit.Serial
             byte[] outboundBuffer;
             encodePacket(Type, buf, out outboundBuffer);
 
-            lock(queueLock)
+            lock (queueLock)
             {
                 packetQueue.Enqueue(outboundBuffer);
                 Monitor.PulseAll(queueLock);
@@ -388,7 +388,8 @@ namespace KerbalSimpit.Serial
                 // TODO: Fix what we're sending.
                 object[] objarr = ((Array)obj).Cast<object>().ToArray();
                 len = objarr.Length * Marshal.SizeOf(objType.GetElementType());
-            } else
+            }
+            else
             {
                 len = Marshal.SizeOf(obj);
             }
@@ -404,9 +405,10 @@ namespace KerbalSimpit.Serial
         private void SerialWriteQueueRunner()
         {
             Action SerialWrite = null;
-            SerialWrite = delegate {
+            SerialWrite = delegate
+            {
                 byte[] dequeued = null;
-                lock(queueLock)
+                lock (queueLock)
                 {
                     // If the queue is empty and serial is still running,
                     // use Monitor to wait until we're told it changed.
@@ -443,7 +445,7 @@ namespace KerbalSimpit.Serial
             {
                 SerialWrite();
 
-                if( portStatus == ConnectionStatus.CONNECTED && (lastTimeMsgReceveived + IDLE_TIMEOUT*1000) < (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond))
+                if (portStatus == ConnectionStatus.CONNECTED && (lastTimeMsgReceveived + IDLE_TIMEOUT * 1000) < (DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond))
                 {
                     portStatus = ConnectionStatus.IDLE;
                 }
@@ -454,7 +456,8 @@ namespace KerbalSimpit.Serial
         private void SerialPollingWorker()
         {
             Action SerialRead = null;
-            SerialRead = delegate {
+            SerialRead = delegate
+            {
                 try
                 {
                     int actualLength = Port.BytesToRead;
@@ -465,7 +468,7 @@ namespace KerbalSimpit.Serial
                         ReceivedDataEvent(received, actualLength);
                     }
                 }
-                catch(System.IO.IOException exc)
+                catch (System.IO.IOException exc)
                 {
                     Debug.Log(String.Format("KerbalSimpit: IOException in serial worker for {0}: {1}", PortName, exc.ToString()));
                     handleError();
@@ -483,14 +486,14 @@ namespace KerbalSimpit.Serial
         // Handle data read in worker thread. Copy data to the PayloadBuffer and when a null byte is read, decode it.
         private void ReceivedDataEvent(byte[] ReadBuffer, int BufferLength)
         {
-            for (int x=0; x<BufferLength; x++)
+            for (int x = 0; x < BufferLength; x++)
             {
                 PayloadBuffer[CurrentBytesRead] = ReadBuffer[x];
                 CurrentBytesRead++;
 
                 if (ReadBuffer[x] == 0)
                 {
-                    if(PayloadBuffer[0] == 0xAA && PayloadBuffer[1] == 0x50)
+                    if (PayloadBuffer[0] == 0xAA && PayloadBuffer[1] == 0x50)
                     {
                         Debug.Log("Simpit : received an ill-formatted message that look like it uses a previous Simpit version. You should update your Arduino lib");
                         UnityMainThreadDispatcher.Instance().Enqueue(() => ScreenMessages.PostScreenMessage("Simpit : check Arduino version"));
@@ -503,8 +506,9 @@ namespace KerbalSimpit.Serial
                     if (validMsg)
                     {
                         //Debug.Log("Simpit : receveived valid packet of type " + packetType + " with payload " + payload[0]);
-                        OnPacketReceived(packetType, payload, (byte) payload.Length);
-                    } else
+                        OnPacketReceived(packetType, payload, (byte)payload.Length);
+                    }
+                    else
                     {
                         Debug.Log("Simpit : discarding an ill-formatted message of size " + CurrentBytesRead);
                         Debug.Log("[" + String.Join<byte>(",", PayloadBuffer.Take(CurrentBytesRead).ToArray()) + "]");

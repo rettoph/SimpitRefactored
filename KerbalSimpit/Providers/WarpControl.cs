@@ -1,10 +1,9 @@
-﻿using System;
+﻿using KerbalSimpit.Utilities;
+using PimDeWitte.UnityMainThreadDispatcher;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using KerbalSimpit.Utilities;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
 namespace KerbalSimpit.KerbalSimpit.Providers
 {
@@ -196,7 +195,8 @@ namespace KerbalSimpit.KerbalSimpit.Providers
                             if (maneuvers.Count > 0 && maneuvers[0] != null)
                             {
                                 timeToWarp = Planetarium.GetUniversalTime() + maneuvers[0].startBurnIn;
-                            } else
+                            }
+                            else
                             {
                                 Debug.Log("Simpit : There is no maneuver to warp to.");
                             }
@@ -266,7 +266,7 @@ namespace KerbalSimpit.KerbalSimpit.Providers
             if (timeToWarp < 0)
             {
                 Debug.Log("Simpit : cannot compute the time to timewarp to. Ignoring TW command " + command);
-            } 
+            }
             else if (timeToWarp < Planetarium.GetUniversalTime())
             {
                 Debug.Log("Simpit : cannot warp in the past. Ignoring TW command " + command);

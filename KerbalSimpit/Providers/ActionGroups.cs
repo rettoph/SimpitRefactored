@@ -1,8 +1,7 @@
+using PimDeWitte.UnityMainThreadDispatcher;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using KSP.IO;
 using UnityEngine;
 
 namespace KerbalSimpit.Providers
@@ -10,7 +9,8 @@ namespace KerbalSimpit.Providers
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class KerbalSimpitCAGProvider : MonoBehaviour
     {
-        [StructLayout(LayoutKind.Sequential, Pack = 1)][Serializable]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [Serializable]
         public class CAGStatusStruct
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
@@ -20,7 +20,7 @@ namespace KerbalSimpit.Providers
             {
                 status = new byte[32];
                 //Initialize all values to all at the begining
-                for(int i = 0; i < 32; i++)
+                for (int i = 0; i < 32; i++)
                 {
                     status[i] = 0;
                 }
@@ -28,18 +28,18 @@ namespace KerbalSimpit.Providers
 
             public bool Equals(CAGStatusStruct obj)
             {
-            if (status.Length != obj.status.Length)
-            {
-                return false;
-            }
-            for(int i = 0; i < status.Length; i++)
-            {
-                if (status[i] != obj.status[i])
+                if (status.Length != obj.status.Length)
                 {
                     return false;
                 }
-            }
-            return true;
+                for (int i = 0; i < status.Length; i++)
+                {
+                    if (status[i] != obj.status[i])
+                    {
+                        return false;
+                    }
+                }
+                return true;
             }
         }
 
@@ -135,7 +135,9 @@ namespace KerbalSimpit.Providers
                 return (bool)AGXExternal.InvokeMember("AGXInstalled",
                                                       BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static,
                                                       null, null, null);
-            } catch {
+            }
+            catch
+            {
                 return false;
             }
         }
@@ -146,8 +148,10 @@ namespace KerbalSimpit.Providers
             {
                 return (bool)AGXExternal.InvokeMember("AGXActivateGroupDelayCheck",
                                                       BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static,
-                                                      null, null, new System.Object[] { group, forceDir});
-            } else {
+                                                      null, null, new System.Object[] { group, forceDir });
+            }
+            else
+            {
                 return false;
             }
         }
@@ -159,7 +163,9 @@ namespace KerbalSimpit.Providers
                 return (bool)AGXExternal.InvokeMember("AGXToggleGroupDelayCheck",
                                                       BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static,
                                                       null, null, new System.Object[] { group });
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }
@@ -168,13 +174,15 @@ namespace KerbalSimpit.Providers
         {
             byte[] groupIDs = (byte[])Data;
             int idx;
-            for (int i=groupIDs.Length-1; i>=0; i--)
+            for (int i = groupIDs.Length - 1; i >= 0; i--)
             {
                 idx = (int)groupIDs[i];
                 if (AGXPresent)
                 {
                     UnityMainThreadDispatcher.Instance().Enqueue(() => AGXActivateGroupDelayCheck(idx, true));
-                } else {
+                }
+                else
+                {
                     UnityMainThreadDispatcher.Instance().Enqueue(() => FlightGlobals.ActiveVessel.ActionGroups.SetGroup(ActionGroupIDs[idx], true));
 
                 }
@@ -185,13 +193,15 @@ namespace KerbalSimpit.Providers
         {
             byte[] groupIDs = (byte[])Data;
             int idx;
-            for (int i=groupIDs.Length-1; i>=0; i--)
+            for (int i = groupIDs.Length - 1; i >= 0; i--)
             {
                 idx = (int)groupIDs[i];
                 if (AGXPresent)
                 {
                     UnityMainThreadDispatcher.Instance().Enqueue(() => AGXActivateGroupDelayCheck(idx, false));
-                } else {
+                }
+                else
+                {
                     UnityMainThreadDispatcher.Instance().Enqueue(() => FlightGlobals.ActiveVessel.ActionGroups.SetGroup(ActionGroupIDs[idx], false));
                 }
             }
@@ -201,13 +211,15 @@ namespace KerbalSimpit.Providers
         {
             byte[] groupIDs = (byte[])Data;
             int idx;
-            for (int i=groupIDs.Length-1; i>=0; i--)
+            for (int i = groupIDs.Length - 1; i >= 0; i--)
             {
                 idx = (int)groupIDs[i];
                 if (AGXPresent)
                 {
                     UnityMainThreadDispatcher.Instance().Enqueue(() => AGXToggleGroupDelayCheck(idx));
-                } else {
+                }
+                else
+                {
                     UnityMainThreadDispatcher.Instance().Enqueue(() => FlightGlobals.ActiveVessel.ActionGroups.ToggleGroup(ActionGroupIDs[idx]));
                 }
             }
@@ -229,12 +241,12 @@ namespace KerbalSimpit.Providers
             {
                 for (int group = 11; group <= 250; group++) // Only call AGExt for additionnal actions
                 {
-                    bool activated = (bool) AGXExternal.InvokeMember("AGXGroupState",
+                    bool activated = (bool)AGXExternal.InvokeMember("AGXGroupState",
                         BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.Static, null, null, new System.Object[] { group });
 
                     if (activated)
                     {
-                        result.status[group / 8] |= (byte) (1 << group % 8); //Set the selected bit to 1
+                        result.status[group / 8] |= (byte)(1 << group % 8); //Set the selected bit to 1
                     }
                 }
             }
