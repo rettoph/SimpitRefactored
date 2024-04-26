@@ -8,7 +8,7 @@
     <AssemblyName>KerbalSimpit</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-	<Deterministic>true</Deterministic>
+    <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -35,7 +35,7 @@
     <RootNamespace>KerbalSimpit</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-	<Content Include="distrib\**\*" Link="%(Filename)%(Extension)">
+    <Content Include="distrib\**\*" Link="%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -45,6 +45,9 @@
     </Reference>
     <Reference Include="$(KSP_DIR)\KSP_x64_Data\Managed\UnityEngine*.dll">
       <Private>False</Private>
+    </Reference>
+    <Reference Include="WindowsInput, Version=1.0.4.0, Culture=neutral, PublicKeyToken=9b287f7dc5073cad, processorArchitecture=MSIL">
+      <HintPath>packages\InputSimulator.1.0.4.0\lib\net20\WindowsInput.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -87,12 +90,8 @@
     <Compile Include="KerbalSimpit\Utilities\Utilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="KerbalSimpit\Contrib\InputSimulator\WindowsInput\WindowsInput.csproj">
-      <Project>{3549cd6f-80f8-450f-b99e-cf0a736b1f2a}</Project>
-      <Name>WindowsInput</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
