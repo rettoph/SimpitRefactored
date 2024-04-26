@@ -46,5 +46,5 @@ if exist "%SYMLINK_TARGET%" (
 )
 
 echo Creating symlink from %OUT_DIR% to %SYMLINK_TARGET%...
-mklink /d "%SYMLINK_TARGET%" "%OUT_DIR%"
+mklink /j "%SYMLINK_TARGET%" "%OUT_DIR%"
 exit /b %errorcode%

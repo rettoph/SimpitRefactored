@@ -40,11 +40,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="libraries\UnityMainThreadDispatcher\Runtime\*.cs" Link="%(Filename)%(Extension)">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="$(KSP_DIR)\KSP_x64_Data\Managed\Assembly*.dll">
       <Private>False</Private>
     </Reference>
@@ -54,6 +49,9 @@
     <Reference Include="WindowsInput, Version=1.0.4.0, Culture=neutral, PublicKeyToken=9b287f7dc5073cad, processorArchitecture=MSIL">
       <HintPath>packages\InputSimulator.1.0.4.0\lib\net20\WindowsInput.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="libraries\UnityMainThreadDispatcher\Runtime\*.cs" Link="%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
