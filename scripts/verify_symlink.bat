@@ -1,8 +1,8 @@
 @echo OFF
 
 rem Used to create a SymLink between the given
-rem %OUT_DIR% and %KSP_DIR%/GameData/KervalSimPit
-rem If %KSP_DIR%/GameData/KervalSimPit already
+rem %OUT_DIR% and %KSP_DIR%/GameData/KerbalSimpit
+rem If %KSP_DIR%/GameData/KerbalSimpit already
 rem exists this will do nothing. If need be,
 rem delete any existing folders that pre-date
 rem the creation of sumlink

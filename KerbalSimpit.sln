@@ -7,6 +7,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalSimpit", "src\KerbalS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "COBS_test", "src\COBS_test\COBS_test.csproj", "{65110562-CC1B-424E-B972-6F53816C7D6A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{8E96EE83-EE67-4250-9E72-FD6FD51C3B53}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\make_release.bat = scripts\make_release.bat
+		scripts\pre_build_simpit.bat = scripts\pre_build_simpit.bat
+		scripts\verify_symlink.bat = scripts\verify_symlink.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AD04774F-734E-4A1A-90AE-EE57FC6F3D5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +33,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ACABD7D1-82A2-4702-BAB2-A6DF2EF93602} = {AD04774F-734E-4A1A-90AE-EE57FC6F3D5B}
+		{65110562-CC1B-424E-B972-6F53816C7D6A} = {AD04774F-734E-4A1A-90AE-EE57FC6F3D5B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6AA82C42-BDA1-4B49-9C6F-1DE87648D6DA}
