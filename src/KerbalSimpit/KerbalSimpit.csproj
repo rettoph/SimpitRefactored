@@ -35,7 +35,7 @@
     <RootNamespace>KerbalSimpit</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="distrib\**\*" Link="%(Filename)%(Extension)">
+    <Content Include="..\..\distrib\**\*" Link="%(Filename)%(Extension)">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -47,11 +47,11 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsInput, Version=1.0.4.0, Culture=neutral, PublicKeyToken=9b287f7dc5073cad, processorArchitecture=MSIL">
-      <HintPath>packages\InputSimulator.1.0.4.0\lib\net20\WindowsInput.dll</HintPath>
+      <HintPath>..\..\packages\InputSimulator.1.0.4.0\lib\net20\WindowsInput.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="libraries\UnityMainThreadDispatcher\Runtime\*.cs" Link="%(Filename)%(Extension)" />
+    <Compile Include="..\..\libraries\UnityMainThreadDispatcher\Runtime\*.cs" Link="%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -100,13 +100,13 @@
     <VisualStudio AllowExistingFolder="true" />
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>call "$(ProjectDir)\scripts\verify_symlink.bat" "$(ProjectDir)" "$(OutDir)" "$(KSPDIR)"
+    <PostBuildEvent>call "$(ProjectDir)\..\..\scripts\verify_symlink.bat" "$(ProjectDir)" "$(OutDir)" "$(KSPDIR)"
 
 if $(ConfigurationName) == Release (
-  call "$(ProjectDir)\scripts\make_release.bat" $(ProjectDir) $(OutDir)
+  call "$(ProjectDir)\..\..\scripts\make_release.bat" $(ProjectDir) $(OutDir)
 )</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>call "$(ProjectDir)\scripts\pre_build_simpit.bat" "$(ProjectDir)"</PreBuildEvent>
+    <PreBuildEvent>call "$(ProjectDir)\..\..\scripts\pre_build_simpit.bat" "$(ProjectDir)"</PreBuildEvent>
   </PropertyGroup>
 </Project>
