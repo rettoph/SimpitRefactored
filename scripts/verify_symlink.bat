@@ -22,10 +22,7 @@ set SYMLINK_TARGET=%KSP_DIR%\GameData\KerbalSimpit
 
 if not exist "%PROJECT_DIR%" (
 	echo Unable to locate PROJECT_DIR %PROJECT_DIR%
-	
-	rem ERROR_PATH_NOT_FOUND
-	set EXIT_CODE=3
-	goto :eof
+	exit /b 3 rem ERROR_PATH_NOT_FOUND
 )
 
 cd %PROJECT_DIR%
