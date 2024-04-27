@@ -40,10 +40,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="$(KSP_DIR)\KSP_x64_Data\Managed\Assembly*.dll">
+    <Reference Include="$(KSPDIR)\KSP_x64_Data\Managed\Assembly*.dll">
       <Private>False</Private>
     </Reference>
-    <Reference Include="$(KSP_DIR)\KSP_x64_Data\Managed\UnityEngine*.dll">
+    <Reference Include="$(KSPDIR)\KSP_x64_Data\Managed\UnityEngine*.dll">
       <Private>False</Private>
     </Reference>
     <Reference Include="WindowsInput, Version=1.0.4.0, Culture=neutral, PublicKeyToken=9b287f7dc5073cad, processorArchitecture=MSIL">
@@ -100,7 +100,7 @@
     <VisualStudio AllowExistingFolder="true" />
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>call "$(ProjectDir)\scripts\verify_symlink.bat" "$(ProjectDir)" "$(OutDir)" "$(KSP_DIR)"
+    <PostBuildEvent>call "$(ProjectDir)\scripts\verify_symlink.bat" "$(ProjectDir)" "$(OutDir)" "$(KSPDIR)"
 
 if $(ConfigurationName) == Release (
   call "$(ProjectDir)make_release.bat" $(ProjectDir) $(OutDir)
