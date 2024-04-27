@@ -1,17 +1,18 @@
+using KerbalSimpit;
+using KerbalSimpit.KerbalSimpit.Providers;
+using KerbalSimpit.Utilities;
+using PimDeWitte.UnityMainThreadDispatcher;
 using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
-
-using KerbalSimpit;
-using KerbalSimpit.Utilities;
-using KerbalSimpit.KerbalSimpit.Providers;
 
 namespace KerbalSimPit.Providers
 {
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class KerbalSimpitAxisController : MonoBehaviour
     {
-        [StructLayout(LayoutKind.Sequential, Pack=1)][Serializable]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [Serializable]
         public struct RotationalStruct
         {
             public short pitch;
@@ -19,7 +20,8 @@ namespace KerbalSimPit.Providers
             public short yaw;
             public byte mask;
         }
-        [StructLayout(LayoutKind.Sequential, Pack=1)][Serializable]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [Serializable]
         public struct TranslationalStruct
         {
             public short X;
@@ -27,14 +29,16 @@ namespace KerbalSimPit.Providers
             public short Z;
             public byte mask;
         }
-        [StructLayout(LayoutKind.Sequential, Pack=1)][Serializable]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [Serializable]
         public struct WheelStruct
         {
             public short steer;
             public short throttle;
             public byte mask;
         }
-        [StructLayout(LayoutKind.Sequential, Pack = 1)][Serializable]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [Serializable]
         public struct CustomAxixStruct
         {
             public short custom1;
@@ -43,7 +47,8 @@ namespace KerbalSimPit.Providers
             public short custom4;
             public byte mask;
         }
-        [StructLayout(LayoutKind.Sequential, Pack = 1)][Serializable]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [Serializable]
         public struct ThrottleStruct
         {
             public short throttle;
@@ -111,7 +116,7 @@ namespace KerbalSimPit.Providers
             if (WheelChannel != null) WheelChannel.Remove(wheelCallback);
             if (ThrottleChannel != null) ThrottleChannel.Remove(throttleCallback);
             if (CustomAxisChannel != null) CustomAxisChannel.Remove(customAxisCallback);
-            if (AutopilotChannel!= null) AutopilotChannel.Remove(autopilotModeCallback);
+            if (AutopilotChannel != null) AutopilotChannel.Remove(autopilotModeCallback);
 
             KSPit.RemoveToDeviceHandler(SASInfoProvider);
 
@@ -214,31 +219,34 @@ namespace KerbalSimPit.Providers
 
         public void autopilotModeCallback(byte ID, object Data)
         {
-            byte[] payload = (byte[])Data;
-
-            VesselAutopilot autopilot = FlightGlobals.ActiveVessel.Autopilot;
-
-            if(autopilot == null)
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                Debug.Log("KerbalSimpit : Ignoring a SAS MODE Message since I could not find the autopilot");
-                return;
-            }
+                byte[] payload = (byte[])Data;
 
-            mySASMode = (VesselAutopilot.AutopilotMode)(payload[0]);
+                VesselAutopilot autopilot = FlightGlobals.ActiveVessel.Autopilot;
 
-            if (autopilot.CanSetMode(mySASMode))
-            {
-                autopilot.SetMode(mySASMode);
-                if (KSPit.Config.Verbose)
+                if (autopilot == null)
                 {
-                    Debug.Log(String.Format("KerbalSimpit: payload is {0}", mySASMode));
-                    Debug.Log(String.Format("KerbalSimpit: SAS mode is {0}", FlightGlobals.ActiveVessel.Autopilot.Mode.ToString()));
+                    Debug.Log("KerbalSimpit : Ignoring a SAS MODE Message since I could not find the autopilot");
+                    return;
                 }
-            }
-            else
-            {
-                Debug.Log(String.Format("KerbalSimpit: Unable to set SAS mode to {0}", mySASMode.ToString()));
-            }
+
+                mySASMode = (VesselAutopilot.AutopilotMode)(payload[0]);
+
+                if (autopilot.CanSetMode(mySASMode))
+                {
+                    autopilot.SetMode(mySASMode);
+                    if (KSPit.Config.Verbose)
+                    {
+                        Debug.Log(String.Format("KerbalSimpit: payload is {0}", mySASMode));
+                        Debug.Log(String.Format("KerbalSimpit: SAS mode is {0}", FlightGlobals.ActiveVessel.Autopilot.Mode.ToString()));
+                    }
+                }
+                else
+                {
+                    Debug.Log(String.Format("KerbalSimpit: Unable to set SAS mode to {0}", mySASMode.ToString()));
+                }
+            });
         }
 
         public void AutopilotUpdater(FlightCtrlState fcs)
@@ -255,39 +263,39 @@ namespace KerbalSimPit.Providers
             }
             if (myRotation.roll != 0)
             {
-                fcs.roll = (float)myRotation.roll/ Int16.MaxValue;
+                fcs.roll = (float)myRotation.roll / Int16.MaxValue;
                 axisGroupModule.UpdateAxisGroup(KSPAxisGroup.Roll, (float)myRotation.roll / Int16.MaxValue);
             }
             if (myRotation.yaw != 0)
             {
-                fcs.yaw = (float)myRotation.yaw/ Int16.MaxValue;
+                fcs.yaw = (float)myRotation.yaw / Int16.MaxValue;
                 axisGroupModule.UpdateAxisGroup(KSPAxisGroup.Yaw, (float)myRotation.yaw / Int16.MaxValue);
             }
 
             if (myTranslation.X != 0)
             {
-                fcs.X = (float)myTranslation.X/ Int16.MaxValue;
+                fcs.X = (float)myTranslation.X / Int16.MaxValue;
                 axisGroupModule.UpdateAxisGroup(KSPAxisGroup.TranslateX, (float)myTranslation.X / Int16.MaxValue);
             }
             if (myTranslation.Y != 0)
             {
-                fcs.Y = (float)myTranslation.Y/ Int16.MaxValue;
+                fcs.Y = (float)myTranslation.Y / Int16.MaxValue;
                 axisGroupModule.UpdateAxisGroup(KSPAxisGroup.TranslateY, (float)myTranslation.Y / Int16.MaxValue);
             }
             if (myTranslation.Z != 0)
             {
-                fcs.Z = (float)myTranslation.Z/ Int16.MaxValue;
+                fcs.Z = (float)myTranslation.Z / Int16.MaxValue;
                 axisGroupModule.UpdateAxisGroup(KSPAxisGroup.TranslateZ, (float)myTranslation.Z / Int16.MaxValue);
             }
 
             if (myWheel.steer != 0)
             {
-                fcs.wheelSteer = (float)myWheel.steer/ Int16.MaxValue;
+                fcs.wheelSteer = (float)myWheel.steer / Int16.MaxValue;
                 axisGroupModule.UpdateAxisGroup(KSPAxisGroup.WheelSteer, (float)myWheel.steer / Int16.MaxValue);
             }
             if (myWheel.throttle != 0)
             {
-                fcs.wheelThrottle = (float)myWheel.throttle/ Int16.MaxValue;
+                fcs.wheelThrottle = (float)myWheel.throttle / Int16.MaxValue;
                 axisGroupModule.UpdateAxisGroup(KSPAxisGroup.WheelThrottle, (float)myWheel.throttle / Int16.MaxValue);
             }
 
@@ -299,7 +307,7 @@ namespace KerbalSimPit.Providers
 
                 lastThrottleSentIsZero = (myThrottle == 0);
             }
-            if(myCustomAxis.custom1 != 0)
+            if (myCustomAxis.custom1 != 0)
             {
                 axisGroupModule.UpdateAxisGroup(KSPAxisGroup.Custom01, (float)myCustomAxis.custom1 / Int16.MaxValue);
             }
@@ -322,7 +330,7 @@ namespace KerbalSimPit.Providers
 
         public void SASInfoProvider()
         {
-            if(FlightGlobals.ActiveVessel == null)
+            if (FlightGlobals.ActiveVessel == null)
             {
                 // This can happen when docking/undocking/changing scene, etc.
                 return;
@@ -330,7 +338,7 @@ namespace KerbalSimPit.Providers
 
             VesselAutopilot autopilot = FlightGlobals.ActiveVessel.Autopilot;
 
-            if(autopilot == null)
+            if (autopilot == null)
             {
                 return;
             }
@@ -338,7 +346,8 @@ namespace KerbalSimPit.Providers
             if (autopilot.Enabled)
             {
                 newSASInfo.currentSASMode = (byte)autopilot.Mode;
-            } else
+            }
+            else
             {
                 newSASInfo.currentSASMode = 255; //special value to indicate a disabled SAS
             }
@@ -348,11 +357,11 @@ namespace KerbalSimPit.Providers
             {
                 if (autopilot.CanSetMode(i))
                 {
-                    newSASInfo.SASModeAvailability = (ushort) (newSASInfo.SASModeAvailability | (1 << (byte)i));
+                    newSASInfo.SASModeAvailability = (ushort)(newSASInfo.SASModeAvailability | (1 << (byte)i));
                 }
             }
 
-            if(mySASInfo.currentSASMode != newSASInfo.currentSASMode ||
+            if (mySASInfo.currentSASMode != newSASInfo.currentSASMode ||
                 mySASInfo.SASModeAvailability != newSASInfo.SASModeAvailability)
             {
                 if (SASInfoChannel != null)
@@ -366,7 +375,7 @@ namespace KerbalSimPit.Providers
         class RotationCommandProvider : GenericProvider<RotationalStruct>
         {
             private KerbalSimpitAxisController controller = null;
-            RotationCommandProvider() : base(OutboundPackets.RotationCmd){ }
+            RotationCommandProvider() : base(OutboundPackets.RotationCmd) { }
 
             public override void Start()
             {
@@ -376,11 +385,14 @@ namespace KerbalSimPit.Providers
 
             protected override bool updateMessage(ref RotationalStruct message)
             {
-                if (controller != null) {
+                if (controller != null)
+                {
                     message.pitch = (short)(controller.lastFlightCtrlState.pitch * Int16.MaxValue);
                     message.yaw = (short)(controller.lastFlightCtrlState.yaw * Int16.MaxValue);
                     message.roll = (short)(controller.lastFlightCtrlState.roll * Int16.MaxValue);
-                } else {
+                }
+                else
+                {
                     Debug.Log("Simpit : KerbalSimpitAxisController is not found");
                 }
 
