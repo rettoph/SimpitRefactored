@@ -4,9 +4,10 @@ There is currently two ways of building Simpit.
 
 ## Building using Visual Studio
 
-1. Set the KSPDIR environment variable to the version of KSP you want to build against. KSPDIR should be set to the path containing the KSP executable
-2. Open the KerbalSimpit.sln and compile it.
-3. The DLL is built in bin\Debug by default. If KSPDIR is set and Simpit is installed, the Simpit DLL will be overwritten to update Simpit.
+1. Ensure submodules are up to date `git submodule update --init --recursive`
+2. Set the KSPDIR environment variable to the version of KSP you want to build against. KSPDIR should be set to the path containing the KSP executable
+3. Open the KerbalSimpit.sln and compile it.
+4. The DLL is built in src\KerbalSimpit\bin\Debug by default.
 
 ## Building using Linux or Mmono and WSL on Windows
 
