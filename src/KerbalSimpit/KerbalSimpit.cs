@@ -1,13 +1,11 @@
+using KerbalSimpit.Config;
+using KerbalSimpit.Serial;
+using PimDeWitte.UnityMainThreadDispatcher;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
-
-using KSP.IO;
 using UnityEngine;
-
-using KerbalSimpit.Config;
-using KerbalSimpit.Serial;
 
 namespace KerbalSimpit
 {
@@ -32,7 +30,8 @@ namespace KerbalSimpit
         public EventData<byte, object>[] onSerialChannelForceSendArray =
             new EventData<byte, object>[256];
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1)] [Serializable]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        [Serializable]
         public struct HandshakePacket
         {
             public byte HandShakeType;
@@ -54,6 +53,9 @@ namespace KerbalSimpit
 
         public void Start()
         {
+            // Ensure the thread sync gets cretaed
+            this.gameObject.AddComponent<UnityMainThreadDispatcher>();
+
             // Simple log message to check that this was actually running
             Debug.Log("KerbalSimpit is starting");
             DontDestroyOnLoad(this);
@@ -102,10 +104,11 @@ namespace KerbalSimpit
             Debug.Log("KerbalSimpit: Started");
         }
 
-        private void StartEventDispatch(){
+        private void StartEventDispatch()
+        {
             this.EventDispatchThread = new Thread(this.EventWorker);
             this.EventDispatchThread.Start();
-            while (!this.EventDispatchThread.IsAlive);
+            while (!this.EventDispatchThread.IsAlive) ;
         }
 
         public void OnDestroy()
@@ -118,7 +121,7 @@ namespace KerbalSimpit
 
         public static void AddToDeviceHandler(ToDeviceCallback cb)
         {
-            RegularEventList.Add(cb); 
+            RegularEventList.Add(cb);
         }
 
         public static bool RemoveToDeviceHandler(ToDeviceCallback cb)
@@ -142,13 +145,14 @@ namespace KerbalSimpit
             ToDeviceCallback[] EventListCopy = new ToDeviceCallback[255];
             int EventCount;
             int TimeSlice;
-            EventNotifier = delegate {
+            EventNotifier = delegate
+            {
                 EventCount = RegularEventList.Count;
                 RegularEventList.CopyTo(EventListCopy);
                 if (EventCount > 0)
                 {
                     TimeSlice = Config.RefreshRate / EventCount;
-                    for (int i=EventCount; i>=0; --i)
+                    for (int i = EventCount; i >= 0; --i)
                     {
                         if (EventListCopy[i] != null)
                         {
@@ -156,7 +160,9 @@ namespace KerbalSimpit
                             Thread.Sleep(TimeSlice);
                         }
                     }
-                } else {
+                }
+                else
+                {
                     Thread.Sleep(Config.RefreshRate);
                 }
             };
@@ -173,7 +179,7 @@ namespace KerbalSimpit
         {
             SerialPorts = new List<KSPSerialPort>();
             int count = config.SerialPorts.Count;
-            for (byte i = 0; i<count; i++)
+            for (byte i = 0; i < count; i++)
             {
                 KSPSerialPort newPort = new KSPSerialPort(this, config.SerialPorts[i].PortName,
                                                           config.SerialPorts[i].BaudRate,
@@ -185,14 +191,14 @@ namespace KerbalSimpit
         public void OpenPort(int portID)
         {
 
-            if(portID >= SerialPorts.Count)
+            if (portID >= SerialPorts.Count)
             {
                 Debug.Log("Simpit OpenPort called for port " + portID + " but I only have " + SerialPorts.Count + " ports");
                 return;
             }
 
             KSPSerialPort port = SerialPorts[portID];
-            if(port.portStatus != KSPSerialPort.ConnectionStatus.CLOSED && port.portStatus != KSPSerialPort.ConnectionStatus.ERROR)
+            if (port.portStatus != KSPSerialPort.ConnectionStatus.CLOSED && port.portStatus != KSPSerialPort.ConnectionStatus.ERROR)
             {
                 //Port already opened. Nothing to do.
                 return;
@@ -223,11 +229,12 @@ namespace KerbalSimpit
                 if (Config.Verbose) Debug.Log(String.Format("KerbalSimpit: Unable to open {0}", portName));
             }
 
-            if(!DoEventDispatching)
+            if (!DoEventDispatching)
                 StartEventDispatch();
         }
 
-        public void OpenPorts() {
+        public void OpenPorts()
+        {
             for (int index = 0; index < SerialPorts.Count; index++)
             {
                 OpenPort(index);
@@ -254,7 +261,7 @@ namespace KerbalSimpit
             bool canStopEventDispatch = true;
             foreach (KSPSerialPort otherPort in SerialPorts)
             {
-                if(otherPort.ID != portID && (otherPort.portStatus != KSPSerialPort.ConnectionStatus.CLOSED && port.portStatus != KSPSerialPort.ConnectionStatus.ERROR))
+                if (otherPort.ID != portID && (otherPort.portStatus != KSPSerialPort.ConnectionStatus.CLOSED && port.portStatus != KSPSerialPort.ConnectionStatus.ERROR))
                 {
                     canStopEventDispatch = false;
                 }
@@ -271,7 +278,8 @@ namespace KerbalSimpit
             port.close();
         }
 
-        public void ClosePorts() {
+        public void ClosePorts()
+        {
             for (int index = 0; index < SerialPorts.Count; index++)
             {
                 ClosePort(index);
@@ -283,7 +291,7 @@ namespace KerbalSimpit
             byte[] payload = (byte[])data;
             HandshakePacket hs;
             hs.Payload = 0x37;
-            switch(payload[0])
+            switch (payload[0])
             {
                 case 0x00:
                     if (Config.Verbose) Debug.Log(String.Format("KerbalSimpit: SYN received on port {0}. Replying.", SerialPorts[portID].PortName));
@@ -307,9 +315,9 @@ namespace KerbalSimpit
                     SerialPorts[portID].sendPacket(CommonPackets.Synchronisation, hs);
                     break;
                 case 0x02:
-                    byte[] verarray = new byte[payload.Length-1];
+                    byte[] verarray = new byte[payload.Length - 1];
                     Array.Copy(payload, 1, verarray, 0,
-                               (payload.Length-1));
+                               (payload.Length - 1));
                     string VersionString = System.Text.Encoding.UTF8.GetString(verarray);
                     Debug.Log(String.Format("KerbalSimpit: ACK received on port {0}. Handshake complete, Resetting channels, Arduino library version '{1}'.", SerialPorts[portID].PortName, VersionString));
                     SerialPorts[portID].removeAllPacketSubscriptionRecords();
@@ -327,9 +335,9 @@ namespace KerbalSimpit
                 Debug.Log(String.Format("KerbalSimpit: Serial port {0} asked to be closed", portID));
             }
 
-            foreach(int packetID in SerialPorts[portID].getPacketSubscriptionList())
+            foreach (int packetID in SerialPorts[portID].getPacketSubscriptionList())
             {
-                
+
                 // Remove the callback of the serial port from the event caller
                 toSerialArray[packetID].Remove(SerialPorts[portID].sendPacket);
 
@@ -344,9 +352,9 @@ namespace KerbalSimpit
 
         private void registerCallback(byte portID, object data)
         {
-            byte[] payload = (byte[]) data;
+            byte[] payload = (byte[])data;
             byte idx;
-            for (int i=payload.Length-1; i>=0; i--)
+            for (int i = payload.Length - 1; i >= 0; i--)
             {
                 idx = payload[i];
 
@@ -355,7 +363,7 @@ namespace KerbalSimpit
                 {
                     if (Config.Verbose)
                     {
-                       Debug.Log(String.Format("KerbalSimpit: Serial port {0} subscribing to channel {1}", portID, idx));
+                        Debug.Log(String.Format("KerbalSimpit: Serial port {0} subscribing to channel {1}", portID, idx));
                     }
                     // Adds the sendPacket method as a callback to the event that is called when a value in the toSerialArray is updated
                     toSerialArray[idx].Add(SerialPorts[portID].sendPacket);
@@ -372,9 +380,9 @@ namespace KerbalSimpit
 
         private void deregisterCallback(byte portID, object data)
         {
-            byte[] payload = (byte[]) data;
+            byte[] payload = (byte[])data;
             byte idx;
-            for (int i=payload.Length-1; i>=0; i--)
+            for (int i = payload.Length - 1; i >= 0; i--)
             {
                 idx = payload[i];
                 toSerialArray[idx].Remove(SerialPorts[portID].sendPacket);
@@ -398,7 +406,8 @@ namespace KerbalSimpit
                 {
                     onSerialChannelForceSendArray[packetID].Fire(packetID, null);
                 }
-            } else
+            }
+            else
             {
                 onSerialChannelForceSendArray[channelID].Fire(channelID, null);
             }
