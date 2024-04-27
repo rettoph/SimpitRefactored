@@ -17,7 +17,7 @@ for /f "delims== tokens=1,2" %%G in (%ProjectDir%VERSION.txt) do set %%G=%%H
 
 echo Version read %MAJOR%.%MINOR%.%PATCH%.%BUILD%
 
-set OUTPUT_FOLDER="%ProjectDir%NextReleases\KerbalSimpitRevamped-v%MAJOR%.%MINOR%.%PATCH%\KerbalSimpit"
+set OUTPUT_FOLDER="%ProjectDir%releases\KerbalSimpitRevamped-v%MAJOR%.%MINOR%.%PATCH%\KerbalSimpit"
 
 REM clean the output folder by removing and recreating it
 if exist %OUTPUT_FOLDER% RMDIR /S /Q %OUTPUT_FOLDER%
@@ -77,4 +77,4 @@ xcopy /q %ARDUINOLIB_FOLDER%ressource_list.txt %OUTPUT_FOLDER%\KerbalSimpitRevam
 
 
 REM now compress it
-tar -C %ProjectDir%NextReleases\KerbalSimpitRevamped-v%MAJOR%.%MINOR%.%PATCH% -acf %ProjectDir%NextReleases\KerbalSimpitRevamped-v%MAJOR%.%MINOR%.%PATCH%.zip KerbalSimpit
+tar -C %ProjectDir%releases\KerbalSimpitRevamped-v%MAJOR%.%MINOR%.%PATCH% -acf %ProjectDir%releases\KerbalSimpitRevamped-v%MAJOR%.%MINOR%.%PATCH%.zip KerbalSimpit

@@ -103,7 +103,7 @@
     <PostBuildEvent>call "$(ProjectDir)\scripts\verify_symlink.bat" "$(ProjectDir)" "$(OutDir)" "$(KSPDIR)"
 
 if $(ConfigurationName) == Release (
-  call "$(ProjectDir)make_release.bat" $(ProjectDir) $(OutDir)
+  call "$(ProjectDir)\scripts\make_release.bat" $(ProjectDir) $(OutDir)
 )</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
