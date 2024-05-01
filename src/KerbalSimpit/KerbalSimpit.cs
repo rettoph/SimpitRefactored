@@ -170,7 +170,15 @@ namespace KerbalSimpit
             Debug.Log("KerbalSimpit: Starting event dispatch loop");
             while (DoEventDispatching)
             {
-                EventNotifier();
+                try
+                {
+                    EventNotifier();
+                }
+                catch(Exception ex)
+                {
+                    Debug.LogError($"KerbalSimpit: Exception within event dispatch loop\n{ex}");
+                    Thread.Sleep(Config.RefreshRate);
+                }
             }
             Debug.Log("KerbalSimpit: Event dispatch loop exiting");
         }

@@ -232,26 +232,29 @@ namespace KerbalSimpit.Providers
 
         public void RotationProvider()
         {
-            Vessel activeVessel = FlightGlobals.ActiveVessel;
-            if (activeVessel == null) return;
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                Vessel activeVessel = FlightGlobals.ActiveVessel;
+                if (activeVessel == null) return;
 
-            // Code from KSPIO to compute angles and velocities https://github.com/zitron-git/KSPSerialIO/blob/062d97e892077ea14737f5e79268c0c4d067f5b6/KSPSerialIO/KSPIO.cs#L929-L971
-            Vector3d CoM, north, up, east;
-            CoM = activeVessel.CoM;
-            up = (CoM - activeVessel.mainBody.position).normalized;
-            north = Vector3d.Exclude(up, (activeVessel.mainBody.position + activeVessel.mainBody.transform.up * (float)activeVessel.mainBody.Radius) - CoM).normalized;
-            east = Vector3d.Cross(up, north);
+                // Code from KSPIO to compute angles and velocities https://github.com/zitron-git/KSPSerialIO/blob/062d97e892077ea14737f5e79268c0c4d067f5b6/KSPSerialIO/KSPIO.cs#L929-L971
+                Vector3d CoM, north, up, east;
+                CoM = activeVessel.CoM;
+                up = (CoM - activeVessel.mainBody.position).normalized;
+                north = Vector3d.Exclude(up, (activeVessel.mainBody.position + activeVessel.mainBody.transform.up * (float)activeVessel.mainBody.Radius) - CoM).normalized;
+                east = Vector3d.Cross(up, north);
 
-            Vector3d attitude = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(FlightGlobals.ActiveVessel.GetTransform().rotation) * Quaternion.LookRotation(north, up)).eulerAngles;
+                Vector3d attitude = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(FlightGlobals.ActiveVessel.GetTransform().rotation) * Quaternion.LookRotation(north, up)).eulerAngles;
 
-            myRotation.roll = (float) ((attitude.z > 180) ? (attitude.z - 360.0) : attitude.z);
-            myRotation.pitch = (float) ((attitude.x > 180) ? (360.0 - attitude.x) : -attitude.x);
-            myRotation.heading = (float) attitude.y;
+                myRotation.roll = (float) ((attitude.z > 180) ? (attitude.z - 360.0) : attitude.z);
+                myRotation.pitch = (float) ((attitude.x > 180) ? (360.0 - attitude.x) : -attitude.x);
+                myRotation.heading = (float) attitude.y;
 
-            WorldVecToNavHeading(activeVessel, activeVessel.srf_velocity.normalized, out myRotation.surfaceVelocityHeading, out myRotation.surfaceVelocityPitch);
-            WorldVecToNavHeading(activeVessel, activeVessel.obt_velocity.normalized, out myRotation.orbitalVelocityHeading, out myRotation.orbitalVelocityPitch);
+                WorldVecToNavHeading(activeVessel, activeVessel.srf_velocity.normalized, out myRotation.surfaceVelocityHeading, out myRotation.surfaceVelocityPitch);
+                WorldVecToNavHeading(activeVessel, activeVessel.obt_velocity.normalized, out myRotation.orbitalVelocityHeading, out myRotation.orbitalVelocityPitch);
 
-            if (rotationChannel != null) rotationChannel.Fire(OutboundPackets.RotationData, myRotation);
+                if (rotationChannel != null) rotationChannel.Fire(OutboundPackets.RotationData, myRotation);
+            });
         }
 
         public void OrbitInfoProvider()
