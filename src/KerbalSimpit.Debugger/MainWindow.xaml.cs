@@ -1,5 +1,8 @@
 ﻿using KerbalSimpit.Core;
 using KerbalSimpit.Core.Enums;
+using KerbalSimpit.Core.Extensions;
+using KerbalSimpit.Core.Kerbal.Extensions;
+using KerbalSimpit.Core.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,14 +27,14 @@ namespace KerbalSimpit.Debugger
     {
         public MainWindow()
         {
-            // Simpit simpit = new Simpit(new ConsoleLogger(SimpitLogLevelEnum.Verbose));
-            // simpit
-            //     .RegisterKerbal()
-            //     .RegisterIncomingConsumer(new CustomLogSubscriber(simpit.Logger))
-            //     .RegisterSerial("COM4", 115200)
-            //     .Start();
-
             InitializeComponent();
+
+            Simpit simpit = new Simpit(this.Logger);
+            simpit
+                .RegisterKerbal()
+                .RegisterIncomingConsumer<CustomLog>(this.Logger)
+                .RegisterSerial("COM7", 115200)
+                .Start();
         }
     }
 }
