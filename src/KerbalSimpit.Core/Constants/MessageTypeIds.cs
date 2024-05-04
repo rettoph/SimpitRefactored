@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Constants
 {
-    public static class MessageTypeIds
+    internal static class MessageTypeIds
     {
         public static class Incoming
         {
             public static readonly byte Synchronisation = 0;
             public static readonly byte RegisterHandler = 8;
+            public static readonly byte DeregisterHandler = 9;
             public static readonly byte CustomLog = 25;
             public static readonly byte RequestMessage = 29;
         }

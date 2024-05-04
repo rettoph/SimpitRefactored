@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core
 {
-    public partial class Simpit : ISimpitMessageConsumer<Synchronisation>, ISimpitMessageConsumer<RegisterHandler>
+    public partial class Simpit : ISimpitMessageConsumer<Synchronisation>, ISimpitMessageConsumer<RegisterHandler>, ISimpitMessageConsumer<DeregisterHandler>
     {
         private void RegisterCoreSubscriptions()
         {
             this.RegisterIncomingConsumer<Synchronisation>(this)
-                .RegisterIncomingConsumer<RegisterHandler>(this);
+                .RegisterIncomingConsumer<RegisterHandler>(this)
+                .RegisterIncomingConsumer<DeregisterHandler>(this);
         }
 
         void ISimpitMessageConsumer<Synchronisation>.Consume(SimpitPeer peer, ISimpitMessage<Synchronisation> message)
@@ -47,7 +48,39 @@ namespace KerbalSimpit.Core
                     continue;
                 }
 
-                throw new NotImplementedException();
+                try
+                {
+                    _logger.LogVerbose("{0}::{1} - Peer {2} subscribing to message type {3}", nameof(Simpit), nameof(ISimpitMessageConsumer<RegisterHandler>.Consume), peer, type);
+                    _outogingMessageSubscribers.Add(type, peer);
+                    this.OnPeerSubscribe?.Invoke(this, (type, peer));
+                }
+                catch
+                {
+                    _logger.LogWarning("{0}::{1} - Peer {2} already subscribed to message type {3}", nameof(Simpit), nameof(ISimpitMessageConsumer<RegisterHandler>.Consume), peer, type);
+                }
+            }
+        }
+
+        void ISimpitMessageConsumer<DeregisterHandler>.Consume(SimpitPeer peer, ISimpitMessage<DeregisterHandler> message)
+        {
+            foreach (byte messageTypeId in message.Content.MessageTypeIds)
+            {
+                if (this.Messages.TryGetOutgoingType(messageTypeId, out SimpitMessageType type) == false)
+                {
+                    _logger.LogWarning("{0}::{1} - Unrecognized deregistration request from {2}, {3}", nameof(Simpit), nameof(ISimpitMessageConsumer<RegisterHandler>.Consume), peer, messageTypeId);
+                    continue;
+                }
+
+                try
+                {
+                    _logger.LogVerbose("{0}::{1} - Peer {2} unsubscribing from message type {3}", nameof(Simpit), nameof(ISimpitMessageConsumer<RegisterHandler>.Consume), peer, type);
+                    _outogingMessageSubscribers.Remove(type, peer);
+                    this.OnPeerUnsubscribe?.Invoke(this, (type, peer));
+                }
+                catch
+                {
+                    _logger.LogWarning("{0}::{1} - Peer {2} already unsubscribed from message type {3}", nameof(Simpit), nameof(ISimpitMessageConsumer<RegisterHandler>.Consume), peer, type);
+                }
             }
         }
     }

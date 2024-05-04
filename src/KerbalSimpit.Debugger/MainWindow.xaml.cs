@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,16 +26,32 @@ namespace KerbalSimpit.Debugger
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static Simpit Simpit { get; private set; }
+
+        private readonly Thread _simpitThread;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            Simpit simpit = new Simpit(this.Logger);
-            simpit
+            MainWindow.Simpit = new Simpit(this.Logger);
+            MainWindow.Simpit
                 .RegisterKerbal()
                 .RegisterIncomingConsumer<CustomLog>(this.Logger)
-                .RegisterSerial("COM7", 115200)
+                .RegisterSerial("COM3", 115200)
                 .Start();
+
+
+            _simpitThread = new Thread(() =>
+            {
+                while(true)
+                {
+                    MainWindow.Simpit.Flush();
+                    Thread.Sleep(100);
+                }
+            });
+
+            _simpitThread.Start();
         }
     }
 }

@@ -5,12 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KerbalSimpit.Debugger.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="6*"/>
-            <RowDefinition/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <local:Logger x:Name="Logger" Grid.Row="1"/>
+        <local:SceneChangeProvider/>
     </Grid>
 </Window>

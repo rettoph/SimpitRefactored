@@ -12,6 +12,7 @@ namespace KerbalSimpit.Core
             this.Messages.RegisterIncomingType<Synchronisation>(MessageTypeIds.Incoming.Synchronisation, Synchronisation.Deserialize);
             this.Messages.RegisterIncomingType<CustomLog>(MessageTypeIds.Incoming.CustomLog, CustomLog.Deserialize);
             this.Messages.RegisterIncomingType<RegisterHandler>(MessageTypeIds.Incoming.RegisterHandler, RegisterHandler.Deserialize);
+            this.Messages.RegisterIncomingType<DeregisterHandler>(MessageTypeIds.Incoming.DeregisterHandler, DeregisterHandler.Deserialize);
 
             // Outgoing Messages
             this.Messages.RegisterOutogingType<Handshake>(MessageTypeIds.Outgoing.HandshakeMessage);

@@ -30,6 +30,9 @@ namespace KerbalSimpit.Core
         public bool Running { get; private set; }
         public ISimpitLogger Logger => _logger;
 
+        public event EventHandler<(SimpitMessageType, SimpitPeer)> OnPeerSubscribe;
+        public event EventHandler<(SimpitMessageType, SimpitPeer)> OnPeerUnsubscribe;
+
         public Simpit(ISimpitLogger logger)
         {
             _logger = logger;
@@ -98,6 +101,23 @@ namespace KerbalSimpit.Core
             }
 
             this.Running = true;
+        }
+
+        public void Broadcast<T>(T content)
+            where T : ISimpitMessageContent
+
+        {
+            if(this.Messages.TryGetOutgoingType<T>(out SimpitMessageType<T>  type) == false)
+            {
+                _logger.LogWarning("{0}::{1} - Attempting to broadcast unrecognized message type {2}", nameof(Simpit), nameof(Broadcast), typeof(T).Name);
+                return;
+            }
+
+            ISimpitMessage message = new SimpitMessage<T>(type, content);
+            foreach (SerialPeer peer in _outogingMessageSubscribers.Get(type))
+            {
+                peer.EnqueueOutgoing(message);
+            }
         }
 
         public void Flush()

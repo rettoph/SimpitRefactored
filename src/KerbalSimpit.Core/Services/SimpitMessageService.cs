@@ -126,7 +126,7 @@ namespace KerbalSimpit.Core.Services
                 byte id = buffer.ReadByte();
                 if (this.TryGetIncomingType(id, out SimpitMessageType type) == false)
                 {
-                    _simpit.Logger.LogError("{0}::{1} - Unknown configuration id, {2}.", nameof(SimpitMessageService), nameof(TryDeserializeIncoming), id);
+                    _simpit.Logger.LogError("{0}::{1} - Unknown message type id, {2}.", nameof(SimpitMessageService), nameof(TryDeserializeIncoming), id);
                     message = null;
                     return false;
                 }

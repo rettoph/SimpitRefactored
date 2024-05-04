@@ -70,7 +70,7 @@ namespace KerbalSimpit.Core.Peers
         /// Enqueue an outgoing message to be sent within the outbound thread.
         /// </summary>
         /// <param name="message"></param>
-        public void EnqueueOutbound(ISimpitMessage message)
+        public void EnqueueOutgoing(ISimpitMessage message)
         {
             _write.Enqueue(message);
         }
@@ -82,7 +82,7 @@ namespace KerbalSimpit.Core.Peers
         public void EnqueueOutgoing<T>(T content)
             where T : ISimpitMessageContent
         {
-            this.EnqueueOutbound(_simpit.Messages.CreateOutgoing(content));
+            this.EnqueueOutgoing(_simpit.Messages.CreateOutgoing(content));
         }
 
         public bool TryRead(out ISimpitMessage message)
@@ -116,7 +116,7 @@ namespace KerbalSimpit.Core.Peers
                 return;
             }
 
-            this.logger.LogVerbose("{0}::{1} - Peer {2} recieved message {3}", nameof(SimpitPeer), nameof(IncomingDataRecieved), this, message.Type);
+            this.logger.LogDebug("{0}::{1} - Peer {2} recieved message {3}", nameof(SimpitPeer), nameof(IncomingDataRecieved), this, message.Type);
             _read.Enqueue(message);
         }
 
