@@ -38,6 +38,7 @@ namespace KerbalSimpit.Core
             this.Messages = new SimpitMessageService(this);
             this.Peers = new ReadOnlyCollection<SimpitPeer>(_peers);
 
+            this.RegisterCoreMessages();
             this.RegisterCoreSubscriptions();
         }
 

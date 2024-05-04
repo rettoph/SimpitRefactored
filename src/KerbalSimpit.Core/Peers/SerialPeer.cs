@@ -71,7 +71,7 @@ namespace KerbalSimpit.Core.Peers
                         throw new NotImplementedException();
                     }
 
-                    this.InboundDataRecieved((byte)data);
+                    this.IncomingDataRecieved((byte)data);
                 }
 
                 Thread.Sleep(10); // TODO: Tune this.
@@ -88,7 +88,7 @@ namespace KerbalSimpit.Core.Peers
 
             while (this.cancellationToken.IsCancellationRequested == false && _inboundRunning)
             {
-                while (this.cancellationToken.IsCancellationRequested == false && _inboundRunning && this.GetOutbound(out SimpitStream outbound))
+                while (this.cancellationToken.IsCancellationRequested == false && _inboundRunning && this.DequeueOutgoing(out SimpitStream outbound))
                 {
                     byte[] data = outbound.ReadAll(out int offset, out int count);
                     _port.Write(data, offset, count);

@@ -12,7 +12,7 @@ namespace KerbalSimpit.Core
     public delegate T DeserializeSimpitMessageContentDelegate<T>(SimpitStream input)
         where T : ISimpitMessageContent;
 
-    public delegate void SerializeSimpitMessageContentDelegate<T>(in T input, SimpitStream output)
+    public delegate void SerializeSimpitMessageContentDelegate<T>(T input, SimpitStream output)
         where T : ISimpitMessageContent;
 
     public abstract class SimpitMessageType
@@ -30,13 +30,7 @@ namespace KerbalSimpit.Core
             this.ContentType = contentType;
         }
 
-        /// <summary>
-        /// For thread-safety its expected that the deserialization caller
-        /// provides the buffer stream for intermediate decoding
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="buffer"></param>
-        /// <returns></returns>
+        internal abstract void Serialize(ISimpitMessage input, SimpitStream output);
         internal abstract ISimpitMessage Deserialize(SimpitStream input);
     }
 
@@ -56,6 +50,14 @@ namespace KerbalSimpit.Core
             _serializer = serializer ?? NotImplementedSerializer;
         }
 
+        internal override void Serialize(ISimpitMessage input, SimpitStream output)
+        {
+            if(input is SimpitMessage<TContent> casted)
+            {
+                _serializer(casted.Content, output);
+            }
+        }
+
         internal override ISimpitMessage Deserialize(SimpitStream input)
         {
             // TODO: Maybe someday pool and reuse these message intnaces?
@@ -63,7 +65,12 @@ namespace KerbalSimpit.Core
             return new SimpitMessage<TContent>(this, content);
         }
 
-        private static void NotImplementedSerializer(in TContent input, SimpitStream output)
+        public override string ToString()
+        {
+            return $"{this.Id}:{this.ContentType.Name}";
+        }
+
+        private static void NotImplementedSerializer(TContent input, SimpitStream output)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,5 @@
 ﻿using KerbalSimpit.Core.Enums;
+using KerbalSimpit.Core.Extensions;
 using KerbalSimpit.Core.Messages;
 using KerbalSimpit.Core.Utilities;
 using System;
@@ -47,7 +48,7 @@ namespace KerbalSimpit.Core.Services
         public SimpitMessageType<T> RegisterOutogingType<T>(byte id)
             where T : unmanaged, ISimpitMessageContent
         {
-            return this.RegisterOutogingType<T>(id, (in T input, SimpitStream output) => output.WriteUnmanaged(input));
+            return this.RegisterOutogingType<T>(id, (input, output) => output.WriteUnmanaged(input));
         }
 
         public bool TryGetIncomingType(byte id, out SimpitMessageType configuration)
@@ -104,14 +105,14 @@ namespace KerbalSimpit.Core.Services
                 bool success = COBSHelper.TryDecodeCOBS(input, buffer);
                 if (success == false)
                 {
-                    _simpit.Logger.LogDebug("{0}::{1} - COBS decode failed.", nameof(SimpitMessageType), nameof(TryDeserializeIncoming));
+                    _simpit.Logger.LogDebug("{0}::{1} - COBS decode failed.", nameof(SimpitMessageService), nameof(TryDeserializeIncoming));
                     message = null;
                     return false;
                 }
 
                 if (CheckSumHelper.ValidateCheckSum(buffer) == false)
                 {
-                    _simpit.Logger.LogDebug("{0}::{1} - Checksum validation failed.", nameof(SimpitMessageType), nameof(TryDeserializeIncoming));
+                    _simpit.Logger.LogDebug("{0}::{1} - Checksum validation failed.", nameof(SimpitMessageService), nameof(TryDeserializeIncoming));
                     message = null;
                     return false;
                 }
@@ -119,24 +120,45 @@ namespace KerbalSimpit.Core.Services
                 byte id = buffer.ReadByte();
                 if (this.TryGetIncomingType(id, out SimpitMessageType type) == false)
                 {
-                    _simpit.Logger.LogError("{0}::{1} - Unknown configuration id, {2}.", nameof(SimpitMessageType), nameof(TryDeserializeIncoming), id);
+                    _simpit.Logger.LogError("{0}::{1} - Unknown configuration id, {2}.", nameof(SimpitMessageService), nameof(TryDeserializeIncoming), id);
                     message = null;
                     return false;
                 }
 
-                _simpit.Logger.LogVerbose("{0}::{1} - Preparing to deserialize configuration of id {2}.", nameof(SimpitMessageType), nameof(TryDeserializeIncoming), id);
+                _simpit.Logger.LogVerbose("{0}::{1} - Preparing to deserialize configuration of id {2}.", nameof(SimpitMessageService), nameof(TryDeserializeIncoming), id);
                 message = type.Deserialize(buffer);
                 return true;
             }
             catch(Exception ex)
             {
-                _simpit.Logger.LogError(ex, "{0}::{1} - Exception deserializing incoming message.", nameof(SimpitMessageType), nameof(TryDeserializeIncoming));
+                _simpit.Logger.LogError(ex, "{0}::{1} - Exception deserializing incoming message.", nameof(SimpitMessageService), nameof(TryDeserializeIncoming));
                 message = default;
                 return false;
             }
             finally
             {
                 input.Clear();;
+            }
+        }
+
+        public bool TrySerializeOutgoing(ISimpitMessage input, SimpitStream output, SimpitStream buffer)
+        {
+            output.Clear();
+            buffer.Clear();
+
+            try
+            {
+                buffer.Write(input.Type.Id);
+                input.Type.Serialize(input, buffer);
+                buffer.WriteCheckSum();
+
+                bool success = COBSHelper.TryEncodeCOBS(buffer, output);
+                return success;
+            }
+            catch(Exception ex)
+            {
+                _simpit.Logger.LogError(ex, "{0}::{1} - Exception serializing outgoing message.", nameof(SimpitMessageService), nameof(TrySerializeOutgoing));
+                return false;
             }
         }
 

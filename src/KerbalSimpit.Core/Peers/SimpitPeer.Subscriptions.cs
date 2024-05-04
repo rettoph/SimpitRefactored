@@ -20,11 +20,11 @@ namespace KerbalSimpit.Core.Peers
             _outbound.Clear();
 
             this.Status = ConnectionStatusEnum.HANDSHAKE;
-            this.EnqueueOutbound(_simpit.Messages.CreateOutgoing(new Handshake()
+            this.EnqueueOutgoing(new Handshake()
             {
                 Payload = 0x37, // TODO: Figure out what this is.
                 HandShakeType = 0x01 // TODO: figure out what this is. KSP version?
-            }));
+            });
 		}
 
         internal void ProcessACK(Synchronisation message)
