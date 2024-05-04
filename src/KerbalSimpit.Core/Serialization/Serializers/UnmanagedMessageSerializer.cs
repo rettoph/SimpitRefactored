@@ -11,13 +11,13 @@ namespace KerbalSimpit.Core.Serialization
     internal sealed class UnmanagedMessageSerializer<T> : BaseSimpitMessageSerializer<T>
         where T : unmanaged, ISimpitMessage
     {
-        private readonly byte _messageId;
+        private readonly SimpitMessageId _messageId;
 
-        public override byte MessageId => _messageId;
+        public override SimpitMessageId MessageId => _messageId;
 
-        public UnmanagedMessageSerializer(byte headerId)
+        public UnmanagedMessageSerializer(SimpitMessageId messageId)
         {
-            _messageId = headerId; ;
+            _messageId = messageId;
         }
 
         protected override void Serialize(SimpitStream stream, T message)

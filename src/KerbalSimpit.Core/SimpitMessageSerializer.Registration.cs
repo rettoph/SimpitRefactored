@@ -1,4 +1,5 @@
-﻿using KerbalSimpit.Core.Enums;
+﻿using KerbalSimpit.Core.Constants;
+using KerbalSimpit.Core.Enums;
 using KerbalSimpit.Core.Messages;
 using KerbalSimpit.Core.Serialization.Deserializers;
 using System;
@@ -14,13 +15,13 @@ namespace KerbalSimpit.Core
         private static void RegisterCoreMessages()
         {
             // Inbound
-            SimpitMessageSerializer.RegisterDeserializer<RequestMessage>((byte)CoreInboundMessageIdEnum.RequestMessage);
+            SimpitMessageSerializer.RegisterDeserializer<RequestMessage>(MessageIds.Inbound.RequestMessage);
             SimpitMessageSerializer.RegisterDeserializer(new SynchronisationMessageDeserializer());
             SimpitMessageSerializer.RegisterDeserializer(new CustomLogMessageDeserializer());
             SimpitMessageSerializer.RegisterDeserializer(new RegisterHandlerMessageDeserializer());
 
             // Outbound
-            SimpitMessageSerializer.RegisterSerializer<HandshakeMessage>((byte)CoreOutboundMessageIdEnum.HandshakeMessage);
+            SimpitMessageSerializer.RegisterSerializer<HandshakeMessage>(MessageIds.Outbound.HandshakeMessage);
 		}
     }
 }

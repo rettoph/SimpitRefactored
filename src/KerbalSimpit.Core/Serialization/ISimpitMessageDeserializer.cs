@@ -8,9 +8,7 @@ namespace KerbalSimpit.Core.Serialization
 {
     public interface ISimpitMessageDeserializer
     {
-        byte MessageId { get; }
-
-        Type MessageType { get; }
+        SimpitMessageId MessageId { get; }
 
         bool TryDeserialize(SimpitStream stream, out ISimpitMessage message);
     }

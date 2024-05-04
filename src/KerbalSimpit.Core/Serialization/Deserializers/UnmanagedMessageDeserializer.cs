@@ -11,13 +11,13 @@ namespace KerbalSimpit.Core.Serialization
     internal sealed class UnmanagedMessageDeserializer<T> : BaseSimpitMessageDeserializer<T>
         where T : unmanaged, ISimpitMessage
     {
-        private readonly byte _messageId;
+        private readonly SimpitMessageId _messageId;
 
-        public override byte MessageId => _messageId;
+        public override SimpitMessageId MessageId => _messageId;
 
-        public UnmanagedMessageDeserializer(byte headerId)
+        public UnmanagedMessageDeserializer(SimpitMessageId messageid)
         {
-            _messageId = headerId;
+            _messageId = messageid;
         }
 
         protected unsafe override bool TryDeserialize(SimpitStream stream, out T message)

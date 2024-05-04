@@ -17,13 +17,11 @@ namespace KerbalSimpit.Debugger
     {
         static void Main(string[] args)
         {
-            CancellationTokenSource cancellation = new CancellationTokenSource();
-
             Simpit simpit = new Simpit(new ConsoleLogger(SimpitLogLevelEnum.Verbose));
             simpit
                 .Subscribe(new CustomLogSubscriber(simpit.Logger))
                 .AddSerial("COM4", 115200)
-                .Start(cancellation.Token);
+                .Start();
 
             while(true)
             {

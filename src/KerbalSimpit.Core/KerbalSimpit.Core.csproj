@@ -42,16 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants\MessageIds.cs" />
     <Compile Include="Constants\SpecialBytes.cs" />
     <Compile Include="Enums\ConnectionStatusEnum.cs" />
-    <Compile Include="Enums\CoreInboundMessageIdEnum.cs" />
-    <Compile Include="Enums\CoreOutboundMessageIdEnum.cs" />
     <Compile Include="Enums\SimpitLogLevelEnum.cs" />
     <Compile Include="Enums\SimpitStreamModeEnum.cs" />
+    <Compile Include="Enums\SimputMessageIdDirectionEnum.cs" />
     <Compile Include="Extensions\SimpitExtensions.cs" />
     <Compile Include="Extensions\SimpitStreamExtensions.cs" />
     <Compile Include="ISimpitMessage.cs" />
     <Compile Include="ISimpitMessageSubscriber.cs" />
+    <Compile Include="ISimpitOutgoingProvider.cs" />
     <Compile Include="Messages\CustomLogMessage.cs" />
     <Compile Include="Messages\HandshakeMessage.cs" />
     <Compile Include="Messages\RegisterHandlerMessage.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Serialization\Serializers\UnmanagedMessageSerializer.cs" />
     <Compile Include="Simpit.Subscriptions.cs" />
     <Compile Include="Simpit.cs" />
+    <Compile Include="SimpitMessageId.cs" />
     <Compile Include="SimpitMessageSerializer.cs" />
     <Compile Include="SimpitStream.cs" />
     <Compile Include="Peers\SerialPeer.cs" />

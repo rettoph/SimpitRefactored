@@ -6,7 +6,7 @@ namespace KerbalSimpit.Core.Extensions
     {
         public static Simpit AddSerial(this Simpit simpit, string name, int baudRate)
         {
-            return simpit.Add(new SerialPeer(name, baudRate, simpit.Logger));
+            return simpit.Add(new SerialPeer(name, baudRate));
         }
     }
 }

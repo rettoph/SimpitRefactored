@@ -1,4 +1,5 @@
-﻿using KerbalSimpit.Core.Enums;
+﻿using KerbalSimpit.Core.Constants;
+using KerbalSimpit.Core.Enums;
 using KerbalSimpit.Core.Messages;
 using KerbalSimpit.Core.Serialization.Serializers;
 using System;
@@ -11,7 +12,7 @@ namespace KerbalSimpit.Core.Serialization.Deserializers
 {
     internal sealed class SynchronisationMessageDeserializer : BaseSimpitMessageDeserializer<SynchronisationMessage>
     {
-        public override byte MessageId => (byte)CoreInboundMessageIdEnum.Synchronisation;
+        public override SimpitMessageId MessageId => MessageIds.Inbound.Synchronisation;
 
         protected override bool TryDeserialize(SimpitStream stream, out SynchronisationMessage message)
         {

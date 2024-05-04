@@ -16,9 +16,11 @@ namespace KerbalSimpit.Core
         private readonly List<SimpitPeer> _peers;
         private readonly Dictionary<Type, SimpitMessagePublisher> _publishers;
 
-        private CancellationToken _cancellationToken;
+        private CancellationTokenSource _cancellationTokenSource;
 
         public readonly ReadOnlyCollection<SimpitPeer> Peers;
+
+        public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
         public bool Running { get; private set; }
         public ISimpitLogger Logger => _logger;
@@ -48,21 +50,21 @@ namespace KerbalSimpit.Core
 
             if(this.Running && peer.Running == false)
             {
-                peer.Start(_cancellationToken);
+                peer.Start(this);
             }
 
             return this;
         }
 
-        public Simpit Start(CancellationToken cancellationToken)
+        public Simpit Start()
         {
-            _cancellationToken = cancellationToken;
+            _cancellationTokenSource = new CancellationTokenSource();
 
             foreach(SimpitPeer peer in _peers)
             {
                 if(peer.Running == false)
                 {
-                    peer.Start(_cancellationToken);
+                    peer.Start(this);
                 }
             }
 
@@ -77,7 +79,7 @@ namespace KerbalSimpit.Core
             {
                 if (peer.Running == false)
                 {
-                    peer.Stop();
+                    peer.Stop(this);
                 }
             }
 
@@ -93,6 +95,11 @@ namespace KerbalSimpit.Core
                     this.GetPublisher(message.GetType()).Publish(peer, message);
                 }
             }
+        }
+
+        public ISimpitMessage GetOutboundMessage(SimpitMessageId messageId)
+        {
+            throw new NotImplementedException();
         }
 
         public Simpit Subscribe<T>(ISimpitMessageSubscriber<T> subscriber)

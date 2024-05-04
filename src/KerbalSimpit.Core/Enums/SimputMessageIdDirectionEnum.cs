@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Enums
 {
-    public enum CoreOutboundMessageIdEnum : byte
+    public enum SimputMessageIdDirectionEnum
     {
-        Synchronisation = 0,
-        HandshakeMessage = Synchronisation
+        Inbound,
+        Outbound
     }
 }

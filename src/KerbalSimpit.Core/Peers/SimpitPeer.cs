@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,26 +15,29 @@ namespace KerbalSimpit.Core.Peers
 {
     public abstract partial class SimpitPeer
     {
-        private ConcurrentQueue<ISimpitMessage> _read;
-        private ConcurrentQueue<ISimpitMessage> _write;
+        private Simpit _simpit;
+        private SimpitMessageSerializer _serializer;
 
-        private readonly ISimpitLogger _logger;
+        private readonly ConcurrentQueue<ISimpitMessage> _read;
+        private readonly ConcurrentQueue<ISimpitMessage> _write;
         private readonly SimpitStream _inbound;
         private readonly SimpitStream _outbound;
-        private readonly SimpitMessageSerializer _serializer;
+        private readonly HashSet<SimpitMessageId> _subscribedOutgoingMessageIds;
+
 
         protected ConcurrentQueue<ISimpitMessage> read => _read;
+        protected ISimpitLogger logger => _simpit.Logger;
+        protected CancellationToken cancellationToken => _simpit.CancellationToken;
 
         public abstract bool Running { get; }
 
         public ConnectionStatusEnum Status { get; private set; }
 
-        public SimpitPeer(ISimpitLogger logger)
+        public SimpitPeer()
         {
-            _logger = logger;
             _read = new ConcurrentQueue<ISimpitMessage>();
             _write = new ConcurrentQueue<ISimpitMessage>();
-            _serializer = new SimpitMessageSerializer(_logger);
+            _subscribedOutgoingMessageIds = new HashSet<SimpitMessageId>();
 
             _inbound = new SimpitStream();
             _outbound = new SimpitStream();
@@ -47,9 +51,24 @@ namespace KerbalSimpit.Core.Peers
             }
         }
 
-        public abstract void Start(CancellationToken cancellationToken);
+        internal void Start(Simpit simpit)
+        {
+            _simpit = simpit;
+            _serializer = new SimpitMessageSerializer(this.logger);
 
-        public abstract void Stop();
+            this.Start();
+        }
+
+        internal void Stop(Simpit simpit)
+        {
+            _subscribedOutgoingMessageIds.Clear();
+
+            this.Stop();
+        }
+
+        protected abstract void Start();
+
+        protected abstract void Stop();
 
         /// <summary>
         /// Enqueue an outgoing message to be sent within the outbound thread.
@@ -87,11 +106,11 @@ namespace KerbalSimpit.Core.Peers
 
             if (_serializer.TryDeserialize(_inbound, out ISimpitMessage message) == false)
             {
-                _logger.LogWarning("{0}::{1} - Unable to deserialize incoming message.", nameof(SimpitPeer), nameof(InboundDataRecieved));
+                this.logger.LogWarning("{0}::{1} - Unable to deserialize incoming message.", nameof(SimpitPeer), nameof(InboundDataRecieved));
                 return;
             }
 
-            _logger.LogVerbose("{0}::{1} - Recieved message {2}", nameof(SimpitPeer), nameof(InboundDataRecieved), message.GetType().Name);
+            this.logger.LogVerbose("{0}::{1} - Recieved message {2}", nameof(SimpitPeer), nameof(InboundDataRecieved), message.GetType().Name);
             this.read.Enqueue(message);
         }
 

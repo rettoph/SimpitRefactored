@@ -5,9 +5,7 @@ namespace KerbalSimpit.Core.Serialization.Serializers
     public abstract class BaseSimpitMessageDeserializer<T> : ISimpitMessageDeserializer
         where T : ISimpitMessage
     {
-        public Type MessageType => typeof(T);
-
-        public abstract byte MessageId { get; }
+        public abstract SimpitMessageId MessageId { get; }
 
         bool ISimpitMessageDeserializer.TryDeserialize(SimpitStream stream, out ISimpitMessage message)
         {

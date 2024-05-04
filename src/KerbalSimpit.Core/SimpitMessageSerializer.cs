@@ -39,7 +39,7 @@ namespace KerbalSimpit.Core
                 return false;
             }
 
-            _serializeBuffer.Write(serializer.MessageId);
+            _serializeBuffer.Write(serializer.MessageId.Value);
             serializer.Serialize(_serializeBuffer, message);
             _serializeBuffer.WriteCheckSum();
 
@@ -105,21 +105,21 @@ namespace KerbalSimpit.Core
 
         public static void RegisterSerializer(ISimpitMessageSerializer serializer)
         {
-            _serializers.Add(serializer.MessageId, serializer.MessageType, serializer);
+            _serializers.Add(serializer.MessageId.Value, serializer.MessageId.Type, serializer);
         }
 
         public static void RegisterDeserializer(ISimpitMessageDeserializer deserializer)
         {
-            _deserializers.Add(deserializer.MessageId, deserializer.MessageType, deserializer);
+            _deserializers.Add(deserializer.MessageId.Value, deserializer.MessageId.Type, deserializer);
         }
 
-        public static void RegisterSerializer<T>(byte messageId)
+        public static void RegisterSerializer<T>(SimpitMessageId messageId)
             where T : unmanaged, ISimpitMessage
         {
             RegisterSerializer(new UnmanagedMessageSerializer<T>(messageId));
         }
 
-        public static void RegisterDeserializer<T>(byte messageId)
+        public static void RegisterDeserializer<T>(SimpitMessageId messageId)
             where T : unmanaged, ISimpitMessage
         {
             RegisterDeserializer(new UnmanagedMessageDeserializer<T>(messageId));
