@@ -1,4 +1,5 @@
 ﻿using KerbalSimpit.Core.Peers;
+using KerbalSimpit.Core.Services;
 using KerbalSimpit.Core.Utilities;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace KerbalSimpit.Core
 {
     public partial class Simpit : IDisposable
     {
+        public static Simpit Instance { get; private set; }
+
         private readonly ISimpitLogger _logger;
         private readonly List<SimpitPeer> _peers;
         private readonly Dictionary<Type, SimpitMessagePublisher> _publishers;
@@ -19,6 +22,7 @@ namespace KerbalSimpit.Core
         private CancellationTokenSource _cancellationTokenSource;
 
         public readonly ReadOnlyCollection<SimpitPeer> Peers;
+        public readonly SimpitMessageService Messages;
 
         public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
@@ -31,6 +35,7 @@ namespace KerbalSimpit.Core
             _peers = new List<SimpitPeer>();
             _publishers = new Dictionary<Type, SimpitMessagePublisher>();
 
+            this.Messages = new SimpitMessageService(this);
             this.Peers = new ReadOnlyCollection<SimpitPeer>(_peers);
 
             this.RegisterCoreSubscriptions();
@@ -92,18 +97,13 @@ namespace KerbalSimpit.Core
             {
                 while(peer.TryRead(out ISimpitMessage message))
                 {
-                    this.GetPublisher(message.GetType()).Publish(peer, message);
+                    this.GetPublisher(message.Type.ContentType).Publish(peer, message);
                 }
             }
         }
 
-        public ISimpitMessage GetOutboundMessage(SimpitMessageId messageId)
-        {
-            throw new NotImplementedException();
-        }
-
         public Simpit Subscribe<T>(ISimpitMessageSubscriber<T> subscriber)
-            where T : ISimpitMessage
+            where T : ISimpitMessageContent
         {
             SimpitMessagePublisher<T> publisher = this.GetPublisher(typeof(T)) as SimpitMessagePublisher<T>;
             publisher.Subscribe(subscriber);
@@ -112,21 +112,21 @@ namespace KerbalSimpit.Core
         }
 
         public void Unsubscribe<T>(ISimpitMessageSubscriber<T> subscriber)
-            where T : ISimpitMessage
+            where T : ISimpitMessageContent
         {
             SimpitMessagePublisher<T> publisher = this.GetPublisher(typeof(T)) as SimpitMessagePublisher<T>;
             publisher.Unsubscribe(subscriber);
         }
 
-        private SimpitMessagePublisher GetPublisher(Type messageType)
+        private SimpitMessagePublisher GetPublisher(Type type)
         {
-            if(_publishers.TryGetValue(messageType, out SimpitMessagePublisher publisher))
+            if(_publishers.TryGetValue(type, out SimpitMessagePublisher publisher))
             {
                 return publisher;
             }
 
-            publisher = SimpitMessagePublisher.Create(messageType);
-            _publishers.Add(messageType, publisher);
+            publisher = SimpitMessagePublisher.Create(type);
+            _publishers.Add(type, publisher);
 
             return publisher;
         }

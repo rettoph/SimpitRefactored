@@ -16,16 +16,14 @@ namespace KerbalSimpit.Core.Peers
     public abstract partial class SimpitPeer
     {
         private Simpit _simpit;
-        private SimpitMessageSerializer _serializer;
 
         private readonly ConcurrentQueue<ISimpitMessage> _read;
         private readonly ConcurrentQueue<ISimpitMessage> _write;
         private readonly SimpitStream _inbound;
         private readonly SimpitStream _outbound;
-        private readonly HashSet<SimpitMessageId> _subscribedOutgoingMessageIds;
+        private readonly SimpitStream _encodeBuffer;
+        private readonly SimpitStream _decodeBuffer;
 
-
-        protected ConcurrentQueue<ISimpitMessage> read => _read;
         protected ISimpitLogger logger => _simpit.Logger;
         protected CancellationToken cancellationToken => _simpit.CancellationToken;
 
@@ -37,10 +35,11 @@ namespace KerbalSimpit.Core.Peers
         {
             _read = new ConcurrentQueue<ISimpitMessage>();
             _write = new ConcurrentQueue<ISimpitMessage>();
-            _subscribedOutgoingMessageIds = new HashSet<SimpitMessageId>();
 
             _inbound = new SimpitStream();
             _outbound = new SimpitStream();
+            _encodeBuffer = new SimpitStream();
+            _decodeBuffer = new SimpitStream();
         }
 
         public void Dispose()
@@ -54,15 +53,12 @@ namespace KerbalSimpit.Core.Peers
         internal void Start(Simpit simpit)
         {
             _simpit = simpit;
-            _serializer = new SimpitMessageSerializer(this.logger);
 
             this.Start();
         }
 
         internal void Stop(Simpit simpit)
         {
-            _subscribedOutgoingMessageIds.Clear();
-
             this.Stop();
         }
 
@@ -104,14 +100,14 @@ namespace KerbalSimpit.Core.Peers
                 return;
             }
 
-            if (_serializer.TryDeserialize(_inbound, out ISimpitMessage message) == false)
+            if (_simpit.Messages.TryDeserializeIncoming(_inbound, _decodeBuffer, out ISimpitMessage message) == false)
             {
                 this.logger.LogWarning("{0}::{1} - Unable to deserialize incoming message.", nameof(SimpitPeer), nameof(InboundDataRecieved));
                 return;
             }
 
             this.logger.LogVerbose("{0}::{1} - Recieved message {2}", nameof(SimpitPeer), nameof(InboundDataRecieved), message.GetType().Name);
-            this.read.Enqueue(message);
+            _read.Enqueue(message);
         }
 
         protected bool GetOutbound(out SimpitStream outbound)
@@ -120,7 +116,7 @@ namespace KerbalSimpit.Core.Peers
 
             if (_write.TryDequeue(out ISimpitMessage message))
             {
-                return _serializer.TrySerialize(outbound, message);
+                throw new NotImplementedException();
             }
 
             return false;

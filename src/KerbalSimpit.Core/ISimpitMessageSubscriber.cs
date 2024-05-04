@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace KerbalSimpit.Core
 {
     public interface ISimpitMessageSubscriber<T>
-        where T : ISimpitMessage
+        where T : ISimpitMessageContent
     {
-        void Process(SimpitPeer peer, T message);
+        void Process(SimpitPeer peer, ISimpitMessage<T> message);
     }
 }

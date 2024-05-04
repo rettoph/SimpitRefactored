@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KerbalSimpit.Core.Messages
+namespace KerbalSimpit.Core
 {
-    public struct RequestMessage : ISimpitMessage
+    public interface ISimpitMessageContent
     {
-        public readonly byte ChannelId;
     }
 }

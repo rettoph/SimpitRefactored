@@ -1,0 +1,154 @@
+﻿using KerbalSimpit.Core.Enums;
+using KerbalSimpit.Core.Messages;
+using KerbalSimpit.Core.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace KerbalSimpit.Core.Services
+{
+    public class SimpitMessageService
+    {
+        private readonly Simpit _simpit;
+        private readonly DoubleDictionary<byte, Type, SimpitMessageType> _incoming;
+        private readonly DoubleDictionary<byte, Type, SimpitMessageType> _outgoing;
+
+        public SimpitMessageService(Simpit simpit)
+        {
+            _simpit = simpit;
+            _incoming = new DoubleDictionary<byte, Type, SimpitMessageType>();
+            _outgoing = new DoubleDictionary<byte, Type, SimpitMessageType>();
+        }
+
+        public SimpitMessageType<T> RegisterIncomingType<T>(byte id, DeserializeSimpitMessageContentDelegate<T> deserializer)
+            where T : ISimpitMessageContent
+        {
+            SimpitMessageType<T> configuration = new SimpitMessageType<T>(id, SimputMessageTypeEnum.Incoming, deserializer, null);
+            _incoming.Add(configuration.Id, configuration.ContentType, configuration);
+            return configuration;
+        }
+
+        public SimpitMessageType<T> RegisterIncomingType<T>(byte id)
+            where T : unmanaged, ISimpitMessageContent
+        {
+            return this.RegisterIncomingType(id, input => input.ReadUnmanaged<T>());
+        }
+
+        public SimpitMessageType<T> RegisterOutogingType<T>(byte id, SerializeSimpitMessageContentDelegate<T> serializer)
+            where T : ISimpitMessageContent
+        {
+            SimpitMessageType<T> configuration = new SimpitMessageType<T>(id, SimputMessageTypeEnum.Outgoing, null, serializer);
+            _outgoing.Add(configuration.Id, configuration.ContentType, configuration);
+            return configuration;
+        }
+
+        public SimpitMessageType<T> RegisterOutogingType<T>(byte id)
+            where T : unmanaged, ISimpitMessageContent
+        {
+            return this.RegisterOutogingType<T>(id, (in T input, SimpitStream output) => output.WriteUnmanaged(input));
+        }
+
+        public bool TryGetIncomingType(byte id, out SimpitMessageType configuration)
+        {
+            return _incoming.TryGet(id, out configuration);
+        }
+
+        public bool TryGetIncomingType<T>(out SimpitMessageType<T> configuration)
+            where T : ISimpitMessageContent
+        {
+            if (_incoming.TryGet(typeof(T), out SimpitMessageType uncasted) && uncasted is SimpitMessageType<T> casted)
+            {
+                configuration = casted;
+                return true;
+            }
+
+            configuration = null;
+            return false;
+        }
+
+        public bool TryGetOutgoingType(byte id, out SimpitMessageType configuration)
+        {
+            return _outgoing.TryGet(id, out configuration);
+        }
+
+        public bool TryGetOutgoingType<T>(out SimpitMessageType<T> configuration)
+            where T : ISimpitMessageContent
+        {
+            if (_outgoing.TryGet(typeof(T), out SimpitMessageType uncasted) && uncasted is SimpitMessageType<T> casted)
+            {
+                configuration = casted;
+                return true;
+            }
+
+            configuration = null;
+            return false;
+        }
+
+
+        /// <summary>
+        /// For thread-safety the caller is expected to provide
+        /// the required buffer stream for intermediate decoding
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="buffer"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public bool TryDeserializeIncoming(SimpitStream input, SimpitStream buffer, out ISimpitMessage message)
+        {
+            buffer.Clear();
+
+            try
+            {
+                bool success = COBSHelper.TryDecodeCOBS(input, buffer);
+                if (success == false)
+                {
+                    _simpit.Logger.LogDebug("{0}::{1} - COBS decode failed.", nameof(SimpitMessageType), nameof(TryDeserializeIncoming));
+                    message = null;
+                    return false;
+                }
+
+                if (CheckSumHelper.ValidateCheckSum(buffer) == false)
+                {
+                    _simpit.Logger.LogDebug("{0}::{1} - Checksum validation failed.", nameof(SimpitMessageType), nameof(TryDeserializeIncoming));
+                    message = null;
+                    return false;
+                }
+
+                byte id = buffer.ReadByte();
+                if (this.TryGetIncomingType(id, out SimpitMessageType type) == false)
+                {
+                    _simpit.Logger.LogError("{0}::{1} - Unknown configuration id, {2}.", nameof(SimpitMessageType), nameof(TryDeserializeIncoming), id);
+                    message = null;
+                    return false;
+                }
+
+                _simpit.Logger.LogVerbose("{0}::{1} - Preparing to deserialize configuration of id {2}.", nameof(SimpitMessageType), nameof(TryDeserializeIncoming), id);
+                message = type.Deserialize(buffer);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                _simpit.Logger.LogError(ex, "{0}::{1} - Exception deserializing incoming message.", nameof(SimpitMessageType), nameof(TryDeserializeIncoming));
+                message = default;
+                return false;
+            }
+            finally
+            {
+                input.Clear();;
+            }
+        }
+
+        public ISimpitMessage<T> CreateOutgoing<T>(T content)
+            where T : ISimpitMessageContent
+        {
+            if(this.TryGetOutgoingType<T>(out SimpitMessageType<T> type) == true)
+            {
+                return new SimpitMessage<T>(type, content);
+            }
+
+            throw new InvalidOperationException($"{nameof(SimpitMessageService)}::{nameof(CreateOutgoing)} - Unknown outgoing message type {typeof(T).Name}.");
+        }
+    }
+}

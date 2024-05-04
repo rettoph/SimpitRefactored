@@ -119,6 +119,25 @@ namespace KerbalSimpit.Core
             }
         }
 
+        public unsafe T ReadUnmanaged<T>()
+            where T : unmanaged
+        {
+            if (this.Length < sizeof(T))
+            {
+                throw new InvalidOperationException();
+            }
+
+            fixed (byte* bytePtr = &_buffer[_readIndex])
+            {
+                T* tPtr = (T*)bytePtr;
+                T value = tPtr[0];
+
+                _readIndex += sizeof(T);
+
+                return value;
+            }
+        }
+
         public byte[] ReadAll(out int offset, out int count)
         {
             this.SetMode(SimpitStreamModeEnum.Read, ref _readIndex);

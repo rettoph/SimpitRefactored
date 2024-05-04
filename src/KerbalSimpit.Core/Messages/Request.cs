@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Messages
 {
-    public struct RegisterHandlerMessage : ISimpitMessage
+    public struct Request : ISimpitMessageContent
     {
-        public byte[] MessageIds { get; set; }
+        public readonly byte ChannelId;
     }
 }

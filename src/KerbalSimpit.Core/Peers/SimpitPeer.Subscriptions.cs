@@ -13,44 +13,28 @@ namespace KerbalSimpit.Core.Peers
 {
     public partial class SimpitPeer
     {
-        internal void ProcessSYN(SynchronisationMessage message)
+        internal void ProcessSYN(Synchronisation message)
         {
             // Remove all messages not yet sent to make sure the next message sent is an SYNACK
             _outbound.Clear();
             _outbound.Clear();
 
             this.Status = ConnectionStatusEnum.HANDSHAKE;
-            this.EnqueueOutbound(new HandshakeMessage()
+            this.EnqueueOutbound(_simpit.Messages.CreateOutgoing(new Handshake()
             {
                 Payload = 0x37, // TODO: Figure out what this is.
                 HandShakeType = 0x01 // TODO: figure out what this is. KSP version?
-            });
+            }));
 		}
 
-        internal void ProcessACK(SynchronisationMessage message)
+        internal void ProcessACK(Synchronisation message)
         {
             this.Status = ConnectionStatusEnum.CONNECTED;
         }
 
-        internal void ProcessRegistration(RegisterHandlerMessage message)
+        internal void ProcessRegistration(RegisterHandler message)
         {
-            foreach(byte messageIdValue in message.MessageIds)
-            {
-                if(SimpitMessageId.TryGetByValue(messageIdValue, SimputMessageIdDirectionEnum.Outbound, out SimpitMessageId messageId) == false)
-                {
-                    this.logger.LogWarning("Peer {0} requesting subscription to unknown message {1}", this, messageIdValue);
-                    continue;
-                }
-
-                if(_subscribedOutgoingMessageIds.Add(messageId))
-                {
-                    this.logger.LogVerbose("Peer {0} subscribing to message {1} ({2})", this, messageId.Value, messageId.Type.Name);
-                }
-                else
-                {
-                    this.logger.LogWarning("Peer {0} trying to subscribe to channel {1} but is already subscribed. Ignoring it", this, messageIdValue);
-                }
-            }
+            throw new NotImplementedException();
         }
     }
 }

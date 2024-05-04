@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Messages
 {
-    public struct HandshakeMessage : ISimpitMessage
+    public struct Handshake : ISimpitMessageContent
     {
         public byte HandShakeType { get; set; }
         public byte Payload { get; set; }

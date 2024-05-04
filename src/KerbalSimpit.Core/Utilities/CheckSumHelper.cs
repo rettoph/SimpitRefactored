@@ -18,5 +18,14 @@ namespace KerbalSimpit.Core.Utilities
 
             return checksum;
         }
+
+        public static bool ValidateCheckSum(SimpitStream data)
+        {
+            byte expected = data.Pop();
+            byte calculated = CheckSumHelper.CalculateCheckSum(data);
+
+            bool valid = calculated == expected;
+            return valid;
+        }
     }
 }

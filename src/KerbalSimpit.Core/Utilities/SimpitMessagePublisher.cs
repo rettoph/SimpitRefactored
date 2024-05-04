@@ -11,7 +11,7 @@ namespace KerbalSimpit.Core.Utilities
     {
         public abstract Type Type { get; }
 
-        public abstract void Publish(SimpitPeer peer,ISimpitMessage message);
+        public abstract void Publish(SimpitPeer peer, ISimpitMessage message);
 
         public static SimpitMessagePublisher Create(Type messageType)
         {
@@ -22,7 +22,7 @@ namespace KerbalSimpit.Core.Utilities
     }
 
     internal sealed class SimpitMessagePublisher<T> : SimpitMessagePublisher
-        where T : ISimpitMessage
+        where T : ISimpitMessageContent
     {
         private HashSet<ISimpitMessageSubscriber<T>> _subscribers;
 
@@ -35,7 +35,7 @@ namespace KerbalSimpit.Core.Utilities
 
         public override void Publish(SimpitPeer peer, ISimpitMessage message)
         {
-            if(message is T casted)
+            if(message is ISimpitMessage<T> casted)
             {
                 foreach(ISimpitMessageSubscriber<T> subscriber in _subscribers)
                 {

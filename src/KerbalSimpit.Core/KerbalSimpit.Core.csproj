@@ -42,37 +42,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants\MessageIds.cs" />
+    <Compile Include="SimpitMessageType.cs" />
+    <Compile Include="Constants\MessageTypeIds.cs" />
     <Compile Include="Constants\SpecialBytes.cs" />
     <Compile Include="Enums\ConnectionStatusEnum.cs" />
     <Compile Include="Enums\SimpitLogLevelEnum.cs" />
     <Compile Include="Enums\SimpitStreamModeEnum.cs" />
-    <Compile Include="Enums\SimputMessageIdDirectionEnum.cs" />
+    <Compile Include="Enums\SimputMessageTypeEnum.cs" />
     <Compile Include="Extensions\SimpitExtensions.cs" />
     <Compile Include="Extensions\SimpitStreamExtensions.cs" />
     <Compile Include="ISimpitMessage.cs" />
+    <Compile Include="ISimpitMessageContent.cs" />
     <Compile Include="ISimpitMessageSubscriber.cs" />
     <Compile Include="ISimpitOutgoingProvider.cs" />
-    <Compile Include="Messages\CustomLogMessage.cs" />
-    <Compile Include="Messages\HandshakeMessage.cs" />
-    <Compile Include="Messages\RegisterHandlerMessage.cs" />
-    <Compile Include="Messages\RequestMessage.cs" />
-    <Compile Include="Messages\SynchronisationMessage.cs" />
+    <Compile Include="Messages\CustomLog.cs" />
+    <Compile Include="Messages\Handshake.cs" />
+    <Compile Include="Messages\RegisterHandler.cs" />
+    <Compile Include="Messages\Request.cs" />
+    <Compile Include="Messages\Synchronisation.cs" />
     <Compile Include="Peers\SimpitPeer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serialization\BaseSimpitMessageDeserializer.cs" />
-    <Compile Include="Serialization\BaseSimpitMessageSerializer.cs" />
-    <Compile Include="Serialization\Deserializers\CustomLogMessageDeserializer.cs" />
-    <Compile Include="Serialization\Deserializers\RegisterHandlerMessageDeserializer.cs" />
-    <Compile Include="Serialization\Deserializers\SynchronisationMessageDeserializer.cs" />
-    <Compile Include="Serialization\ISimpitMessageDeserializer.cs" />
-    <Compile Include="Serialization\ISimpitMessageSerializer.cs" />
-    <Compile Include="Serialization\Deserializers\UnmanagedMessageDeserializer.cs" />
-    <Compile Include="Serialization\Serializers\UnmanagedMessageSerializer.cs" />
-    <Compile Include="Simpit.Subscriptions.cs" />
+    <Compile Include="Services\SimpitMessageService.cs" />
+    <Compile Include="Simpit.CoreMessages.cs" />
+    <Compile Include="Simpit.CoreSubscriptions.cs" />
     <Compile Include="Simpit.cs" />
-    <Compile Include="SimpitMessageId.cs" />
-    <Compile Include="SimpitMessageSerializer.cs" />
+    <Compile Include="SimpitMessage.cs" />
     <Compile Include="SimpitStream.cs" />
     <Compile Include="Peers\SerialPeer.cs" />
     <Compile Include="Utilities\CheckSumHelper.cs" />
@@ -80,12 +74,10 @@
     <Compile Include="Utilities\DoubleDictionary.cs" />
     <Compile Include="Utilities\ISimpitLogger.cs" />
     <Compile Include="Utilities\SimpitMessagePublisher.cs" />
+    <Compile Include="Utilities\ThrowIf.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Peers\SimpitPeer.Subscriptions.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="SimpitMessageSerializer.Registration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Enums
 {
-    public enum SimputMessageIdDirectionEnum
+    [Flags]
+    public enum SimputMessageTypeEnum
     {
-        Inbound,
-        Outbound
+        Unknown = 0,
+        Incoming = 1,
+        Outgoing = 2
     }
 }
