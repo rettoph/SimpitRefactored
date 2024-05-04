@@ -24,32 +24,32 @@ namespace KerbalSimpit.Core.Utilities
     internal sealed class SimpitMessagePublisher<T> : SimpitMessagePublisher
         where T : ISimpitMessageContent
     {
-        private HashSet<ISimpitMessageSubscriber<T>> _subscribers;
+        private HashSet<ISimpitMessageConsumer<T>> _subscribers;
 
         public override Type Type => typeof(T);
 
         public SimpitMessagePublisher()
         {
-            _subscribers = new HashSet<ISimpitMessageSubscriber<T>>();
+            _subscribers = new HashSet<ISimpitMessageConsumer<T>>();
         }
 
         public override void Publish(SimpitPeer peer, ISimpitMessage message)
         {
             if(message is ISimpitMessage<T> casted)
             {
-                foreach(ISimpitMessageSubscriber<T> subscriber in _subscribers)
+                foreach(ISimpitMessageConsumer<T> subscriber in _subscribers)
                 {
-                    subscriber.Process(peer, casted);
+                    subscriber.Consume(peer, casted);
                 }
             }
         }
 
-        public void Subscribe(ISimpitMessageSubscriber<T> subscriber)
+        public void AddConsumer(ISimpitMessageConsumer<T> subscriber)
         {
             _subscribers.Add(subscriber);
         }
 
-        public void Unsubscribe(ISimpitMessageSubscriber<T> subscriber)
+        public void RemoveIncomingConsumer(ISimpitMessageConsumer<T> subscriber)
         {
             _subscribers.Remove(subscriber);
         }

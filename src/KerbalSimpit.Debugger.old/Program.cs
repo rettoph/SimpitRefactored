@@ -1,6 +1,7 @@
 ﻿using KerbalSimpit.Core;
 using KerbalSimpit.Core.Enums;
 using KerbalSimpit.Core.Extensions;
+using KerbalSimpit.Core.Kerbal.Extensions;
 using KerbalSimpit.Core.Messages;
 using KerbalSimpit.Debugger.Subscribers;
 using KerbalSimpit.Debugger.Utilities;
@@ -19,8 +20,9 @@ namespace KerbalSimpit.Debugger
         {
             Simpit simpit = new Simpit(new ConsoleLogger(SimpitLogLevelEnum.Verbose));
             simpit
-                .Subscribe(new CustomLogSubscriber(simpit.Logger))
-                .AddSerial("COM4", 115200)
+                .RegisterKerbal()
+                .RegisterIncomingConsumer(new CustomLogSubscriber(simpit.Logger))
+                .RegisterSerial("COM4", 115200)
                 .Start();
 
             while(true)

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Services
 {
-    public class SimpitMessageService
+    public class SimpitMessageService : IDisposable
     {
         private readonly Simpit _simpit;
         private readonly DoubleDictionary<byte, Type, SimpitMessageType> _incoming;
@@ -21,6 +21,12 @@ namespace KerbalSimpit.Core.Services
             _simpit = simpit;
             _incoming = new DoubleDictionary<byte, Type, SimpitMessageType>();
             _outgoing = new DoubleDictionary<byte, Type, SimpitMessageType>();
+        }
+
+        public void Dispose()
+        {
+            _incoming.Clear();
+            _outgoing.Clear();
         }
 
         public SimpitMessageType<T> RegisterIncomingType<T>(byte id, DeserializeSimpitMessageContentDelegate<T> deserializer)
@@ -51,39 +57,39 @@ namespace KerbalSimpit.Core.Services
             return this.RegisterOutogingType<T>(id, (input, output) => output.WriteUnmanaged(input));
         }
 
-        public bool TryGetIncomingType(byte id, out SimpitMessageType configuration)
+        public bool TryGetIncomingType(byte id, out SimpitMessageType type)
         {
-            return _incoming.TryGet(id, out configuration);
+            return _incoming.TryGet(id, out type);
         }
 
-        public bool TryGetIncomingType<T>(out SimpitMessageType<T> configuration)
+        public bool TryGetIncomingType<T>(out SimpitMessageType<T> type)
             where T : ISimpitMessageContent
         {
             if (_incoming.TryGet(typeof(T), out SimpitMessageType uncasted) && uncasted is SimpitMessageType<T> casted)
             {
-                configuration = casted;
+                type = casted;
                 return true;
             }
 
-            configuration = null;
+            type = null;
             return false;
         }
 
-        public bool TryGetOutgoingType(byte id, out SimpitMessageType configuration)
+        public bool TryGetOutgoingType(byte id, out SimpitMessageType type)
         {
-            return _outgoing.TryGet(id, out configuration);
+            return _outgoing.TryGet(id, out type);
         }
 
-        public bool TryGetOutgoingType<T>(out SimpitMessageType<T> configuration)
+        public bool TryGetOutgoingType<T>(out SimpitMessageType<T> type)
             where T : ISimpitMessageContent
         {
             if (_outgoing.TryGet(typeof(T), out SimpitMessageType uncasted) && uncasted is SimpitMessageType<T> casted)
             {
-                configuration = casted;
+                type = casted;
                 return true;
             }
 
-            configuration = null;
+            type = null;
             return false;
         }
 

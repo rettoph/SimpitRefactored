@@ -31,10 +31,5 @@ namespace KerbalSimpit.Core.Peers
         {
             this.Status = ConnectionStatusEnum.CONNECTED;
         }
-
-        internal void ProcessRegistration(RegisterHandler message)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

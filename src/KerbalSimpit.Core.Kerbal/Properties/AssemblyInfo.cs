@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("KerbalSimpit.Common")]
+[assembly: AssemblyTitle("KerbalSimpit.Core.Kerbal")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KerbalSimpit.Common")]
+[assembly: AssemblyProduct("KerbalSimpit.Core.Kerbal")]
 [assembly: AssemblyCopyright("Copyright ©  2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d6cc3461-4a25-4b03-b51f-be28610b08ca")]
+[assembly: Guid("367c0292-1344-47de-b0d1-d0de7bed0de4")]
 
 // Version information for an assembly consists of the following four values:
 //

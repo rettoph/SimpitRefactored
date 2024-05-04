@@ -67,5 +67,11 @@ namespace KerbalSimpit.Core.Utilities
         {
             return _dic1.Remove(key1) && _dic2.Remove(key2);
         }
+
+        public void Clear()
+        {
+            _dic1.Clear();
+            _dic2.Clear();
+        }
     }
 }

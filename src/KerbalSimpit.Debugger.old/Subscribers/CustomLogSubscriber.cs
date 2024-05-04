@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Debugger.Subscribers
 {
-    internal class CustomLogSubscriber : ISimpitMessageSubscriber<CustomLog>
+    internal class CustomLogSubscriber : ISimpitMessageConsumer<CustomLog>
     {
         private readonly ISimpitLogger _logger;
 
@@ -19,7 +19,7 @@ namespace KerbalSimpit.Debugger.Subscribers
             _logger = logger;
         }
 
-        public void Process(SimpitPeer peer, ISimpitMessage<CustomLog> message)
+        public void Consume(SimpitPeer peer, ISimpitMessage<CustomLog> message)
         {
             _logger.LogInformation("{0} - {1}", nameof(CustomLog), message.Content.Value);
         }

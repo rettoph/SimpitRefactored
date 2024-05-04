@@ -18,6 +18,7 @@ namespace KerbalSimpit.Core
         private readonly ISimpitLogger _logger;
         private readonly List<SimpitPeer> _peers;
         private readonly Dictionary<Type, SimpitMessagePublisher> _publishers;
+        private readonly ManyToMany<SimpitMessageType, SimpitPeer> _outogingMessageSubscribers;
 
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -34,6 +35,7 @@ namespace KerbalSimpit.Core
             _logger = logger;
             _peers = new List<SimpitPeer>();
             _publishers = new Dictionary<Type, SimpitMessagePublisher>();
+            _outogingMessageSubscribers = new ManyToMany<SimpitMessageType, SimpitPeer>();
 
             this.Messages = new SimpitMessageService(this);
             this.Peers = new ReadOnlyCollection<SimpitPeer>(_peers);
@@ -48,9 +50,15 @@ namespace KerbalSimpit.Core
             {
                 this.Stop();
             }
+
+            this.Messages.Dispose();
+
+            _peers.Clear();
+            _publishers.Clear();
+            _outogingMessageSubscribers.Clear();
         }
 
-        public Simpit Add(SimpitPeer peer)
+        public Simpit RegisterPeer(SimpitPeer peer)
         {
             _peers.Add(peer);
 
@@ -103,20 +111,13 @@ namespace KerbalSimpit.Core
             }
         }
 
-        public Simpit Subscribe<T>(ISimpitMessageSubscriber<T> subscriber)
+        public Simpit RegisterIncomingConsumer<T>(ISimpitMessageConsumer<T> subscriber)
             where T : ISimpitMessageContent
         {
             SimpitMessagePublisher<T> publisher = this.GetPublisher(typeof(T)) as SimpitMessagePublisher<T>;
-            publisher.Subscribe(subscriber);
+            publisher.AddConsumer(subscriber);
 
             return this;
-        }
-
-        public void Unsubscribe<T>(ISimpitMessageSubscriber<T> subscriber)
-            where T : ISimpitMessageContent
-        {
-            SimpitMessagePublisher<T> publisher = this.GetPublisher(typeof(T)) as SimpitMessagePublisher<T>;
-            publisher.Unsubscribe(subscriber);
         }
 
         private SimpitMessagePublisher GetPublisher(Type type)

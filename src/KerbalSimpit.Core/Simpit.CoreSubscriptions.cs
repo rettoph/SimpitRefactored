@@ -10,20 +10,20 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core
 {
-    public partial class Simpit : ISimpitMessageSubscriber<Synchronisation>, ISimpitMessageSubscriber<RegisterHandler>
+    public partial class Simpit : ISimpitMessageConsumer<Synchronisation>, ISimpitMessageConsumer<RegisterHandler>
     {
         private void RegisterCoreSubscriptions()
         {
-            this.Subscribe<Synchronisation>(this)
-                .Subscribe<RegisterHandler>(this);
+            this.RegisterIncomingConsumer<Synchronisation>(this)
+                .RegisterIncomingConsumer<RegisterHandler>(this);
         }
 
-        void ISimpitMessageSubscriber<Synchronisation>.Process(SimpitPeer peer, ISimpitMessage<Synchronisation> message)
+        void ISimpitMessageConsumer<Synchronisation>.Consume(SimpitPeer peer, ISimpitMessage<Synchronisation> message)
         {
             switch (message.Content.Type)
             {
                 case Synchronisation.SynchronisationMessageTypeEnum.SYN:
-                    _logger.LogVerbose("{0}::{1} - {2} recieved on peer {3}. Replying.", nameof(Simpit), nameof(ISimpitMessageSubscriber<Synchronisation>.Process), Synchronisation.SynchronisationMessageTypeEnum.SYN, peer);
+                    _logger.LogVerbose("{0}::{1} - {2} recieved on peer {3}. Replying.", nameof(Simpit), nameof(ISimpitMessageConsumer<Synchronisation>.Consume), Synchronisation.SynchronisationMessageTypeEnum.SYN, peer);
                     peer.ProcessSYN(message.Content);
                     break;
 
@@ -31,15 +31,24 @@ namespace KerbalSimpit.Core
                     throw new NotImplementedException();
 
                 case Synchronisation.SynchronisationMessageTypeEnum.ACK:
-                    _logger.LogVerbose("{0}::{1} - {2} recieved on peer {3}. Handshake complete, Resetting channels, Arduino library version '{4}'.", nameof(Simpit), nameof(ISimpitMessageSubscriber<Synchronisation>.Process), Synchronisation.SynchronisationMessageTypeEnum.ACK, peer, message.Content.Version);
+                    _logger.LogVerbose("{0}::{1} - {2} recieved on peer {3}. Handshake complete, Resetting channels, Arduino library version '{4}'.", nameof(Simpit), nameof(ISimpitMessageConsumer<Synchronisation>.Consume), Synchronisation.SynchronisationMessageTypeEnum.ACK, peer, message.Content.Version);
                     peer.ProcessSYN(message.Content);
                     break;
             }
         }
 
-        void ISimpitMessageSubscriber<RegisterHandler>.Process(SimpitPeer peer, ISimpitMessage<RegisterHandler> message)
+        void ISimpitMessageConsumer<RegisterHandler>.Consume(SimpitPeer peer, ISimpitMessage<RegisterHandler> message)
         {
-            peer.ProcessRegistration(message.Content);
+            foreach(byte messageTypeId in message.Content.MessageTypeIds)
+            {
+                if(this.Messages.TryGetOutgoingType(messageTypeId, out SimpitMessageType type) == false)
+                {
+                    _logger.LogWarning("{0}::{1} - Unrecognized registration request from {2}, {3}", nameof(Simpit), nameof(ISimpitMessageConsumer<RegisterHandler>.Consume), peer, messageTypeId);
+                    continue;
+                }
+
+                throw new NotImplementedException();
+            }
         }
     }
 }

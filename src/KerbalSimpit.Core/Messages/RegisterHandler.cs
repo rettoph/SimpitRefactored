@@ -9,13 +9,13 @@ namespace KerbalSimpit.Core.Messages
 {
     public struct RegisterHandler : ISimpitMessageContent
     {
-        public byte[] MessageIds { get; set; }
+        public byte[] MessageTypeIds { get; set; }
 
         internal static RegisterHandler Deserialize(SimpitStream input)
         {
             return new RegisterHandler()
             {
-                MessageIds = input.ReadAll(out int offset, out int count).Skip(offset).Take(count).ToArray()
+                MessageTypeIds = input.ReadAll(out int offset, out int count).Skip(offset).Take(count).ToArray()
             };
         }
     }
