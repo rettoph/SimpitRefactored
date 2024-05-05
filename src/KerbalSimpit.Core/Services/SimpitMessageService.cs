@@ -131,7 +131,7 @@ namespace KerbalSimpit.Core.Services
                     return false;
                 }
 
-                _simpit.Logger.LogVerbose("{0}::{1} - Preparing to deserialize configuration of id {2}.", nameof(SimpitMessageService), nameof(TryDeserializeIncoming), id);
+                _simpit.Logger.LogVerbose("{0}::{1} - Preparing to deserialize message type {2}.", nameof(SimpitMessageService), nameof(TryDeserializeIncoming), type);
                 message = type.Deserialize(buffer);
                 return true;
             }

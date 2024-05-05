@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -61,6 +62,12 @@ namespace KerbalSimpit.Core
 
             _buffer[index] = value;
             _writeIndex = Math.Max(_writeIndex, index);
+        }
+
+        public void Write(string value)
+        {
+            byte[] bytes = Encoding.ASCII.GetBytes(value);
+            this.Write(bytes);
         }
 
         public unsafe void WriteUnmanaged<T>(T value)

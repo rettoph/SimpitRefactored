@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,8 +43,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants\MessageTypeIds.cs" />
+    <Compile Include="Enums\ActionGroupFlags.cs" />
     <Compile Include="Extensions\SimpitExtensions.cs" />
-    <Compile Include="Messages\SceneChange.cs" />
+    <Compile Include="Messages\CustomResource.cs" />
+    <Compile Include="Messages\Environment.cs" />
+    <Compile Include="Messages\KeyboardEmulator.cs" />
+    <Compile Include="Messages\Resource.cs" />
+    <Compile Include="Messages\TACLS.cs" />
+    <Compile Include="Messages\Vessel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

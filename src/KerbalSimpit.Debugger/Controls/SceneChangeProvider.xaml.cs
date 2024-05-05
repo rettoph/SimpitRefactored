@@ -1,5 +1,4 @@
 ﻿using KerbalSimpit.Core.Kerbal.Messages;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,17 +27,17 @@ namespace KerbalSimpit.Debugger.Controls
 
         private void checkBox_Checked(object sender, RoutedEventArgs e)
         {
-            MainWindow.Simpit.Broadcast(new SceneChange()
+            MainWindow.Simpit.Broadcast(new Environment.SceneChange()
             {
-                Type = SceneChange.SceneChangeTypeEnum.Flight
+                Type = Environment.SceneChange.SceneChangeTypeEnum.Flight
             });
         }
 
         private void checkBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            MainWindow.Simpit.Broadcast(new SceneChange()
+            MainWindow.Simpit.Broadcast(new Environment.SceneChange()
             {
-                Type = SceneChange.SceneChangeTypeEnum.NotFlight
+                Type = Environment.SceneChange.SceneChangeTypeEnum.NotFlight
             });
         }
     }

@@ -1,19 +1,14 @@
 ﻿using KerbalSimpit.Core;
 using KerbalSimpit.Core.Kerbal.Messages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KerbalSimpit.Debugger.Providers
 {
     public class DebugSceneChangeProvider
     {
         private readonly Simpit _simpit;
-        private SceneChange _data;
+        private Environment.SceneChange _data;
 
-        public SceneChange.SceneChangeTypeEnum Type
+        public Environment.SceneChange.SceneChangeTypeEnum Type
         {
             get => _data.Type;
             set

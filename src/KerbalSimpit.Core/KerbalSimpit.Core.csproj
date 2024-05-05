@@ -42,7 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\CloseSerialPort.cs" />
     <Compile Include="Messages\DeregisterHandler.cs" />
+    <Compile Include="Messages\EchoRequest.cs" />
+    <Compile Include="Messages\EchoResponse.cs" />
     <Compile Include="SimpitMessageType.cs" />
     <Compile Include="Constants\MessageTypeIds.cs" />
     <Compile Include="Constants\SpecialBytes.cs" />

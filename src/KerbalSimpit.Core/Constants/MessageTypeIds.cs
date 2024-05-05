@@ -12,16 +12,20 @@ namespace KerbalSimpit.Core.Constants
     {
         public static class Incoming
         {
-            public static readonly byte Synchronisation = 0;
-            public static readonly byte RegisterHandler = 8;
-            public static readonly byte DeregisterHandler = 9;
-            public static readonly byte CustomLog = 25;
-            public static readonly byte RequestMessage = 29;
+            public const byte Synchronisation = 0;
+            public const byte EchoRequest = 1;
+            public const byte EchoResponse = 2;
+            public const byte CloseSerialPort = 7;
+            public const byte RegisterHandler = 8;
+            public const byte DeregisterHandler = 9;
+            public const byte CustomLog = 25;
+            public const byte RequestMessage = 29;
         }
 
         public static class Outgoing
         {
-            public static readonly byte HandshakeMessage = 0;
+            public const byte HandshakeMessage = 0;
+            public const byte EchoResponse = 2;
         }
     }
 }

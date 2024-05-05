@@ -8,11 +8,18 @@
         Title="MainWindow" Height="450" Width="800"
         WindowState="Maximized">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="6*"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
-        <local:Logger x:Name="Logger" Grid.Row="1"/>
-        <local:SceneChangeProvider/>
+        <local:SceneChangeProvider HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label x:Name="ThrottleValue" Grid.Column="1" Content="Throttle: " Margin="0,-4,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="TranslationValue" Grid.Column="1" Content="Translation:" Margin="0,22,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="RotationValue" Grid.Column="1" Content="Rotation:" Margin="0,48,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
