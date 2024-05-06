@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace KerbalSimpit.Debugger
@@ -14,4 +10,5 @@ namespace KerbalSimpit.Debugger
     public partial class App : Application
     {
     }
+
 }

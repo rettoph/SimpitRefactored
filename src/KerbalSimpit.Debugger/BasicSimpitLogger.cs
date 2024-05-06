@@ -1,20 +1,15 @@
 ﻿using KerbalSimpit.Core.Enums;
 using KerbalSimpit.Core.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KerbalSimpit.Debugger
 {
-    internal class ConsoleLogger : ISimpitLogger
+    internal class BasicSimpitLogger : ISimpitLogger
     {
         public SimpitLogLevelEnum LogLevel { get; set; }
 
-        public ConsoleLogger(SimpitLogLevelEnum logLevel)
+        public BasicSimpitLogger()
         {
-            this.LogLevel = logLevel;
+            this.LogLevel = SimpitLogLevelEnum.Verbose;
         }
 
         public void Log(SimpitLogLevelEnum level, string template, object[] args)

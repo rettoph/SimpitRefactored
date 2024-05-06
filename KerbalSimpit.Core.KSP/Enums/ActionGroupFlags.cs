@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KerbalSimpit.Core.Kerbal.Enums
+namespace KerbalSimpit.Core.KSP.Enums
 {
     [Flags]
     public enum ActionGroupFlags : byte

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KerbalSimpit.Core.Kerbal.Constants
+namespace KerbalSimpit.Core.KSP.Constants
 {
     internal static class MessageTypeIds
     {

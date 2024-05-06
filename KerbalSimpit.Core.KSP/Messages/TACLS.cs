@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KerbalSimpit.Core.Kerbal.Messages
+namespace KerbalSimpit.Core.KSP.Messages
 {
     public static class TACLS
     {

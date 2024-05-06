@@ -1,7 +1,7 @@
-﻿using KerbalSimpit.Core.Kerbal.Constants;
-using KerbalSimpit.Core.Kerbal.Messages;
+﻿using KerbalSimpit.Core.KSP.Constants;
+using KerbalSimpit.Core.KSP.Messages;
 
-namespace KerbalSimpit.Core.Kerbal.Extensions
+namespace KerbalSimpit.Core.KSP.Extensions
 {
     public static class SimpitExtensions
     {

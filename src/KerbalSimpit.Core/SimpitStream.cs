@@ -1,10 +1,6 @@
 ﻿using KerbalSimpit.Core.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core
 {
@@ -36,11 +32,11 @@ namespace KerbalSimpit.Core
 
         public void Write(byte value)
         {
-            if(this.SetMode(SimpitStreamModeEnum.Write, ref _writeIndex))
+            if (this.SetMode(SimpitStreamModeEnum.Write, ref _writeIndex))
             {
                 _readIndex = 0;
             }
-            
+
             _buffer[_writeIndex] = value;
             _writeIndex = (_writeIndex + 1) % _buffer.Length;
         }
@@ -84,7 +80,7 @@ namespace KerbalSimpit.Core
 
         public byte Pop()
         {
-            if(_writeIndex <= 0)
+            if (_writeIndex <= 0)
             {
                 throw new InvalidOperationException();
             }
@@ -189,7 +185,7 @@ namespace KerbalSimpit.Core
 
         public void Skip(int count)
         {
-            switch(this.Mode)
+            switch (this.Mode)
             {
                 case SimpitStreamModeEnum.None:
                     throw new InvalidOperationException();
@@ -210,7 +206,7 @@ namespace KerbalSimpit.Core
         /// <returns></returns>
         public string ReadString(int length = -1)
         {
-            if(length == -1)
+            if (length == -1)
             {
                 length = this.Length - 1;
             }
@@ -278,7 +274,7 @@ namespace KerbalSimpit.Core
 
         private bool SetMode(SimpitStreamModeEnum mode, ref int index)
         {
-            if(this.Mode == mode)
+            if (this.Mode == mode)
             {
                 return false;
             }

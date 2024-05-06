@@ -5,15 +5,15 @@ namespace KerbalSimpit.Core.Extensions
 {
     public static class SimpitExtensions
     {
-        public static Simpit RegisterSerial(this Simpit simpit, string name, int baudRate)
+        public static Simpit AddSerialPeer(this Simpit simpit, string name, int baudRate)
         {
-            return simpit.RegisterPeer(new SerialPeer(name, baudRate));
+            return simpit.AddPeer(new SerialPeer(name, baudRate));
         }
 
-        public static Simpit RegisterIncomingConsumer<T>(this Simpit simpit, Action<SimpitPeer, ISimpitMessage<T>> consumer)
+        public static Simpit AddIncomingConsumer<T>(this Simpit simpit, Action<SimpitPeer, ISimpitMessage<T>> consumer)
             where T : ISimpitMessageContent
         {
-            return simpit.RegisterIncomingConsumer(new RuntimeMessageConsumer<T>(consumer));
+            return simpit.AddIncomingConsumer(new RuntimeMessageConsumer<T>(consumer));
         }
 
         private class RuntimeMessageConsumer<T> : ISimpitMessageConsumer<T>

@@ -4,10 +4,7 @@ using KerbalSimpit.Core.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core
 {
@@ -44,12 +41,12 @@ namespace KerbalSimpit.Core
             this.Peers = new ReadOnlyCollection<SimpitPeer>(_peers);
 
             this.RegisterCoreMessages();
-            this.RegisterCoreSubscriptions();
+            this.AddCoreSubscriptions();
         }
 
         public void Dispose()
         {
-            if(this.Running)
+            if (this.Running)
             {
                 this.Stop();
             }
@@ -61,13 +58,28 @@ namespace KerbalSimpit.Core
             _outogingMessageSubscribers.Clear();
         }
 
-        public Simpit RegisterPeer(SimpitPeer peer)
+        public Simpit AddPeer(SimpitPeer peer)
         {
             _peers.Add(peer);
 
-            if(this.Running && peer.Running == false)
+            if (this.Running == true && peer.Running == false)
             {
                 peer.Start(this);
+            }
+
+            return this;
+        }
+
+        public Simpit RemovePeer(SimpitPeer peer)
+        {
+            if (_peers.Remove(peer) == false)
+            {
+                return this;
+            }
+
+            if (this.Running == true && peer.Running == true)
+            {
+                peer.Stop(this);
             }
 
             return this;
@@ -77,9 +89,9 @@ namespace KerbalSimpit.Core
         {
             _cancellationTokenSource = new CancellationTokenSource();
 
-            foreach(SimpitPeer peer in _peers)
+            foreach (SimpitPeer peer in _peers)
             {
-                if(peer.Running == false)
+                if (peer.Running == false)
                 {
                     peer.Start(this);
                 }
@@ -94,7 +106,7 @@ namespace KerbalSimpit.Core
         {
             foreach (SimpitPeer peer in _peers)
             {
-                if (peer.Running == false)
+                if (peer.Running == true)
                 {
                     peer.Stop(this);
                 }
@@ -107,7 +119,7 @@ namespace KerbalSimpit.Core
             where T : ISimpitMessageContent
 
         {
-            if(this.Messages.TryGetOutgoingType<T>(out SimpitMessageType<T>  type) == false)
+            if (this.Messages.TryGetOutgoingType<T>(out SimpitMessageType<T> type) == false)
             {
                 _logger.LogWarning("{0}::{1} - Attempting to broadcast unrecognized message type {2}", nameof(Simpit), nameof(Broadcast), typeof(T).Name);
                 return;
@@ -122,16 +134,16 @@ namespace KerbalSimpit.Core
 
         public void Flush()
         {
-            foreach(SimpitPeer peer in _peers)
+            foreach (SimpitPeer peer in _peers)
             {
-                while(peer.TryRead(out ISimpitMessage message))
+                while (peer.TryRead(out ISimpitMessage message))
                 {
                     this.GetPublisher(message.Type.ContentType).Publish(peer, message);
                 }
             }
         }
 
-        public Simpit RegisterIncomingConsumer<T>(ISimpitMessageConsumer<T> subscriber)
+        public Simpit AddIncomingConsumer<T>(ISimpitMessageConsumer<T> subscriber)
             where T : ISimpitMessageContent
         {
             SimpitMessagePublisher<T> publisher = this.GetPublisher(typeof(T)) as SimpitMessagePublisher<T>;
@@ -142,7 +154,7 @@ namespace KerbalSimpit.Core
 
         private SimpitMessagePublisher GetPublisher(Type type)
         {
-            if(_publishers.TryGetValue(type, out SimpitMessagePublisher publisher))
+            if (_publishers.TryGetValue(type, out SimpitMessagePublisher publisher))
             {
                 return publisher;
             }

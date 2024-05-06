@@ -1,0 +1,12 @@
+{
+  "Serial": [
+    {
+      "Name": "COM3",
+      "BaudRate": 115200
+    },
+    {
+      "Name": "COM4",
+      "BaudRate": 115200
+    }
+  ]
+}

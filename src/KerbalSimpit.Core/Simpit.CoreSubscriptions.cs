@@ -12,11 +12,11 @@ namespace KerbalSimpit.Core
 {
     public partial class Simpit : ISimpitMessageConsumer<Synchronisation>, ISimpitMessageConsumer<RegisterHandler>, ISimpitMessageConsumer<DeregisterHandler>
     {
-        private void RegisterCoreSubscriptions()
+        private void AddCoreSubscriptions()
         {
-            this.RegisterIncomingConsumer<Synchronisation>(this)
-                .RegisterIncomingConsumer<RegisterHandler>(this)
-                .RegisterIncomingConsumer<DeregisterHandler>(this);
+            this.AddIncomingConsumer<Synchronisation>(this)
+                .AddIncomingConsumer<RegisterHandler>(this)
+                .AddIncomingConsumer<DeregisterHandler>(this);
         }
 
         void ISimpitMessageConsumer<Synchronisation>.Consume(SimpitPeer peer, ISimpitMessage<Synchronisation> message)
