@@ -2,6 +2,7 @@
 using KerbalSimpit.Core.Services;
 using KerbalSimpit.Core.Utilities;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -14,8 +15,8 @@ namespace KerbalSimpit.Core
 
         private readonly ISimpitLogger _logger;
         private readonly List<SimpitPeer> _peers;
-        private readonly Dictionary<Type, SimpitMessagePublisher> _publishers;
-        private readonly ManyToMany<SimpitMessageType, SimpitPeer> _outogingMessageSubscribers;
+        private readonly ConcurrentDictionary<Type, SimpitMessagePublisher> _publishers;
+        private readonly ConcurrentDictionary<SimpitMessageType, OutgoingData> _outgoing;
 
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -27,15 +28,17 @@ namespace KerbalSimpit.Core
         public bool Running { get; private set; }
         public ISimpitLogger Logger => _logger;
 
-        public event EventHandler<(SimpitMessageType, SimpitPeer)> OnPeerSubscribe;
-        public event EventHandler<(SimpitMessageType, SimpitPeer)> OnPeerUnsubscribe;
+        public event EventHandler<SimpitPeer> OnPeerAdded;
+        public event EventHandler<SimpitPeer> OnPeerRemoved;
+
+        public event EventHandler<ISimpitMessage> OnMessageRecieved;
 
         public Simpit(ISimpitLogger logger)
         {
             _logger = logger;
             _peers = new List<SimpitPeer>();
-            _publishers = new Dictionary<Type, SimpitMessagePublisher>();
-            _outogingMessageSubscribers = new ManyToMany<SimpitMessageType, SimpitPeer>();
+            _publishers = new ConcurrentDictionary<Type, SimpitMessagePublisher>();
+            _outgoing = new ConcurrentDictionary<SimpitMessageType, OutgoingData>();
 
             this.Messages = new SimpitMessageService(this);
             this.Peers = new ReadOnlyCollection<SimpitPeer>(_peers);
@@ -55,17 +58,21 @@ namespace KerbalSimpit.Core
 
             _peers.Clear();
             _publishers.Clear();
-            _outogingMessageSubscribers.Clear();
+            _outgoing.Clear();
         }
 
         public Simpit AddPeer(SimpitPeer peer)
         {
             _peers.Add(peer);
 
+            peer.Initialize(this);
+
             if (this.Running == true && peer.Running == false)
             {
-                peer.Start(this);
+                peer.Open();
             }
+
+            this.OnPeerAdded?.Invoke(this, peer);
 
             return this;
         }
@@ -79,8 +86,10 @@ namespace KerbalSimpit.Core
 
             if (this.Running == true && peer.Running == true)
             {
-                peer.Stop(this);
+                peer.Close();
             }
+
+            this.OnPeerRemoved?.Invoke(this, peer);
 
             return this;
         }
@@ -93,7 +102,7 @@ namespace KerbalSimpit.Core
             {
                 if (peer.Running == false)
                 {
-                    peer.Start(this);
+                    peer.Open();
                 }
             }
 
@@ -108,28 +117,41 @@ namespace KerbalSimpit.Core
             {
                 if (peer.Running == true)
                 {
-                    peer.Stop(this);
+                    peer.Close();
                 }
             }
 
             this.Running = true;
         }
 
-        public void Broadcast<T>(T content)
-            where T : ISimpitMessageContent
+        public void SetOutgoingData<T>(T value)
+            where T : ISimpitMessageData
 
         {
             if (this.Messages.TryGetOutgoingType<T>(out SimpitMessageType<T> type) == false)
             {
-                _logger.LogWarning("{0}::{1} - Attempting to broadcast unrecognized message type {2}", nameof(Simpit), nameof(Broadcast), typeof(T).Name);
-                return;
+                throw new InvalidOperationException(string.Format("{0}::{1} - Unknown outgoing message type {2}", nameof(Simpit), nameof(SetOutgoingData), typeof(T).Name));
             }
 
-            ISimpitMessage message = new SimpitMessage<T>(type, content);
-            foreach (SerialPeer peer in _outogingMessageSubscribers.Get(type))
+            Simpit.OutgoingData<T> data = this.GetOutgoingData(type);
+            lock (data)
             {
-                peer.EnqueueOutgoing(message);
+                data.Value = value;
             }
+        }
+
+        public OutgoingData<T> GetOutgoingData<T>(SimpitMessageType<T> type)
+            where T : ISimpitMessageData
+        {
+            if (_outgoing.TryGetValue(type, out OutgoingData uncasted))
+            {
+                return (OutgoingData<T>)uncasted;
+            }
+
+            OutgoingData<T> data = new OutgoingData<T>();
+            _outgoing.TryAdd(type, data);
+
+            return data;
         }
 
         public void Flush()
@@ -138,13 +160,14 @@ namespace KerbalSimpit.Core
             {
                 while (peer.TryRead(out ISimpitMessage message))
                 {
-                    this.GetPublisher(message.Type.ContentType).Publish(peer, message);
+                    this.OnMessageRecieved?.Invoke(peer, message);
+                    this.GetPublisher(message.Type.DataType).Publish(peer, message);
                 }
             }
         }
 
-        public Simpit AddIncomingConsumer<T>(ISimpitMessageConsumer<T> subscriber)
-            where T : ISimpitMessageContent
+        public Simpit AddIncomingSubscriber<T>(ISimpitMessageSubscriber<T> subscriber)
+            where T : ISimpitMessageData
         {
             SimpitMessagePublisher<T> publisher = this.GetPublisher(typeof(T)) as SimpitMessagePublisher<T>;
             publisher.AddConsumer(subscriber);
@@ -160,7 +183,7 @@ namespace KerbalSimpit.Core
             }
 
             publisher = SimpitMessagePublisher.Create(type);
-            _publishers.Add(type, publisher);
+            _publishers.TryAdd(type, publisher);
 
             return publisher;
         }

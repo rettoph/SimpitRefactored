@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Messages
 {
-    public struct Synchronisation : ISimpitMessageContent
+    public struct Synchronisation : ISimpitMessageData
     {
         public enum SynchronisationMessageTypeEnum : byte
         {

@@ -11,13 +11,13 @@ namespace KerbalSimpit.Core.Extensions
         }
 
         public static Simpit AddIncomingConsumer<T>(this Simpit simpit, Action<SimpitPeer, ISimpitMessage<T>> consumer)
-            where T : ISimpitMessageContent
+            where T : ISimpitMessageData
         {
-            return simpit.AddIncomingConsumer(new RuntimeMessageConsumer<T>(consumer));
+            return simpit.AddIncomingSubscriber(new RuntimeMessageConsumer<T>(consumer));
         }
 
-        private class RuntimeMessageConsumer<T> : ISimpitMessageConsumer<T>
-            where T : ISimpitMessageContent
+        private class RuntimeMessageConsumer<T> : ISimpitMessageSubscriber<T>
+            where T : ISimpitMessageData
         {
             private readonly Action<SimpitPeer, ISimpitMessage<T>> _consumer;
 
@@ -26,7 +26,7 @@ namespace KerbalSimpit.Core.Extensions
                 _consumer = consumer;
             }
 
-            public void Consume(SimpitPeer peer, ISimpitMessage<T> message)
+            public void Process(SimpitPeer peer, ISimpitMessage<T> message)
             {
                 _consumer(peer, message);
             }

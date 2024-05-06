@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Messages
 {
-    public struct DeregisterHandler : ISimpitMessageContent
+    public struct DeregisterHandler : ISimpitMessageData
     {
         public byte[] MessageTypeIds { get; set; }
 

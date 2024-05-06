@@ -5,39 +5,53 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Peers
 {
     public abstract partial class SimpitPeer
     {
         private Simpit _simpit;
+        private ConnectionStatusEnum _status;
+        private bool _initialized;
 
         private readonly ConcurrentQueue<ISimpitMessage> _read;
         private readonly ConcurrentQueue<ISimpitMessage> _write;
-        private readonly SimpitStream _inbound;
-        private readonly SimpitStream _outbound;
+        private readonly SimpitStream _incoming;
+        private readonly SimpitStream _outgoing;
         private readonly SimpitStream _encodeBuffer;
         private readonly SimpitStream _decodeBuffer;
+        private readonly Dictionary<SimpitMessageType, int> _outgoingSubscriptions;
 
         protected ISimpitLogger logger => _simpit.Logger;
         protected CancellationToken cancellationToken => _simpit.CancellationToken;
 
         public abstract bool Running { get; }
 
-        public ConnectionStatusEnum Status { get; private set; }
+        public IEnumerable<SimpitMessageType> OutgoingSubscriptions => _outgoingSubscriptions.Keys;
+
+        public ConnectionStatusEnum Status
+        {
+            get => _status;
+            set
+            {
+                _status = value;
+                this.OnStatusChanged?.Invoke(this, _status);
+            }
+        }
+
+        public event EventHandler<ConnectionStatusEnum> OnStatusChanged;
+        public event EventHandler<SimpitMessageType> OnOutgoingSubscribed;
+        public event EventHandler<SimpitMessageType> OnOutgoingUnsubscribed;
 
         public SimpitPeer()
         {
             _read = new ConcurrentQueue<ISimpitMessage>();
             _write = new ConcurrentQueue<ISimpitMessage>();
+            _outgoingSubscriptions = new Dictionary<SimpitMessageType, int>();
 
-            _inbound = new SimpitStream();
-            _outbound = new SimpitStream();
+            _incoming = new SimpitStream();
+            _outgoing = new SimpitStream();
             _encodeBuffer = new SimpitStream();
             _decodeBuffer = new SimpitStream();
         }
@@ -46,25 +60,54 @@ namespace KerbalSimpit.Core.Peers
         {
             if (this.Running)
             {
-                this.Stop();
+                this.TryClose();
             }
         }
 
-        internal void Start(Simpit simpit)
+        internal void Initialize(Simpit simpit)
         {
+            if (_initialized == true)
+            {
+                throw new InvalidOperationException($"{nameof(SimpitPeer)}::{nameof(Initialize)} - Already initialized.");
+            }
+
             _simpit = simpit;
-
-            this.Start();
+            _initialized = true;
         }
 
-        internal void Stop(Simpit simpit)
+        public void Open()
         {
-            this.Stop();
+            if (_initialized == false)
+            {
+                throw new InvalidOperationException(string.Format("{0}::{1} - Unable to start, uninitialized.", nameof(SimpitPeer), nameof(Open), nameof(SimpitPeer)));
+            }
+
+            if (this.Status != ConnectionStatusEnum.CLOSED)
+            {
+                throw new InvalidOperationException(string.Format("{0}::{1} - Unable to start, already open.", nameof(SimpitPeer), nameof(Open), nameof(SimpitPeer)));
+            }
+
+            if (this.TryOpen() == true)
+            {
+                this.Reset();
+
+                this.Status = ConnectionStatusEnum.WAITING_HANDSHAKE;
+            }
         }
 
-        protected abstract void Start();
+        public void Close()
+        {
+            if (this.TryClose())
+            {
+                this.Reset();
 
-        protected abstract void Stop();
+                this.Status = ConnectionStatusEnum.CLOSED;
+            }
+        }
+
+        protected abstract bool TryOpen();
+
+        protected abstract bool TryClose();
 
         /// <summary>
         /// Enqueue an outgoing message to be sent within the outbound thread.
@@ -80,7 +123,7 @@ namespace KerbalSimpit.Core.Peers
         /// </summary>
         /// <param name="message"></param>
         public void EnqueueOutgoing<T>(T content)
-            where T : ISimpitMessageContent
+            where T : ISimpitMessageData
         {
             this.EnqueueOutgoing(_simpit.Messages.CreateOutgoing(content));
         }
@@ -92,8 +135,8 @@ namespace KerbalSimpit.Core.Peers
 
         public void Clear()
         {
-            _inbound.Clear();
-            _outbound.Clear();
+            _incoming.Clear();
+            _outgoing.Clear();
 
             while (_read.TryDequeue(out _))
             {
@@ -103,14 +146,14 @@ namespace KerbalSimpit.Core.Peers
 
         public void IncomingDataRecieved(byte data)
         {
-            _inbound.Write(data);
+            _incoming.Write(data);
 
             if (data != SpecialBytes.EndOfMessage)
             { // More data to be read before we've recieved a complete message
                 return;
             }
 
-            if (_simpit.Messages.TryDeserializeIncoming(_inbound, _decodeBuffer, out ISimpitMessage message) == false)
+            if (_simpit.Messages.TryDeserializeIncoming(_incoming, _decodeBuffer, out ISimpitMessage message) == false)
             {
                 this.logger.LogWarning("{0}::{1} - Unable to deserialize incoming message. Peer = {2}", nameof(SimpitPeer), nameof(IncomingDataRecieved), this);
                 return;
@@ -122,19 +165,60 @@ namespace KerbalSimpit.Core.Peers
 
         protected bool DequeueOutgoing(out SimpitStream outbound)
         {
-            outbound = _outbound;
+            outbound = _outgoing;
 
             if (_write.TryDequeue(out ISimpitMessage message) == false)
             {
                 return false;
             }
 
-            if(_simpit.Messages.TrySerializeOutgoing(message, _outbound, _encodeBuffer) == false)
+            if (_simpit.Messages.TrySerializeOutgoing(message, _outgoing, _encodeBuffer) == false)
             {
                 return false;
             }
 
             return true;
+        }
+
+        protected void EnqueueOutgoingSubscriptions()
+        {
+            try
+            {
+                foreach (KeyValuePair<SimpitMessageType, int> kvp in _outgoingSubscriptions)
+                {
+                    kvp.Key.TryEnqueueOutgoingData(this, kvp.Value, _simpit);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "{0}::{1}, Exception", nameof(SimpitPeer), nameof(EnqueueOutgoindSubscription));
+            }
+
+        }
+
+        internal void EnqueueOutgoindSubscription<T>(SimpitMessageType type, Simpit.OutgoingData<T> data)
+            where T : ISimpitMessageData
+        {
+            this.EnqueueOutgoing(data.Value);
+            _outgoingSubscriptions[type] = data.ChangeId;
+        }
+
+        private void Reset()
+        {
+            // Ensure all buffers are reset
+            _incoming.Clear();
+            _outgoing.Clear();
+            _decodeBuffer.Clear();
+            _encodeBuffer.Clear();
+
+            // Clear any old subscriptions
+            while (_outgoingSubscriptions.Count > 0)
+            {
+                SimpitMessageType type = _outgoingSubscriptions.First().Key;
+                _outgoingSubscriptions.Remove(type);
+                this.OnOutgoingUnsubscribed?.Invoke(this, type);
+            }
+            _outgoingSubscriptions.Clear();
         }
     }
 }

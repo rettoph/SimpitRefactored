@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Messages
 {
-    public struct EchoResponse : ISimpitMessageContent
+    public struct EchoResponse : ISimpitMessageData
     {
         public byte[] Data { get; set; }
 

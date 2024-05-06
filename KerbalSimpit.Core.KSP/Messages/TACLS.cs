@@ -10,7 +10,7 @@ namespace KerbalSimpit.Core.KSP.Messages
     public static class TACLS
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct Resource : ISimpitMessageContent
+        public struct Resource : ISimpitMessageData
         {
             public float CurrentFood { get; set; }
             public float MaxFood { get; set; }
@@ -21,7 +21,7 @@ namespace KerbalSimpit.Core.KSP.Messages
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct Waste : ISimpitMessageContent
+        public struct Waste : ISimpitMessageData
         {
             public float CurrentWaste { get; }
             public float MaxWaste { get; }

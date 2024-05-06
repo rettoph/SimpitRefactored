@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core
 {
-    public interface ISimpitMessageConsumer<T>
-        where T : ISimpitMessageContent
+    public interface ISimpitMessageSubscriber<T>
+        where T : ISimpitMessageData
     {
-        void Consume(SimpitPeer peer, ISimpitMessage<T> message);
+        void Process(SimpitPeer peer, ISimpitMessage<T> message);
     }
 }

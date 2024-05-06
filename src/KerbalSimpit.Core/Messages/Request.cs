@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KerbalSimpit.Core.Messages
+﻿namespace KerbalSimpit.Core.Messages
 {
-    public struct Request : ISimpitMessageContent
+    public struct Request : ISimpitMessageData
     {
-        public readonly byte ChannelId;
+        public readonly byte MessageTypeId;
     }
 }

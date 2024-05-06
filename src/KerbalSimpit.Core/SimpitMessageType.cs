@@ -1,47 +1,45 @@
 ﻿using KerbalSimpit.Core.Enums;
+using KerbalSimpit.Core.Peers;
 using KerbalSimpit.Core.Utilities;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core
 {
     public delegate T DeserializeSimpitMessageContentDelegate<T>(SimpitStream input)
-        where T : ISimpitMessageContent;
+        where T : ISimpitMessageData;
 
     public delegate void SerializeSimpitMessageContentDelegate<T>(T input, SimpitStream output)
-        where T : ISimpitMessageContent;
+        where T : ISimpitMessageData;
 
     public abstract class SimpitMessageType
     {
         public readonly byte Id;
         public readonly SimputMessageTypeEnum Type;
-        public readonly Type ContentType;
+        public readonly Type DataType;
 
         internal SimpitMessageType(byte id, SimputMessageTypeEnum type, Type contentType)
         {
-            ThrowIf.Type.IsNotAssignableTo<ISimpitMessageContent>(contentType);
+            ThrowIf.Type.IsNotAssignableTo<ISimpitMessageData>(contentType);
 
             this.Id = id;
             this.Type = type;
-            this.ContentType = contentType;
+            this.DataType = contentType;
         }
 
         internal abstract void Serialize(ISimpitMessage input, SimpitStream output);
         internal abstract ISimpitMessage Deserialize(SimpitStream input);
+
+        internal abstract void TryEnqueueOutgoingData(SimpitPeer peer, int lastChangeId, Simpit simpit);
     }
 
     public sealed class SimpitMessageType<TContent> : SimpitMessageType
-        where TContent : ISimpitMessageContent
+        where TContent : ISimpitMessageData
     {
         private readonly DeserializeSimpitMessageContentDelegate<TContent> _deserializer;
         private readonly SerializeSimpitMessageContentDelegate<TContent> _serializer;
 
         internal SimpitMessageType(
-            byte id, 
+            byte id,
             SimputMessageTypeEnum type,
             DeserializeSimpitMessageContentDelegate<TContent> deserializer,
             SerializeSimpitMessageContentDelegate<TContent> serializer) : base(id, type, typeof(TContent))
@@ -52,9 +50,9 @@ namespace KerbalSimpit.Core
 
         internal override void Serialize(ISimpitMessage input, SimpitStream output)
         {
-            if(input is SimpitMessage<TContent> casted)
+            if (input is SimpitMessage<TContent> casted)
             {
-                _serializer(casted.Content, output);
+                _serializer(casted.Data, output);
             }
         }
 
@@ -65,9 +63,23 @@ namespace KerbalSimpit.Core
             return new SimpitMessage<TContent>(this, content);
         }
 
+        internal override void TryEnqueueOutgoingData(SimpitPeer peer, int lastChangeId, Simpit simpit)
+        {
+            Simpit.OutgoingData<TContent> data = simpit.GetOutgoingData(this);
+            lock (data)
+            {
+                if (data.ChangeId == lastChangeId)
+                {
+                    return;
+                }
+
+                peer.EnqueueOutgoindSubscription(this, data);
+            }
+        }
+
         public override string ToString()
         {
-            return $"{this.Id}:{this.ContentType.Name}";
+            return $"{this.Id}:{this.DataType.Name}";
         }
 
         private static void NotImplementedSerializer(TContent input, SimpitStream output)

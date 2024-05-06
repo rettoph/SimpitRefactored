@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core
 {
-    public interface ISimpitMessageContent
+    public interface ISimpitMessageData
     {
     }
 }

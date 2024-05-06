@@ -7,9 +7,9 @@ namespace KerbalSimpit.Debugger
     {
         public SimpitLogLevelEnum LogLevel { get; set; }
 
-        public BasicSimpitLogger()
+        public BasicSimpitLogger(SimpitLogLevelEnum logLevel)
         {
-            this.LogLevel = SimpitLogLevelEnum.Verbose;
+            this.LogLevel = logLevel;
         }
 
         public void Log(SimpitLogLevelEnum level, string template, object[] args)

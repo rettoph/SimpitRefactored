@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace KerbalSimpit.Core.KSP.Messages
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct KeyboardEmulator : ISimpitMessageContent
+    public struct KeyboardEmulator : ISimpitMessageData
     {
         [Flags]
         public enum ModifierFlags : byte

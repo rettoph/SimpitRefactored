@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Messages
 {
-    public struct CustomLog : ISimpitMessageContent
+    public struct CustomLog : ISimpitMessageData
     {
         [Flags]
         public enum FlagsEnum
         {
+            None = 0,
             Verbose = 1,
             PrintToScreen = 2,
             NoHeader = 4

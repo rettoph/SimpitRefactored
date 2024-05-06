@@ -1,6 +1,4 @@
 ﻿using KerbalSimpit.Core.Constants;
-using KerbalSimpit.Core.Enums;
-using KerbalSimpit.Core.Peers;
 using KerbalSimpit.Core.Utilities;
 using System;
 using System.IO.Ports;
@@ -11,8 +9,8 @@ namespace KerbalSimpit.Core.Peers
     public class SerialPeer : SimpitPeer
     {
         private readonly SerialPort _port;
-        private readonly Thread _inboundThread;
-        private readonly Thread _outboundThread;
+        private Thread _inboundThread;
+        private Thread _outboundThread;
 
 
         private bool _inboundRunning;
@@ -23,36 +21,52 @@ namespace KerbalSimpit.Core.Peers
         public SerialPeer(string name, int baudRate) : base()
         {
             _port = new SerialPort(name, baudRate, Parity.None, 8, StopBits.One);
-            _inboundThread = new Thread(this.InboundLoop);
-            _outboundThread = new Thread(this.OutboundLoop);
+
 
             // To allow communication from a Pi Pico, the DTR seems to be mandatory to allow the connection
             // This does not seem to prevent communication from Arduino.
             _port.DtrEnable = true;
         }
 
-        protected override void Start()
+        protected override bool TryOpen()
         {
-            if(this.Running == true)
+            if (this.Running == true)
             {
-                throw new InvalidOperationException($"{nameof(SerialPeer)}::{nameof(Start)} - Already running");
+                this.logger.LogWarning("{0}::{1} - Already running", nameof(SerialPeer), nameof(TryClose));
+                return false;
             }
 
-            _port.Open();
-            _inboundThread.Start();
-            _outboundThread.Start();
+            try
+            {
+                _inboundThread = new Thread(this.InboundLoop);
+                _outboundThread = new Thread(this.OutboundLoop);
+
+                _port.Open();
+                _inboundThread.Start();
+                _outboundThread.Start();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SerialPeer), nameof(TryOpen));
+                return false;
+            }
         }
 
-        protected override void Stop()
+        protected override bool TryClose()
         {
-            if (this.Running == false)
+            try
             {
-                throw new InvalidOperationException($"{nameof(SerialPeer)}::{nameof(Start)} - Not running");
+                _inboundRunning = false;
+                _outboundRunning = false;
+                _port.Close();
+                return true;
             }
-
-            _inboundRunning = false;
-            _outboundRunning = false;
-            _port.Close();
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SerialPeer), nameof(TryClose));
+                return false;
+            }
         }
 
         private void InboundLoop()
@@ -60,21 +74,28 @@ namespace KerbalSimpit.Core.Peers
             this.logger.LogDebug("Inbound thread for port {0} starting.", _port.PortName);
             _inboundRunning = true;
 
-            while (this.cancellationToken.IsCancellationRequested == false && _inboundRunning)
+            while (this.cancellationToken.IsCancellationRequested == false && _inboundRunning && _port.IsOpen)
             {
-                while(_port.BytesToRead > 0 && this.cancellationToken.IsCancellationRequested == false && _inboundRunning)
+                try
                 {
-                    int data = _port.ReadByte();
+                    while (_port.BytesToRead > 0 && this.cancellationToken.IsCancellationRequested == false && _inboundRunning)
+                    {
+                        int data = _port.ReadByte();
 
-                    if (data == SpecialBytes.EndOfData)
-                    { // This should not happen thanks to the while check above
-                        throw new NotImplementedException();
+                        if (data == SpecialBytes.EndOfData)
+                        { // This should not happen thanks to the while check above
+                            throw new NotImplementedException();
+                        }
+
+                        this.IncomingDataRecieved((byte)data);
                     }
 
-                    this.IncomingDataRecieved((byte)data);
+                    Thread.Sleep(10); // TODO: Tune this.
                 }
-
-                Thread.Sleep(10); // TODO: Tune this.
+                catch (Exception ex)
+                {
+                    this.logger.LogError(ex, "{0}::{1} -  Exception", nameof(SerialPeer), nameof(InboundLoop));
+                }
             }
 
             this.logger.LogDebug("Inbound thread for port {0} exiting.", _port.PortName);
@@ -86,8 +107,10 @@ namespace KerbalSimpit.Core.Peers
             this.logger.LogDebug("Outbound thread for port {0} starting.", _port.PortName);
             _inboundRunning = true;
 
-            while (this.cancellationToken.IsCancellationRequested == false && _inboundRunning)
+            while (this.cancellationToken.IsCancellationRequested == false && _inboundRunning && _port.IsOpen)
             {
+                this.EnqueueOutgoingSubscriptions();
+
                 while (this.cancellationToken.IsCancellationRequested == false && _inboundRunning && this.DequeueOutgoing(out SimpitStream outbound))
                 {
                     byte[] data = outbound.ReadAll(out int offset, out int count);

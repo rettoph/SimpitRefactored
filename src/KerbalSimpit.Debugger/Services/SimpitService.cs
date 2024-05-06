@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace KerbalSimpit.Debugger.Services
 {
-    internal class SimpitService : ISimpitMessageConsumer<CustomLog>
+    internal class SimpitService : ISimpitMessageSubscriber<CustomLog>
     {
         private readonly Simpit _simpit;
         private readonly Task _loop;
@@ -20,7 +20,7 @@ namespace KerbalSimpit.Debugger.Services
             _simpit = simpit;
             _loop = new Task(this.Loop);
 
-            _simpit.RegisterKerbal().AddIncomingConsumer<CustomLog>(this);
+            _simpit.RegisterKerbal().AddIncomingSubscriber<CustomLog>(this);
 
             foreach (SimpitConfiguration.SerialConfiguration serial in options.Value.Serial)
             {
@@ -28,9 +28,9 @@ namespace KerbalSimpit.Debugger.Services
             }
         }
 
-        public void Consume(SimpitPeer peer, ISimpitMessage<CustomLog> message)
+        public void Process(SimpitPeer peer, ISimpitMessage<CustomLog> message)
         {
-            _simpit.Logger.LogInformation($"{nameof(CustomLog)} - {message.Content.Flags}:{message.Content.Value}");
+            _simpit.Logger.LogInformation($"{nameof(CustomLog)} - {message.Data.Flags}:{message.Data.Value}");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

@@ -13,28 +13,28 @@ namespace KerbalSimpit.Core.KSP.Messages
         public static class Outgoing
         {
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct Altitude : ISimpitMessageContent
+            public struct Altitude : ISimpitMessageData
             {
                 public float Alt { get; set; }
                 public float SurfAlt { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct Apsides : ISimpitMessageContent
+            public struct Apsides : ISimpitMessageData
             {
                 public float Periapsis { get; set; }
                 public float Apoapsis { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct ApsidesTime : ISimpitMessageContent
+            public struct ApsidesTime : ISimpitMessageData
             {
                 public int Periapsis { get; set; }
                 public int Apoapsis { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct Velocity : ISimpitMessageContent
+            public struct Velocity : ISimpitMessageData
             {
                 public float Orbital { get; set; }
                 public float Surface { get; set; }
@@ -42,7 +42,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct Rotation : ISimpitMessageContent
+            public struct Rotation : ISimpitMessageData
             {
                 public float Heading { get; set; }
                 public float Pitch { get; set; }
@@ -54,7 +54,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct OrbitInfo : ISimpitMessageContent
+            public struct OrbitInfo : ISimpitMessageData
             {
                 public float Eccentricity { get; set; }
                 public float SemiMajorAxis { get; set; }
@@ -67,14 +67,14 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct Airspeed : ISimpitMessageContent
+            public struct Airspeed : ISimpitMessageData
             {
                 public float IAS { get; set; }
                 public float MachNumber { get; set; }
                 public float GForces { get; set; }
             }
 
-            public struct Maneuver : ISimpitMessageContent
+            public struct Maneuver : ISimpitMessageData
             {
                 public float TimeToNextManeuver { get; set; }
                 public float DeltaVNextManeuver { get; set; }
@@ -85,14 +85,14 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct SASInfo : ISimpitMessageContent
+            public struct SASInfo : ISimpitMessageData
             {
                 public byte CurrentSASMode { get; set; }
                 public ushort SASModeAvailability { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct RotationCmd : ISimpitMessageContent
+            public struct RotationCmd : ISimpitMessageData
             {
                 public short Pitch { get; set; }
                 public short Roll { get; set; }
@@ -101,7 +101,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct TranslationCmd : ISimpitMessageContent
+            public struct TranslationCmd : ISimpitMessageData
             {
                 public short X { get; set; }
                 public short Y { get; set; }
@@ -110,7 +110,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct WheelCmd : ISimpitMessageContent
+            public struct WheelCmd : ISimpitMessageData
             {
                 public short Steer { get; set; }
                 public short Throttle { get; set; }
@@ -118,26 +118,26 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct ThrottleCmd : ISimpitMessageContent
+            public struct ThrottleCmd : ISimpitMessageData
             {
                 public short Throttle { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct ActionGroups : ISimpitMessageContent
+            public struct ActionGroups : ISimpitMessageData
             {
                 public ActionGroupFlags Flags { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct DeltaV : ISimpitMessageContent
+            public struct DeltaV : ISimpitMessageData
             {
                 public float StageDeltaV { get; set; }
                 public float TotalDeltaV { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct DeltaVEnv : ISimpitMessageContent
+            public struct DeltaVEnv : ISimpitMessageData
             {
                 public float StageDeltaVASL { get; set; }
                 public float TotalDeltaVASL { get; set; }
@@ -146,14 +146,14 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct BurnTime : ISimpitMessageContent
+            public struct BurnTime : ISimpitMessageData
             {
                 public float StageBurnTime { get; set; }
                 public float TotalBurnTime { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public unsafe struct CustomActionGroups : ISimpitMessageContent
+            public unsafe struct CustomActionGroups : ISimpitMessageData
             {
                 private const int Length = 32;
                 public fixed byte Status[CustomActionGroups.Length];
@@ -180,7 +180,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct TempLimit : ISimpitMessageContent
+            public struct TempLimit : ISimpitMessageData
             {
                 public byte TempLimitPercentage { get; set; }
                 public byte SkinTempLimitPercentage { get; set; }
@@ -189,7 +189,7 @@ namespace KerbalSimpit.Core.KSP.Messages
 
         public static class Incoming
         {
-            public struct CustomActionGroupEnable : ISimpitMessageContent
+            public struct CustomActionGroupEnable : ISimpitMessageData
             {
                 public byte[] GroupIds { get; set; }
 
@@ -202,7 +202,7 @@ namespace KerbalSimpit.Core.KSP.Messages
                 }
             }
 
-            public struct CustomActionGroupDisable : ISimpitMessageContent
+            public struct CustomActionGroupDisable : ISimpitMessageData
             {
                 public byte[] GroupIds { get; set; }
 
@@ -215,7 +215,7 @@ namespace KerbalSimpit.Core.KSP.Messages
                 }
             }
 
-            public struct CustomActionGroupToggle : ISimpitMessageContent
+            public struct CustomActionGroupToggle : ISimpitMessageData
             {
                 public byte[] GroupIds { get; set; }
 
@@ -229,25 +229,25 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct ActionGroupActivate : ISimpitMessageContent
+            public struct ActionGroupActivate : ISimpitMessageData
             {
                 public ActionGroupFlags Flags { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct ActionGroupDeactivate : ISimpitMessageContent
+            public struct ActionGroupDeactivate : ISimpitMessageData
             {
                 public ActionGroupFlags Flags { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct ActionGroupToggle : ISimpitMessageContent
+            public struct ActionGroupToggle : ISimpitMessageData
             {
                 public ActionGroupFlags Flags { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct Rotation : ISimpitMessageContent
+            public struct Rotation : ISimpitMessageData
             {
                 public short Pitch { get; set; }
                 public short Roll { get; set; }
@@ -256,7 +256,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct Translation : ISimpitMessageContent
+            public struct Translation : ISimpitMessageData
             {
                 public short X { get; set; }
                 public short Y { get; set; }
@@ -265,7 +265,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct WheelControl : ISimpitMessageContent
+            public struct WheelControl : ISimpitMessageData
             {
                 public short Steer { get; set; }
                 public short Throttle { get; set; }
@@ -273,13 +273,13 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 2)]
-            public struct Throttle : ISimpitMessageContent
+            public struct Throttle : ISimpitMessageData
             {
                 public short Value { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct AutopilotMode : ISimpitMessageContent
+            public struct AutopilotMode : ISimpitMessageData
             {
                 public enum ValueEnum : byte
                 {
@@ -299,7 +299,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct CameraMode : ISimpitMessageContent
+            public struct CameraMode : ISimpitMessageData
             {
                 public enum ValueEnum : byte
                 {
@@ -321,7 +321,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct CameraRotation : ISimpitMessageContent
+            public struct CameraRotation : ISimpitMessageData
             {
                 public short Pitch;
                 public short Roll;
@@ -331,7 +331,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct CameraTranslation : ISimpitMessageContent
+            public struct CameraTranslation : ISimpitMessageData
             {
                 public short X;
                 public short Y;
@@ -340,7 +340,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct WarpChange : ISimpitMessageContent
+            public struct WarpChange : ISimpitMessageData
             {
                 public enum RateEnum : byte
                 {
@@ -365,7 +365,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct TimewarpTo : ISimpitMessageContent
+            public struct TimewarpTo : ISimpitMessageData
             {
                 public enum InstanceEnum : byte
                 {
@@ -383,7 +383,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct CustomAxix : ISimpitMessageContent
+            public struct CustomAxix : ISimpitMessageData
             {
                 public short Custom1 { get; set; }
                 public short Custom2 { get; set; }
@@ -392,7 +392,7 @@ namespace KerbalSimpit.Core.KSP.Messages
                 public byte Mask { get; set; }
             }
 
-            public struct NavballMode : ISimpitMessageContent
+            public struct NavballMode : ISimpitMessageData
             {
                 // TODO: Check if any data is actually transmitted with this message
                 // If there is, it seems unnecessary

@@ -1,23 +1,23 @@
 ﻿namespace KerbalSimpit.Core
 {
     internal class SimpitMessage<T> : ISimpitMessage<T>
-        where T : ISimpitMessageContent
+        where T : ISimpitMessageData
     {
         public readonly SimpitMessageType<T> Type;
-        public readonly T Content;
+        public readonly T Data;
 
         public SimpitMessage(SimpitMessageType<T> type, T content)
         {
             this.Type = type;
-            this.Content = content;
+            this.Data = content;
         }
 
         SimpitMessageType<T> ISimpitMessage<T>.Type => this.Type;
 
         SimpitMessageType ISimpitMessage.Type => this.Type;
 
-        T ISimpitMessage<T>.Content => this.Content;
+        T ISimpitMessage<T>.Data => this.Data;
 
-        ISimpitMessageContent ISimpitMessage.Content => this.Content;
+        ISimpitMessageData ISimpitMessage.Data => this.Data;
     }
 }

@@ -1,4 +1,5 @@
 {
+  "LogLevel": "Debug",
   "Serial": [
     {
       "Name": "COM3",

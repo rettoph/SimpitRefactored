@@ -9,7 +9,7 @@ namespace KerbalSimpit.Core.KSP.Messages
 {
     public class Resource
     {
-        public interface IBasicResource : ISimpitMessageContent
+        public interface IBasicResource : ISimpitMessageData
         {
             float Max { get; set; }
             float Available { get; set; }

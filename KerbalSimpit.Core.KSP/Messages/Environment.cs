@@ -9,7 +9,7 @@ namespace KerbalSimpit.Core.KSP.Messages
 {
     public static class Environment
     {
-        public struct TargetInfo : ISimpitMessageContent
+        public struct TargetInfo : ISimpitMessageData
         {
             public float Distance { get; set; }
             public float Velocity { get; set; }
@@ -19,7 +19,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             public float VelocityPitch { get; set; }
         }
 
-        public struct SoIName : ISimpitMessageContent
+        public struct SoIName : ISimpitMessageData
         {
             public string Value { get; set; }
 
@@ -29,7 +29,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
         }
 
-        public struct SceneChange : ISimpitMessageContent
+        public struct SceneChange : ISimpitMessageData
         {
             public enum SceneChangeTypeEnum
             {
@@ -41,7 +41,7 @@ namespace KerbalSimpit.Core.KSP.Messages
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct FlightStatus : ISimpitMessageContent
+        public struct FlightStatus : ISimpitMessageData
         {
             [Flags]
             public enum StatusFlags : byte
@@ -66,7 +66,7 @@ namespace KerbalSimpit.Core.KSP.Messages
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct AtmoCondition : ISimpitMessageContent
+        public struct AtmoCondition : ISimpitMessageData
         {
             [Flags]
             public enum AtmoCharacteristicsFlags : byte
@@ -82,7 +82,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             public float Pressure;
         }
 
-        public struct VesselName : ISimpitMessageContent
+        public struct VesselName : ISimpitMessageData
         {
             public string Value { get; set; }
 
@@ -92,7 +92,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
         }
 
-        public struct VesselChange : ISimpitMessageContent
+        public struct VesselChange : ISimpitMessageData
         {
             public enum TypeEnum : byte
             {

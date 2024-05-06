@@ -9,7 +9,7 @@ namespace KerbalSimpit.Core.KSP.Messages
 {
     public static class CustomResource
     {
-        public interface ICustomResource : ISimpitMessageContent
+        public interface ICustomResource : ISimpitMessageData
         {
             float CurrentResource1 { get; set; }
             float MaxResource1 { get; set; }

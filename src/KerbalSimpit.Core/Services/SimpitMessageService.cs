@@ -1,12 +1,7 @@
 ﻿using KerbalSimpit.Core.Enums;
 using KerbalSimpit.Core.Extensions;
-using KerbalSimpit.Core.Messages;
 using KerbalSimpit.Core.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Services
 {
@@ -30,29 +25,29 @@ namespace KerbalSimpit.Core.Services
         }
 
         public SimpitMessageType<T> RegisterIncomingType<T>(byte id, DeserializeSimpitMessageContentDelegate<T> deserializer)
-            where T : ISimpitMessageContent
+            where T : ISimpitMessageData
         {
             SimpitMessageType<T> configuration = new SimpitMessageType<T>(id, SimputMessageTypeEnum.Incoming, deserializer, null);
-            _incoming.Add(configuration.Id, configuration.ContentType, configuration);
+            _incoming.Add(configuration.Id, configuration.DataType, configuration);
             return configuration;
         }
 
         public SimpitMessageType<T> RegisterIncomingType<T>(byte id)
-            where T : unmanaged, ISimpitMessageContent
+            where T : unmanaged, ISimpitMessageData
         {
             return this.RegisterIncomingType(id, input => input.ReadUnmanaged<T>());
         }
 
         public SimpitMessageType<T> RegisterOutogingType<T>(byte id, SerializeSimpitMessageContentDelegate<T> serializer)
-            where T : ISimpitMessageContent
+            where T : ISimpitMessageData
         {
             SimpitMessageType<T> configuration = new SimpitMessageType<T>(id, SimputMessageTypeEnum.Outgoing, null, serializer);
-            _outgoing.Add(configuration.Id, configuration.ContentType, configuration);
+            _outgoing.Add(configuration.Id, configuration.DataType, configuration);
             return configuration;
         }
 
         public SimpitMessageType<T> RegisterOutogingType<T>(byte id)
-            where T : unmanaged, ISimpitMessageContent
+            where T : unmanaged, ISimpitMessageData
         {
             return this.RegisterOutogingType<T>(id, (input, output) => output.WriteUnmanaged(input));
         }
@@ -63,7 +58,7 @@ namespace KerbalSimpit.Core.Services
         }
 
         public bool TryGetIncomingType<T>(out SimpitMessageType<T> type)
-            where T : ISimpitMessageContent
+            where T : ISimpitMessageData
         {
             if (_incoming.TryGet(typeof(T), out SimpitMessageType uncasted) && uncasted is SimpitMessageType<T> casted)
             {
@@ -81,7 +76,7 @@ namespace KerbalSimpit.Core.Services
         }
 
         public bool TryGetOutgoingType<T>(out SimpitMessageType<T> type)
-            where T : ISimpitMessageContent
+            where T : ISimpitMessageData
         {
             if (_outgoing.TryGet(typeof(T), out SimpitMessageType uncasted) && uncasted is SimpitMessageType<T> casted)
             {
@@ -135,7 +130,7 @@ namespace KerbalSimpit.Core.Services
                 message = type.Deserialize(buffer);
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _simpit.Logger.LogError(ex, "{0}::{1} - Exception deserializing incoming message.", nameof(SimpitMessageService), nameof(TryDeserializeIncoming));
                 message = default;
@@ -143,7 +138,7 @@ namespace KerbalSimpit.Core.Services
             }
             finally
             {
-                input.Clear();;
+                input.Clear(); ;
             }
         }
 
@@ -161,7 +156,7 @@ namespace KerbalSimpit.Core.Services
                 bool success = COBSHelper.TryEncodeCOBS(buffer, output);
                 return success;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _simpit.Logger.LogError(ex, "{0}::{1} - Exception serializing outgoing message.", nameof(SimpitMessageService), nameof(TrySerializeOutgoing));
                 return false;
@@ -169,9 +164,9 @@ namespace KerbalSimpit.Core.Services
         }
 
         public ISimpitMessage<T> CreateOutgoing<T>(T content)
-            where T : ISimpitMessageContent
+            where T : ISimpitMessageData
         {
-            if(this.TryGetOutgoingType<T>(out SimpitMessageType<T> type) == true)
+            if (this.TryGetOutgoingType<T>(out SimpitMessageType<T> type) == true)
             {
                 return new SimpitMessage<T>(type, content);
             }
