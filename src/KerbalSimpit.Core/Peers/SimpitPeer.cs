@@ -125,7 +125,14 @@ namespace KerbalSimpit.Core.Peers
         public void EnqueueOutgoing<T>(T content)
             where T : ISimpitMessageData
         {
-            this.EnqueueOutgoing(_simpit.Messages.CreateOutgoing(content));
+            try
+            {
+                this.EnqueueOutgoing(_simpit.Messages.CreateOutgoing(content));
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SimpitPeer), nameof(EnqueueOutgoing));
+            }
         }
 
         public bool TryRead(out ISimpitMessage message)
@@ -177,6 +184,8 @@ namespace KerbalSimpit.Core.Peers
                 return false;
             }
 
+            this.logger.LogDebug("{0}::{1} - Peer {2} sending message {3}", nameof(SimpitPeer), nameof(DequeueOutgoing), this, message.Type);
+
             return true;
         }
 
@@ -186,7 +195,22 @@ namespace KerbalSimpit.Core.Peers
             {
                 foreach (KeyValuePair<SimpitMessageType, int> kvp in _outgoingSubscriptions)
                 {
-                    kvp.Key.TryEnqueueOutgoingData(this, kvp.Value, _simpit);
+                    kvp.Key.TryEnqueueOutgoingData(this, kvp.Value, _simpit, false);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "{0}::{1}, Exception", nameof(SimpitPeer), nameof(EnqueueOutgoindSubscription));
+            }
+        }
+
+        internal void ForceEnqueueOutgoingSubscriptions()
+        {
+            try
+            {
+                foreach (KeyValuePair<SimpitMessageType, int> kvp in _outgoingSubscriptions)
+                {
+                    kvp.Key.TryEnqueueOutgoingData(this, kvp.Value, _simpit, true);
                 }
             }
             catch (Exception ex)

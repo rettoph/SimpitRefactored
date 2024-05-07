@@ -136,6 +136,11 @@ namespace KerbalSimpit.Core
             Simpit.OutgoingData<T> data = this.GetOutgoingData(type);
             lock (data)
             {
+                if (data.Value.Equals(value))
+                {
+                    return;
+                }
+
                 data.Value = value;
             }
         }

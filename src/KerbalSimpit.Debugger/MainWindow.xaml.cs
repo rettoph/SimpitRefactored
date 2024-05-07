@@ -26,8 +26,6 @@ namespace KerbalSimpit.Debugger
 
         public MainWindow()
         {
-            InitializeComponent();
-
             _peers = new Dictionary<SimpitPeer, PeerInfo>();
 
             SimpitConfiguration configuration = JsonSerializer.Deserialize<SimpitConfiguration>(File.ReadAllText("simpit.config.json"), new JsonSerializerOptions()
@@ -40,6 +38,7 @@ namespace KerbalSimpit.Debugger
 
             MainWindow.Simpit = new Simpit(new BasicSimpitLogger(configuration.LogLevel)).RegisterKerbal().AddIncomingSubscriber<CustomLog>(this);
 
+            InitializeComponent();
 
             CompositionTarget.Rendering += this.Update;
             MainWindow.Simpit.OnPeerAdded += this.HandlePeerAdded;
@@ -57,6 +56,8 @@ namespace KerbalSimpit.Debugger
             this.AddSimpleTextSubscriber<Core.KSP.Messages.Vessel.Incoming.Rotation>(rot => $"Pitch: {DebugHelper.Get(rot.Pitch)}, Yaw: {DebugHelper.Get(rot.Yaw)}, Roll: {DebugHelper.Get(rot.Roll)}, Mask: {rot.Mask}");
             this.AddSimpleTextSubscriber<Core.KSP.Messages.Vessel.Incoming.Translation>(tran => $"X: {DebugHelper.Get(tran.X)}, Y: {DebugHelper.Get(tran.Y)}, Z: {DebugHelper.Get(tran.Z)}, Mask: {tran.Mask}");
             this.AddSimpleTextSubscriber<Core.KSP.Messages.Vessel.Incoming.Throttle>(throttle => DebugHelper.Get(throttle.Value));
+
+            this.OutgoingContent.Children.Add(new ActionGroupFlagsService());
         }
 
         private void Update(object? sender, EventArgs e)
@@ -84,7 +85,7 @@ namespace KerbalSimpit.Debugger
 
         public void Process(SimpitPeer peer, ISimpitMessage<CustomLog> message)
         {
-            MainWindow.Simpit.Logger.LogInformation($"{nameof(CustomLog)} - {message.Data.Flags}: {message.Data.Value}");
+            MainWindow.Simpit.Logger.LogInformation($"{peer} {nameof(CustomLog)} - {message.Data.Flags}: {message.Data.Value}");
         }
 
         private void HandlePeerAdded(object? sender, SimpitPeer e)
@@ -115,6 +116,22 @@ namespace KerbalSimpit.Debugger
         }
 
         private void ToggleFlightScene_Unchecked(object sender, RoutedEventArgs e)
+        {
+            MainWindow.Simpit.SetOutgoingData(new Core.KSP.Messages.Environment.SceneChange()
+            {
+                Type = Core.KSP.Messages.Environment.SceneChange.SceneChangeTypeEnum.NotFlight
+            });
+        }
+
+        private void ToggleActionGroup_Checked(object sender, RoutedEventArgs e)
+        {
+            MainWindow.Simpit.SetOutgoingData(new Core.KSP.Messages.Environment.SceneChange()
+            {
+                Type = Core.KSP.Messages.Environment.SceneChange.SceneChangeTypeEnum.Flight
+            });
+        }
+
+        private void ToggleActionGroup_Unchecked(object sender, RoutedEventArgs e)
         {
             MainWindow.Simpit.SetOutgoingData(new Core.KSP.Messages.Environment.SceneChange()
             {

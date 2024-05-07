@@ -1,10 +1,6 @@
 ﻿using KerbalSimpit.Core.KSP.Enums;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.KSP.Messages
 {
@@ -87,7 +83,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
             public struct SASInfo : ISimpitMessageData
             {
-                public byte CurrentSASMode { get; set; }
+                public AutoPilotModeEnum CurrentSASMode { get; set; }
                 public ushort SASModeAvailability { get; set; }
             }
 
@@ -172,7 +168,7 @@ namespace KerbalSimpit.Core.KSP.Messages
 
                 internal static void Serialize(CustomActionGroups input, SimpitStream output)
                 {
-                    for(int i=0; i< CustomActionGroups.Length; i++)
+                    for (int i = 0; i < CustomActionGroups.Length; i++)
                     {
                         output.Write(input.Status[i]);
                     }
@@ -281,21 +277,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
             public struct AutopilotMode : ISimpitMessageData
             {
-                public enum ValueEnum : byte
-                {
-                    StabilityAssist = 0,
-                    Prograde = 1,
-                    Retrograde = 2,
-                    Normal = 3,
-                    Antinormal = 4,
-                    RadialIn = 5,
-                    RadialOut = 6,
-                    Target = 7,
-                    AntiTarget = 8,
-                    Maneuver = 9
-                }
-
-                public ValueEnum Value { get; set; }
+                public AutoPilotModeEnum Value { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]

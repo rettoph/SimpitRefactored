@@ -5,6 +5,8 @@ namespace KerbalSimpit.Debugger
 {
     internal class BasicSimpitLogger : ISimpitLogger
     {
+        private static object _lock = new();
+
         public SimpitLogLevelEnum LogLevel { get; set; }
 
         public BasicSimpitLogger(SimpitLogLevelEnum logLevel)
@@ -14,16 +16,22 @@ namespace KerbalSimpit.Debugger
 
         public void Log(SimpitLogLevelEnum level, string template, object[] args)
         {
-            Console.ForegroundColor = this.GetColor(level);
+            lock (_lock)
+            {
+                Console.ForegroundColor = this.GetColor(level);
 
-            Console.WriteLine($"[{DateTime.Now}][{level}] {string.Format(template, args)}");
+                Console.WriteLine($"[{DateTime.Now}][{level}] {string.Format(template, args)}");
+            }
         }
 
         public void Log(SimpitLogLevelEnum level, Exception ex, string template, object[] args)
         {
-            Console.ForegroundColor = this.GetColor(level);
+            lock (_lock)
+            {
+                Console.ForegroundColor = this.GetColor(level);
 
-            Console.WriteLine($"[{DateTime.Now}][{level}] {string.Format(template, args)}\n{ex}");
+                Console.WriteLine($"[{DateTime.Now}][{level}] {string.Format(template, args)}\n{ex}");
+            }
         }
 
         private ConsoleColor GetColor(SimpitLogLevelEnum level)

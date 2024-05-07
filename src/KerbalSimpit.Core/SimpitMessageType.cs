@@ -29,7 +29,8 @@ namespace KerbalSimpit.Core
         internal abstract void Serialize(ISimpitMessage input, SimpitStream output);
         internal abstract ISimpitMessage Deserialize(SimpitStream input);
 
-        internal abstract void TryEnqueueOutgoingData(SimpitPeer peer, int lastChangeId, Simpit simpit);
+        internal abstract void TryEnqueueOutgoingData(SimpitPeer peer, int lastChangeId, Simpit simpit, bool force);
+        internal abstract void TryEnqueueOutgoingData(SimpitPeer peer, Simpit simpit);
     }
 
     public sealed class SimpitMessageType<TContent> : SimpitMessageType
@@ -63,17 +64,26 @@ namespace KerbalSimpit.Core
             return new SimpitMessage<TContent>(this, content);
         }
 
-        internal override void TryEnqueueOutgoingData(SimpitPeer peer, int lastChangeId, Simpit simpit)
+        internal override void TryEnqueueOutgoingData(SimpitPeer peer, int lastChangeId, Simpit simpit, bool force)
         {
             Simpit.OutgoingData<TContent> data = simpit.GetOutgoingData(this);
             lock (data)
             {
-                if (data.ChangeId == lastChangeId)
+                if (force == false && data.ChangeId == lastChangeId)
                 {
                     return;
                 }
 
                 peer.EnqueueOutgoindSubscription(this, data);
+            }
+        }
+
+        internal override void TryEnqueueOutgoingData(SimpitPeer peer, Simpit simpit)
+        {
+            Simpit.OutgoingData<TContent> data = simpit.GetOutgoingData(this);
+            lock (data)
+            {
+                peer.EnqueueOutgoing(data.Value);
             }
         }
 
