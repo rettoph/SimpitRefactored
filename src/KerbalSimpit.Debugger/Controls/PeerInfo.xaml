@@ -14,11 +14,18 @@
                 <Button x:Name="Toggle" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Click="Toggle_Click" Margin="2,2,2,2"/>
             </Grid>
 
-            <Border BorderBrush="Gray" BorderThickness="1">
+            <Border BorderBrush="Gray" BorderThickness="1" Margin="0,0,0,5">
                 <StackPanel x:Name="OutgoingSubscriptionsContainer">
                     <Label Content="OutgoingSubscriptions" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" x:Name="OutgoingSubscriptionsLabel" />
                 </StackPanel>
             </Border>
+
+            <Border BorderBrush="Gray" BorderThickness="1" Margin="0,0,0,5">
+                <StackPanel x:Name="MessagesContainer">
+                    <Label Content="Messages" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" x:Name="MessagesLabel" />
+                </StackPanel>
+            </Border>
+
         </StackPanel>
     </Border>
 

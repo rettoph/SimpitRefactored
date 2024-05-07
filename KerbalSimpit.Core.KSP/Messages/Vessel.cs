@@ -84,7 +84,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             public struct SASInfo : ISimpitMessageData
             {
                 public AutoPilotModeEnum CurrentSASMode { get; set; }
-                public ushort SASModeAvailability { get; set; }
+                public AutoPilotModeFlags SASModeAvailability { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]

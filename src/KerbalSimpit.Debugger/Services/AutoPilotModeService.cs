@@ -6,79 +6,40 @@ using System.Windows.Media;
 
 namespace KerbalSimpit.Debugger.Controls
 {
-    internal class AutoPilotModeService : CheckboxGrid,
-        ISimpitMessageSubscriber<Vessel.Incoming.ActionGroupActivate>,
-        ISimpitMessageSubscriber<Vessel.Incoming.ActionGroupDeactivate>,
-        ISimpitMessageSubscriber<Vessel.Incoming.ActionGroupToggle>
+    internal class AutoPilotModeService : RadioGrid,
+        ISimpitMessageSubscriber<Vessel.Incoming.AutopilotMode>
     {
-        private ActionGroupFlags _flags;
+        private AutoPilotModeEnum _mode;
 
-        public AutoPilotModeService() : base(nameof(ActionGroupFlags), Enum.GetValues<ActionGroupFlags>().Select(x => (object)x).ToArray())
+        public AutoPilotModeService() : base($"Current {nameof(AutoPilotModeEnum)}", Enum.GetValues<AutoPilotModeEnum>().Except([AutoPilotModeEnum.Disabled]).Select(x => (object)x).ToArray(), 3)
         {
             CompositionTarget.Rendering += this.Update;
 
-            MainWindow.Simpit.AddIncomingSubscriber<Vessel.Incoming.ActionGroupActivate>(this);
-            MainWindow.Simpit.AddIncomingSubscriber<Vessel.Incoming.ActionGroupDeactivate>(this);
-            MainWindow.Simpit.AddIncomingSubscriber<Vessel.Incoming.ActionGroupToggle>(this);
+            MainWindow.Simpit.AddIncomingSubscriber<Vessel.Incoming.AutopilotMode>(this);
         }
 
         private void Update(object? sender, EventArgs e)
         {
-            MainWindow.Simpit.SetOutgoingData(new Vessel.Outgoing.ActionGroups()
+            MainWindow.Simpit.SetOutgoingData(new Vessel.Outgoing.SASInfo()
             {
-                Flags = _flags
+                CurrentSASMode = _mode
             });
         }
 
         protected override void Checked(object value)
         {
-            ActionGroupFlags flag = (ActionGroupFlags)value;
-
-            _flags |= flag;
+            _mode = (AutoPilotModeEnum)value;
         }
 
         protected override void Unchecked(object value)
         {
-            ActionGroupFlags flag = (ActionGroupFlags)value;
-
-            _flags &= ~flag;
+            //
         }
 
-        public void Process(SimpitPeer peer, ISimpitMessage<Vessel.Incoming.ActionGroupActivate> message)
+        public void Process(SimpitPeer peer, ISimpitMessage<Vessel.Incoming.AutopilotMode> message)
         {
-            _flags |= message.Data.Flags;
-
-            foreach (ActionGroupFlags flag in Enum.GetValues<ActionGroupFlags>().Where(x => message.Data.Flags.HasFlag(x)))
-            {
-                this.SetIsChecked(flag, true);
-            }
-        }
-
-        public void Process(SimpitPeer peer, ISimpitMessage<Vessel.Incoming.ActionGroupDeactivate> message)
-        {
-            _flags &= ~message.Data.Flags;
-
-            foreach (ActionGroupFlags flag in Enum.GetValues<ActionGroupFlags>().Where(x => message.Data.Flags.HasFlag(x)))
-            {
-                this.SetIsChecked(flag, false);
-            }
-        }
-
-        public void Process(SimpitPeer peer, ISimpitMessage<Vessel.Incoming.ActionGroupToggle> message)
-        {
-            foreach (ActionGroupFlags flag in Enum.GetValues<ActionGroupFlags>().Where(x => message.Data.Flags.HasFlag(x)))
-            {
-                if (_flags.HasFlag(flag))
-                {
-                    _flags &= ~flag;
-                    this.SetIsChecked(flag, false);
-                }
-                else
-                {
-                    _flags |= flag;
-                    this.SetIsChecked(flag, true);
-                }
-            }
+            _mode = message.Data.Value;
+            this.SetIsChecked(_mode, true);
         }
     }
 }

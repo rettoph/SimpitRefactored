@@ -13,7 +13,7 @@ namespace KerbalSimpit.Debugger.Controls
     {
         private ActionGroupFlags _flags;
 
-        public ActionGroupFlagsService() : base(nameof(ActionGroupFlags), Enum.GetValues<ActionGroupFlags>().Select(x => (object)x).ToArray())
+        public ActionGroupFlagsService() : base(nameof(ActionGroupFlags), Enum.GetValues<ActionGroupFlags>().Select(x => (object)x).ToArray(), 4)
         {
             CompositionTarget.Rendering += this.Update;
 

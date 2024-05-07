@@ -58,6 +58,7 @@ namespace KerbalSimpit.Debugger
             this.AddSimpleTextSubscriber<Core.KSP.Messages.Vessel.Incoming.Throttle>(throttle => DebugHelper.Get(throttle.Value));
 
             this.OutgoingContent.Children.Add(new ActionGroupFlagsService());
+            this.OutgoingContent.Children.Add(new AutoPilotModeService());
         }
 
         private void Update(object? sender, EventArgs e)

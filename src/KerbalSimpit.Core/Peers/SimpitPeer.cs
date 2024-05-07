@@ -43,6 +43,8 @@ namespace KerbalSimpit.Core.Peers
         public event EventHandler<ConnectionStatusEnum> OnStatusChanged;
         public event EventHandler<SimpitMessageType> OnOutgoingSubscribed;
         public event EventHandler<SimpitMessageType> OnOutgoingUnsubscribed;
+        public event EventHandler<ISimpitMessage> OnIncomingMessage;
+        public event EventHandler<ISimpitMessage> OnOutgoingMessage;
 
         public SimpitPeer()
         {
@@ -137,7 +139,13 @@ namespace KerbalSimpit.Core.Peers
 
         public bool TryRead(out ISimpitMessage message)
         {
-            return _read.TryDequeue(out message);
+            if (_read.TryDequeue(out message))
+            {
+                this.OnIncomingMessage?.Invoke(this, message);
+                return true;
+            }
+
+            return false;
         }
 
         public void Clear()
@@ -170,9 +178,9 @@ namespace KerbalSimpit.Core.Peers
             _read.Enqueue(message);
         }
 
-        protected bool DequeueOutgoing(out SimpitStream outbound)
+        protected bool DequeueOutgoing(out SimpitStream outgoing)
         {
-            outbound = _outgoing;
+            outgoing = _outgoing;
 
             if (_write.TryDequeue(out ISimpitMessage message) == false)
             {
@@ -185,6 +193,7 @@ namespace KerbalSimpit.Core.Peers
             }
 
             this.logger.LogDebug("{0}::{1} - Peer {2} sending message {3}", nameof(SimpitPeer), nameof(DequeueOutgoing), this, message.Type);
+            this.OnOutgoingMessage?.Invoke(this, message);
 
             return true;
         }

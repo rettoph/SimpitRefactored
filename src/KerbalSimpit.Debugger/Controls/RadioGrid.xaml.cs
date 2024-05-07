@@ -4,39 +4,39 @@ using System.Windows.Controls;
 namespace KerbalSimpit.Debugger.Controls
 {
     /// <summary>
-    /// Interaction logic for CheckboxGrid.xaml
+    /// Interaction logic for RadioGrid.xaml
     /// </summary>
-    public abstract partial class CheckboxGrid : UserControl
+    public abstract partial class RadioGrid : UserControl
     {
-        private Dictionary<CheckBox, object> _valueMap;
-        private Dictionary<object, CheckBox> _checkboxMap;
+        private Dictionary<RadioButton, object> _valueMap;
+        private Dictionary<object, RadioButton> _checkboxMap;
 
-        public CheckboxGrid(string label, object[] values, int columns)
+        public RadioGrid(string label, object[] values, int columns)
         {
-            _valueMap = new Dictionary<CheckBox, object>();
-            _checkboxMap = new Dictionary<object, CheckBox>();
+            _valueMap = new Dictionary<RadioButton, object>();
+            _checkboxMap = new Dictionary<object, RadioButton>();
 
             InitializeComponent();
 
             this.Label.Content = label;
 
             StackPanel stack = new StackPanel() { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 7) };
-            this.CheckboxContainer.Children.Add(stack);
+            this.RadioContainer.Children.Add(stack);
             for (int i = 0; i < values.Length; i++)
             {
                 if (i % columns == 0)
                 {
                     stack = new StackPanel() { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 7) };
-                    this.CheckboxContainer.Children.Add(stack);
+                    this.RadioContainer.Children.Add(stack);
                 }
 
-                CheckBox check = new CheckBox() { Content = values[i].ToString(), Margin = new Thickness(0, 0, 7, 0) };
-                check.Checked += this.HandleChecked;
-                check.Unchecked += this.HandleUnchecked;
+                RadioButton radio = new RadioButton() { Content = values[i].ToString(), Margin = new Thickness(0, 0, 7, 0), GroupName = label };
+                radio.Checked += this.HandleChecked;
+                radio.Unchecked += this.HandleUnchecked;
 
-                stack.Children.Add(check);
-                _valueMap.Add(check, values[i]);
-                _checkboxMap.Add(values[i], check);
+                stack.Children.Add(radio);
+                _valueMap.Add(radio, values[i]);
+                _checkboxMap.Add(values[i], radio);
             }
 
             stack.Margin = default;
@@ -48,12 +48,12 @@ namespace KerbalSimpit.Debugger.Controls
 
         private void HandleChecked(object sender, RoutedEventArgs e)
         {
-            this.Checked(_valueMap[(CheckBox)sender]);
+            this.Checked(_valueMap[(RadioButton)sender]);
         }
 
         private void HandleUnchecked(object sender, RoutedEventArgs e)
         {
-            this.Unchecked(_valueMap[(CheckBox)sender]);
+            this.Unchecked(_valueMap[(RadioButton)sender]);
         }
 
         protected void SetIsChecked(object value, bool isChecked)
