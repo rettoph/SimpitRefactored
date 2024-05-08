@@ -32,14 +32,8 @@
         <Label x:Name="label_Info" Content="Info" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="2" Foreground="White" FontFamily="Arial" FontSize="20" />
 
         <!-- Content -->
-        <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto" Padding="0,0,0,5">
             <StackPanel x:Name="OutgoingContent">
-                <Border BorderThickness="1" Margin="5,5,5,0" Padding="5,5,5,5" VerticalAlignment="Top" BorderBrush="Gray">
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox x:Name="ToggleRatio" Checked="ToggleRatio_Checked" Unchecked="ToggleRatio_Unchecked">Display Ratio</CheckBox>
-                    </StackPanel>
-                </Border>
-
                 <Border BorderThickness="1" Margin="5,5,5,0" Padding="5,5,5,5" VerticalAlignment="Top" BorderBrush="Gray">
                     <StackPanel Orientation="Horizontal">
                         <CheckBox x:Name="ToggleFlightScene" Checked="ToggleFlightScene_Checked" Unchecked="ToggleFlightScene_Unchecked" IsChecked="true">Flight Scene</CheckBox>
@@ -49,7 +43,15 @@
         </ScrollViewer>
 
         <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto" Padding="0,0,0,5">
-            <StackPanel x:Name="IncomingContent" />
+            <StackPanel x:Name="IncomingContent">
+
+                <Border BorderThickness="1" Margin="5,5,5,0" Padding="5,5,5,5" VerticalAlignment="Top" BorderBrush="Gray">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox x:Name="ToggleRatio" Checked="ToggleRatio_Checked" Unchecked="ToggleRatio_Unchecked">Display Ratios</CheckBox>
+                    </StackPanel>
+                </Border>
+                
+            </StackPanel>
         </ScrollViewer>
 
         <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto" Padding="0,0,0,5">

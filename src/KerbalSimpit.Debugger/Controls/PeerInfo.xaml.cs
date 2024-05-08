@@ -89,33 +89,43 @@ namespace KerbalSimpit.Debugger.Controls
 
         private void HandleStatusChanged(object? sender, ConnectionStatusEnum e)
         {
-            foreach (MessageTypeCount count in _cache.Values)
+            this.Dispatcher.Invoke(() =>
             {
-                count.Reset();
-            }
+                foreach (MessageTypeCount count in _cache.Values)
+                {
+                    count.Reset();
+                }
 
-            this.Clean();
+                this.Clean();
+            });
+
         }
 
         private void HandleOutgoingSubscribed(object? sender, SimpitMessageType e)
         {
-            TextBlock text = new TextBlock();
-            text.Margin = new System.Windows.Thickness(15, 2, 5, 2);
-            text.Text = e.ToString();
-            _outgoingSubscriptions.Add(e, text);
-            this.OutgoingSubscriptionsContainer.Children.Add(text);
+            this.Dispatcher.Invoke(() =>
+            {
+                TextBlock text = new TextBlock();
+                text.Margin = new System.Windows.Thickness(15, 2, 5, 2);
+                text.Text = e.ToString();
+                _outgoingSubscriptions.Add(e, text);
+                this.OutgoingSubscriptionsContainer.Children.Add(text);
 
-            this.Clean();
+                this.Clean();
+            });
         }
 
         private void HandleOutgoingUsubscribed(object? sender, SimpitMessageType e)
         {
             if (_outgoingSubscriptions.Remove(e, out TextBlock? text))
             {
-                this.OutgoingSubscriptionsContainer.Children.Remove(text);
-            }
+                this.Dispatcher.Invoke(() =>
+                {
+                    this.OutgoingSubscriptionsContainer.Children.Remove(text);
 
-            this.Clean();
+                    this.Clean();
+                });
+            }
         }
 
         private void HandleMessage(object? sender, ISimpitMessage e)

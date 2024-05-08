@@ -27,4 +27,10 @@
     <ProjectReference Include="..\KerbalSimpit.Core\KerbalSimpit.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Controls\SimpleOutgoingNumericInput.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
 </Project>

@@ -109,15 +109,22 @@ namespace KerbalSimpit.Core.Peers
 
             while (this.cancellationToken.IsCancellationRequested == false && _inboundRunning && _port.IsOpen)
             {
-                this.EnqueueOutgoingSubscriptions();
-
-                while (this.cancellationToken.IsCancellationRequested == false && _inboundRunning && this.DequeueOutgoing(out SimpitStream outbound))
+                try
                 {
-                    byte[] data = outbound.ReadAll(out int offset, out int count);
-                    _port.Write(data, offset, count);
-                }
+                    this.EnqueueOutgoingSubscriptions();
 
-                Thread.Sleep(10); // TODO: Tune this.
+                    while (this.cancellationToken.IsCancellationRequested == false && _inboundRunning && this.DequeueOutgoing(out SimpitStream outbound))
+                    {
+                        byte[] data = outbound.ReadAll(out int offset, out int count);
+                        _port.Write(data, offset, count);
+                    }
+
+                    Thread.Sleep(10); // TODO: Tune this.
+                }
+                catch (Exception ex)
+                {
+                    this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SerialPeer), nameof(OutboundLoop));
+                }
             }
 
             this.logger.LogDebug("Outbound thread for port {0} exiting.", _port.PortName);
