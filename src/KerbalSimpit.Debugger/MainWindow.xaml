@@ -48,11 +48,11 @@
             </StackPanel>
         </ScrollViewer>
 
-        <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto" Padding="5,5,5,5">
+        <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto" Padding="0,0,0,5">
             <StackPanel x:Name="IncomingContent" />
         </ScrollViewer>
 
-        <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto" Padding="0,0,0,5">
             <StackPanel x:Name="InfoContent" />
         </ScrollViewer>
 

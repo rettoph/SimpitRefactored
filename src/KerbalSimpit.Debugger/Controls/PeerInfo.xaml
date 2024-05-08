@@ -21,11 +21,12 @@
             </Border>
 
             <Border BorderBrush="Gray" BorderThickness="1" Margin="0,0,0,5">
-                <StackPanel x:Name="MessagesContainer">
+                <StackPanel>
                     <Label Content="Messages" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" x:Name="MessagesLabel" />
+                    <StackPanel x:Name="MessagesContainer">
+                    </StackPanel>
                 </StackPanel>
             </Border>
-
         </StackPanel>
     </Border>
 

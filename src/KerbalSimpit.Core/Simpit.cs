@@ -124,7 +124,7 @@ namespace KerbalSimpit.Core
             this.Running = true;
         }
 
-        public void SetOutgoingData<T>(T value)
+        public void SetOutgoingData<T>(T value, bool force = false)
             where T : ISimpitMessageData
 
         {
@@ -136,7 +136,7 @@ namespace KerbalSimpit.Core
             Simpit.OutgoingData<T> data = this.GetOutgoingData(type);
             lock (data)
             {
-                if (data.Value.Equals(value))
+                if (force == false && data.Value.Equals(value))
                 {
                     return;
                 }

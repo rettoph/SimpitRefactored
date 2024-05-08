@@ -5,6 +5,7 @@ using KerbalSimpit.Core.Messages;
 using KerbalSimpit.Core.Peers;
 using KerbalSimpit.Core.Utilities;
 using KerbalSimpit.Debugger.Controls;
+using KerbalSimpit.Debugger.Services;
 using KerbalSimpit.Debugger.Utilities;
 using System.IO;
 using System.Text.Json;
@@ -56,9 +57,11 @@ namespace KerbalSimpit.Debugger
             this.AddSimpleTextSubscriber<Core.KSP.Messages.Vessel.Incoming.Rotation>(rot => $"Pitch: {DebugHelper.Get(rot.Pitch)}, Yaw: {DebugHelper.Get(rot.Yaw)}, Roll: {DebugHelper.Get(rot.Roll)}, Mask: {rot.Mask}");
             this.AddSimpleTextSubscriber<Core.KSP.Messages.Vessel.Incoming.Translation>(tran => $"X: {DebugHelper.Get(tran.X)}, Y: {DebugHelper.Get(tran.Y)}, Z: {DebugHelper.Get(tran.Z)}, Mask: {tran.Mask}");
             this.AddSimpleTextSubscriber<Core.KSP.Messages.Vessel.Incoming.Throttle>(throttle => DebugHelper.Get(throttle.Value));
+            this.AddSimpleTextSubscriber<Core.KSP.Messages.Vessel.Incoming.WheelControl>(wheel => $"Steer: {DebugHelper.Get(wheel.Steer)}, Throttle: {DebugHelper.Get(wheel.Throttle)}, Mask: {wheel.Mask}");
 
             this.OutgoingContent.Children.Add(new ActionGroupFlagsService());
             this.OutgoingContent.Children.Add(new AutoPilotModeService());
+            this.OutgoingContent.Children.Add(new CustomActionGroupsService());
         }
 
         private void Update(object? sender, EventArgs e)

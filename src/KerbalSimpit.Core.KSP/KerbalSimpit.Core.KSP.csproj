@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\KerbalSimpit.Core\KerbalSimpit.Core.csproj" />
+    <ProjectReference Include="..\KerbalSimpit.Core\KerbalSimpit.Core.csproj" />
   </ItemGroup>
 
 </Project>

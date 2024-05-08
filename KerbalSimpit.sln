@@ -20,11 +20,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B54AA587
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalSimpit.Test.Core", "tests\KerbalSimpit.Test.Core\KerbalSimpit.Test.Core.csproj", "{50EB48BB-5BB8-4F06-8C2C-0DC4118D41BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalSimpit.Core", "src\KerbalSimpit.Core\KerbalSimpit.Core.csproj", "{D3B18567-29B6-4991-A435-59177C4475DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KerbalSimpit.Core", "src\KerbalSimpit.Core\KerbalSimpit.Core.csproj", "{D3B18567-29B6-4991-A435-59177C4475DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalSimpit.Core.KSP", "KerbalSimpit.Core.KSP\KerbalSimpit.Core.KSP.csproj", "{48F77389-0F37-4FD7-A0B2-7E3FBE38322C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KerbalSimpit.Debugger", "src\KerbalSimpit.Debugger\KerbalSimpit.Debugger.csproj", "{B4CA27AC-B3F7-4978-8161-925BE55E2EBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalSimpit.Debugger", "src\KerbalSimpit.Debugger\KerbalSimpit.Debugger.csproj", "{B4CA27AC-B3F7-4978-8161-925BE55E2EBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KerbalSimpit.Core.KSP", "src\KerbalSimpit.Core.KSP\KerbalSimpit.Core.KSP.csproj", "{46C0A93C-72C6-47E8-B726-8A2062F4BAC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,14 +48,14 @@ Global
 		{D3B18567-29B6-4991-A435-59177C4475DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3B18567-29B6-4991-A435-59177C4475DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3B18567-29B6-4991-A435-59177C4475DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48F77389-0F37-4FD7-A0B2-7E3FBE38322C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48F77389-0F37-4FD7-A0B2-7E3FBE38322C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48F77389-0F37-4FD7-A0B2-7E3FBE38322C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48F77389-0F37-4FD7-A0B2-7E3FBE38322C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B4CA27AC-B3F7-4978-8161-925BE55E2EBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B4CA27AC-B3F7-4978-8161-925BE55E2EBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4CA27AC-B3F7-4978-8161-925BE55E2EBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4CA27AC-B3F7-4978-8161-925BE55E2EBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46C0A93C-72C6-47E8-B726-8A2062F4BAC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46C0A93C-72C6-47E8-B726-8A2062F4BAC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46C0A93C-72C6-47E8-B726-8A2062F4BAC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46C0A93C-72C6-47E8-B726-8A2062F4BAC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,8 +65,8 @@ Global
 		{65110562-CC1B-424E-B972-6F53816C7D6A} = {AD04774F-734E-4A1A-90AE-EE57FC6F3D5B}
 		{50EB48BB-5BB8-4F06-8C2C-0DC4118D41BD} = {B54AA587-63BF-49F0-8B28-20E58E4BF8E5}
 		{D3B18567-29B6-4991-A435-59177C4475DF} = {AD04774F-734E-4A1A-90AE-EE57FC6F3D5B}
-		{48F77389-0F37-4FD7-A0B2-7E3FBE38322C} = {AD04774F-734E-4A1A-90AE-EE57FC6F3D5B}
 		{B4CA27AC-B3F7-4978-8161-925BE55E2EBD} = {AD04774F-734E-4A1A-90AE-EE57FC6F3D5B}
+		{46C0A93C-72C6-47E8-B726-8A2062F4BAC3} = {AD04774F-734E-4A1A-90AE-EE57FC6F3D5B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6AA82C42-BDA1-4B49-9C6F-1DE87648D6DA}

@@ -74,7 +74,7 @@ namespace KerbalSimpit.Core
                     return;
                 }
 
-                peer.EnqueueOutgoindSubscription(this, data);
+                peer.EnqueueOutgoingSubscription(this, data);
             }
         }
 

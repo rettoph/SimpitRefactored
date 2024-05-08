@@ -151,7 +151,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
             public unsafe struct CustomActionGroups : ISimpitMessageData
             {
-                private const int Length = 32;
+                public const int Length = 32;
                 public fixed byte Status[CustomActionGroups.Length];
 
                 public bool Equals(CustomActionGroups obj)

@@ -21,7 +21,7 @@ namespace KerbalSimpit.Core.Peers
         private readonly SimpitStream _outgoing;
         private readonly SimpitStream _encodeBuffer;
         private readonly SimpitStream _decodeBuffer;
-        private readonly Dictionary<SimpitMessageType, int> _outgoingSubscriptions;
+        private readonly ConcurrentDictionary<SimpitMessageType, int> _outgoingSubscriptions;
 
         protected ISimpitLogger logger => _simpit.Logger;
         protected CancellationToken cancellationToken => _simpit.CancellationToken;
@@ -50,7 +50,7 @@ namespace KerbalSimpit.Core.Peers
         {
             _read = new ConcurrentQueue<ISimpitMessage>();
             _write = new ConcurrentQueue<ISimpitMessage>();
-            _outgoingSubscriptions = new Dictionary<SimpitMessageType, int>();
+            _outgoingSubscriptions = new ConcurrentDictionary<SimpitMessageType, int>();
 
             _incoming = new SimpitStream();
             _outgoing = new SimpitStream();
@@ -209,7 +209,7 @@ namespace KerbalSimpit.Core.Peers
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "{0}::{1}, Exception", nameof(SimpitPeer), nameof(EnqueueOutgoindSubscription));
+                this.logger.LogError(ex, "{0}::{1}, Exception", nameof(SimpitPeer), nameof(EnqueueOutgoingSubscription));
             }
         }
 
@@ -224,12 +224,12 @@ namespace KerbalSimpit.Core.Peers
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "{0}::{1}, Exception", nameof(SimpitPeer), nameof(EnqueueOutgoindSubscription));
+                this.logger.LogError(ex, "{0}::{1}, Exception", nameof(SimpitPeer), nameof(ForceEnqueueOutgoingSubscriptions));
             }
 
         }
 
-        internal void EnqueueOutgoindSubscription<T>(SimpitMessageType type, Simpit.OutgoingData<T> data)
+        internal void EnqueueOutgoingSubscription<T>(SimpitMessageType type, Simpit.OutgoingData<T> data)
             where T : ISimpitMessageData
         {
             this.EnqueueOutgoing(data.Value);
@@ -248,7 +248,7 @@ namespace KerbalSimpit.Core.Peers
             while (_outgoingSubscriptions.Count > 0)
             {
                 SimpitMessageType type = _outgoingSubscriptions.First().Key;
-                _outgoingSubscriptions.Remove(type);
+                _outgoingSubscriptions.TryRemove(type, out _);
                 this.OnOutgoingUnsubscribed?.Invoke(this, type);
             }
             _outgoingSubscriptions.Clear();

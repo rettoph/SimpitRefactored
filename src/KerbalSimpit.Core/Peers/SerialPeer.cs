@@ -94,12 +94,12 @@ namespace KerbalSimpit.Core.Peers
                 }
                 catch (Exception ex)
                 {
-                    this.logger.LogError(ex, "{0}::{1} -  Exception", nameof(SerialPeer), nameof(InboundLoop));
+                    this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SerialPeer), nameof(InboundLoop));
                 }
             }
 
             this.logger.LogDebug("Inbound thread for port {0} exiting.", _port.PortName);
-            _inboundRunning = false;
+            this.Close();
         }
 
         private void OutboundLoop()
@@ -121,7 +121,7 @@ namespace KerbalSimpit.Core.Peers
             }
 
             this.logger.LogDebug("Outbound thread for port {0} exiting.", _port.PortName);
-            _inboundRunning = false;
+            this.Close();
         }
 
         public override string ToString()

@@ -15,9 +15,10 @@ namespace KerbalSimpit.Debugger.Controls
         {
             private readonly TextBlock _textBlock;
             private readonly SimpitMessageType _type;
-            private int _count;
+            private int _value;
 
             public TextBlock Label => _textBlock;
+            public int Value => _value;
 
             public MessageTypeCount(SimpitMessageType type)
             {
@@ -26,25 +27,25 @@ namespace KerbalSimpit.Debugger.Controls
                 {
                     Margin = new System.Windows.Thickness(15, 2, 5, 2)
                 };
-                _count = 0;
+                _value = 0;
 
                 this.Clean();
             }
 
             public void Increment()
             {
-                _count++;
+                _value++;
                 this.Clean();
             }
 
             private void Clean()
             {
-                _textBlock.Text = $"{_type} {(_type.Type == SimputMessageTypeEnum.Outgoing ? "=>" : "<=")} {_count.ToString("#,###,##0")}";
+                _textBlock.Text = $"{_type} {(_type.Type == SimputMessageTypeEnum.Outgoing ? "=>" : "<=")} {_value.ToString("#,###,##0")}";
             }
 
             public void Reset()
             {
-                _count = 0;
+                _value = 0;
                 this.Clean();
             }
         }
@@ -140,10 +141,15 @@ namespace KerbalSimpit.Debugger.Controls
                     _incomingCount++;
                 }
 
-                this.MessagesContainer.Children.Insert(1, count.Label);
                 count!.Increment();
 
                 this.Clean();
+
+                this.MessagesContainer.Children.Clear();
+                foreach (MessageTypeCount item in _cache.Values.OrderByDescending(x => x.Value))
+                {
+                    this.MessagesContainer.Children.Add(item.Label);
+                }
             });
         }
 
