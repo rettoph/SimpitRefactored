@@ -13,6 +13,7 @@ using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Media;
 using Outgoing = KerbalSimpit.Core.KSP.Messages.Vessel.Outgoing;
+using Resource = KerbalSimpit.Core.KSP.Messages.Resource;
 
 namespace KerbalSimpit.Debugger
 {
@@ -23,14 +24,6 @@ namespace KerbalSimpit.Debugger
         ISimpitMessageSubscriber<CustomLog>
     {
         public static Simpit Simpit { get; private set; } = null!;
-
-        private Outgoing.Altitude _alt;
-        private Outgoing.Velocity _velocity;
-        private Outgoing.DeltaV _deltaV;
-        private Outgoing.Apsides _apsides;
-        private Outgoing.ApsidesTime _apsideTime;
-        private Outgoing.Maneuver _maneuver;
-        private Outgoing.OrbitInfo _orbit;
 
         private Dictionary<SimpitPeer, PeerInfo> _peers;
 
@@ -72,169 +65,39 @@ namespace KerbalSimpit.Debugger
             this.OutgoingContent.Children.Add(new AutoPilotModeService());
             this.OutgoingContent.Children.Add(new CustomActionGroupsService());
 
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Outgoing.Altitude>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Outgoing.Velocity>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Outgoing.DeltaV>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Outgoing.DeltaVEnv>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Outgoing.Apsides>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Outgoing.ApsidesTime>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Outgoing.Maneuver>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Outgoing.OrbitInfo>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Outgoing.Rotation>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Outgoing.Airspeed>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Outgoing.BurnTime>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Outgoing.TempLimit>());
 
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Altitude)}.{nameof(Outgoing.Altitude.Alt)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _alt.Alt = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Altitude)}.{nameof(Outgoing.Altitude.SurfAlt)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _alt.SurfAlt = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Velocity)}.{nameof(Outgoing.Velocity.Orbital)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _velocity.Orbital = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Velocity)}.{nameof(Outgoing.Velocity.Orbital)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _velocity.Surface = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Velocity)}.{nameof(Outgoing.Velocity.Orbital)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _velocity.Vertical = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.DeltaV)}.{nameof(Outgoing.DeltaV.TotalDeltaV)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _deltaV.TotalDeltaV = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.DeltaV)}.{nameof(Outgoing.DeltaV.StageDeltaV)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _deltaV.StageDeltaV = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Apsides)}.{nameof(Outgoing.Apsides.Apoapsis)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _apsides.Apoapsis = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<int>(
-                title: $"{nameof(Outgoing.ApsidesTime)}.{nameof(Outgoing.ApsidesTime.Apoapsis)}",
-                value: 0,
-                deserialize: int.Parse,
-                onChanged: v => _apsideTime.Apoapsis = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Apsides)}.{nameof(Outgoing.Apsides.Periapsis)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _apsides.Periapsis = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<int>(
-                title: $"{nameof(Outgoing.ApsidesTime)}.{nameof(Outgoing.ApsidesTime.Periapsis)}",
-                value: 0,
-                deserialize: int.Parse,
-                onChanged: v => _apsideTime.Periapsis = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Maneuver)}.{nameof(Outgoing.Maneuver.TimeToNextManeuver)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _maneuver.TimeToNextManeuver = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Maneuver)}.{nameof(Outgoing.Maneuver.DeltaVNextManeuver)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _maneuver.DeltaVNextManeuver = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Maneuver)}.{nameof(Outgoing.Maneuver.DurationNextManeuver)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _maneuver.DurationNextManeuver = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Maneuver)}.{nameof(Outgoing.Maneuver.DeltaVTotal)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _maneuver.DeltaVTotal = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Maneuver)}.{nameof(Outgoing.Maneuver.HeadingNextManeuver)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _maneuver.HeadingNextManeuver = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.Maneuver)}.{nameof(Outgoing.Maneuver.PitchNextManeuver)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _maneuver.PitchNextManeuver = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.OrbitInfo)}.{nameof(Outgoing.OrbitInfo.Eccentricity)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _orbit.Eccentricity = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.OrbitInfo)}.{nameof(Outgoing.OrbitInfo.SemiMajorAxis)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _orbit.SemiMajorAxis = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.OrbitInfo)}.{nameof(Outgoing.OrbitInfo.Inclination)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _orbit.Inclination = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.OrbitInfo)}.{nameof(Outgoing.OrbitInfo.LongAscendingNode)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _orbit.LongAscendingNode = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.OrbitInfo)}.{nameof(Outgoing.OrbitInfo.ArgPeriapsis)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _orbit.ArgPeriapsis = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.OrbitInfo)}.{nameof(Outgoing.OrbitInfo.TrueAnomaly)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _orbit.TrueAnomaly = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.OrbitInfo)}.{nameof(Outgoing.OrbitInfo.MeanAnomaly)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _orbit.MeanAnomaly = v));
-
-            this.OutgoingContent.Children.Add(new GenericValueInputService<float>(
-                title: $"{nameof(Outgoing.OrbitInfo)}.{nameof(Outgoing.OrbitInfo.Period)}",
-                value: 0,
-                deserialize: float.Parse,
-                onChanged: v => _orbit.Period = v));
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.LiquidFuel>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.LiquidFuelStage>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.Methane>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.MethaneStage>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.OxidizerStage>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.SolidFuel>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.SolidFuelStage>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.XenonGas>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.XenonGasStage>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.MonoPropellant>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.EvaPropellant>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.ElectricCharge>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.Ore>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.Ablator>());
+            this.OutgoingContent.Children.Add(new OutgoingMessageService<Resource.AblatorStage>());
         }
 
         private void Update(object? sender, EventArgs e)
         {
             MainWindow.Simpit.Flush();
-
-            MainWindow.Simpit.SetOutgoingData(_alt);
-            MainWindow.Simpit.SetOutgoingData(_velocity);
-            MainWindow.Simpit.SetOutgoingData(_deltaV);
-            MainWindow.Simpit.SetOutgoingData(_apsides);
-            MainWindow.Simpit.SetOutgoingData(_apsideTime);
-            MainWindow.Simpit.SetOutgoingData(_maneuver);
-            MainWindow.Simpit.SetOutgoingData(_orbit);
         }
 
         public void Dispose()
