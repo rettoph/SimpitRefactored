@@ -1,4 +1,6 @@
-﻿using KerbalSimpit.Core.Peers;
+﻿using KerbalSimpit.Core.Configuration;
+using KerbalSimpit.Core.Extensions;
+using KerbalSimpit.Core.Peers;
 using KerbalSimpit.Core.Services;
 using KerbalSimpit.Core.Utilities;
 using System;
@@ -94,9 +96,15 @@ namespace KerbalSimpit.Core
             return this;
         }
 
-        public Simpit Start()
+        public Simpit Start(ISimpitConfiguration configuration)
         {
             _cancellationTokenSource = new CancellationTokenSource();
+
+            // TODO: This should not be hardcoded for serial peers.
+            foreach (ISerialConfiguration serial in configuration.Serial)
+            {
+                this.AddSerialPeer(serial.PortName, serial.BaudRate);
+            }
 
             foreach (SimpitPeer peer in _peers)
             {
@@ -122,6 +130,22 @@ namespace KerbalSimpit.Core
             }
 
             this.Running = true;
+        }
+
+        public void OpenAll()
+        {
+            foreach (SimpitPeer peer in _peers)
+            {
+                peer.Open();
+            }
+        }
+
+        public void CloseAll()
+        {
+            foreach (SimpitPeer peer in _peers)
+            {
+                peer.Close();
+            }
         }
 
         public void SetOutgoingData<T>(T value, bool force = false)
@@ -175,7 +199,16 @@ namespace KerbalSimpit.Core
             where T : ISimpitMessageData
         {
             SimpitMessagePublisher<T> publisher = this.GetPublisher(typeof(T)) as SimpitMessagePublisher<T>;
-            publisher.AddConsumer(subscriber);
+            publisher.AddSubscriber(subscriber);
+
+            return this;
+        }
+
+        public Simpit RemoveIncomingSubscriber<T>(ISimpitMessageSubscriber<T> subscriber)
+            where T : ISimpitMessageData
+        {
+            SimpitMessagePublisher<T> publisher = this.GetPublisher(typeof(T)) as SimpitMessagePublisher<T>;
+            publisher.RemoveSubscriber(subscriber);
 
             return this;
         }
@@ -187,7 +220,7 @@ namespace KerbalSimpit.Core
                 return publisher;
             }
 
-            publisher = SimpitMessagePublisher.Create(type);
+            publisher = SimpitMessagePublisher.Create(type, this);
             _publishers.TryAdd(type, publisher);
 
             return publisher;

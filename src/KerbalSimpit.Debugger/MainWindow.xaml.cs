@@ -1,5 +1,4 @@
 ﻿using KerbalSimpit.Core;
-using KerbalSimpit.Core.Extensions;
 using KerbalSimpit.Core.KSP.Extensions;
 using KerbalSimpit.Core.Messages;
 using KerbalSimpit.Core.Peers;
@@ -33,6 +32,7 @@ namespace KerbalSimpit.Debugger
 
             SimpitConfiguration configuration = JsonSerializer.Deserialize<SimpitConfiguration>(File.ReadAllText("simpit.config.json"), new JsonSerializerOptions()
             {
+                IncludeFields = true,
                 Converters =
                 {
                     new JsonStringEnumConverter()
@@ -48,13 +48,7 @@ namespace KerbalSimpit.Debugger
             MainWindow.Simpit.OnPeerRemoved += this.HandlePeerRemoved;
             this.Closing += (sender, args) => this.Dispose();
 
-
-            foreach (SimpitConfiguration.SerialConfiguration serial in configuration.Serial)
-            {
-                MainWindow.Simpit.AddSerialPeer(serial.Name, serial.BaudRate);
-            }
-
-            MainWindow.Simpit.Start();
+            MainWindow.Simpit.Start(configuration);
 
             this.AddSimpleTextSubscriber<Core.KSP.Messages.Vessel.Incoming.Rotation>(rot => $"Pitch: {DebugHelper.Get(rot.Pitch)}, Yaw: {DebugHelper.Get(rot.Yaw)}, Roll: {DebugHelper.Get(rot.Roll)}, Mask: {rot.Mask}");
             this.AddSimpleTextSubscriber<Core.KSP.Messages.Vessel.Incoming.Translation>(tran => $"X: {DebugHelper.Get(tran.X)}, Y: {DebugHelper.Get(tran.Y)}, Z: {DebugHelper.Get(tran.Z)}, Mask: {tran.Mask}");

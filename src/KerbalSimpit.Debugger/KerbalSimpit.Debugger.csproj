@@ -7,8 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <PublishSingleFile>true</PublishSingleFile>
-    <SelfContained>False</SelfContained>
+    <PublishSingleFile>True</PublishSingleFile>
+    <SelfContained>True</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 

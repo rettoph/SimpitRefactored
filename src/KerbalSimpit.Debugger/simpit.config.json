@@ -2,11 +2,11 @@
   "LogLevel": "Debug",
   "Serial": [
     {
-      "Name": "COM3",
+      "PortName": "COM3",
       "BaudRate": 115200
     },
     {
-      "Name": "COM4",
+      "PortName": "COM4",
       "BaudRate": 115200
     }
   ]

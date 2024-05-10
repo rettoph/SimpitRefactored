@@ -1,9 +1,6 @@
 ﻿using KerbalSimpit.Core.Peers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Utilities
 {
@@ -13,43 +10,52 @@ namespace KerbalSimpit.Core.Utilities
 
         public abstract void Publish(SimpitPeer peer, ISimpitMessage message);
 
-        public static SimpitMessagePublisher Create(Type messageType)
+        public static SimpitMessagePublisher Create(Type messageType, Simpit simpit)
         {
             Type type = typeof(SimpitMessagePublisher<>).MakeGenericType(messageType);
 
-            return Activator.CreateInstance(type) as SimpitMessagePublisher;
+            return Activator.CreateInstance(type, new object[] { simpit }) as SimpitMessagePublisher;
         }
     }
 
     internal sealed class SimpitMessagePublisher<T> : SimpitMessagePublisher
         where T : ISimpitMessageData
     {
-        private HashSet<ISimpitMessageSubscriber<T>> _subscribers;
+        private readonly Simpit _simpit;
+        private readonly HashSet<ISimpitMessageSubscriber<T>> _subscribers;
 
         public override Type Type => typeof(T);
 
-        public SimpitMessagePublisher()
+        public SimpitMessagePublisher(Simpit simpit)
         {
+            _simpit = simpit;
             _subscribers = new HashSet<ISimpitMessageSubscriber<T>>();
         }
 
         public override void Publish(SimpitPeer peer, ISimpitMessage message)
         {
-            if(message is ISimpitMessage<T> casted)
+            if (message is ISimpitMessage<T> casted)
             {
-                foreach(ISimpitMessageSubscriber<T> subscriber in _subscribers)
+                if (_subscribers.Count > 0)
                 {
-                    subscriber.Process(peer, casted);
+                    foreach (ISimpitMessageSubscriber<T> subscriber in _subscribers)
+                    {
+                        subscriber.Process(peer, casted);
+                    }
+
+                    return;
                 }
+
+                _simpit.Logger.LogWarning("{0}::{1} - Incoming message {2} has no subscribers", nameof(SimpitMessagePublisher), nameof(Publish), message.Type);
             }
         }
 
-        public void AddConsumer(ISimpitMessageSubscriber<T> subscriber)
+        public void AddSubscriber(ISimpitMessageSubscriber<T> subscriber)
         {
             _subscribers.Add(subscriber);
         }
 
-        public void RemoveIncomingConsumer(ISimpitMessageSubscriber<T> subscriber)
+        public void RemoveSubscriber(ISimpitMessageSubscriber<T> subscriber)
         {
             _subscribers.Remove(subscriber);
         }

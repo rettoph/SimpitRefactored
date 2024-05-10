@@ -8,7 +8,7 @@ set ProjectDir=%ProjectDir:"=%
 echo Reading version file : %ProjectDir%VERSION.txt
 
 REM Read the version number
-for /f "usebackq delims== tokens=1,2" %%G in ("%ProjectDir%VERSION.txt") do set %%G=%%H
+for /f "usebackq delims== tokens=1,2" %%G in ("%ProjectDir%vERSION.txt") do set %%G=%%H
 
 echo Version read %MAJOR%.%MINOR%.%PATCH%.%BUILD%
 
