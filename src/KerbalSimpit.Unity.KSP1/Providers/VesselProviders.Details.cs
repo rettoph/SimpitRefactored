@@ -1,45 +1,45 @@
-﻿using VesselMessages = KerbalSimpit.Core.KSP.Messages.Vessel;
+﻿using KerbalSimpit.Core;
+using KerbalSimpit.Unity.Common.Providers;
+using ResourceMessagess = KerbalSimpit.Core.KSP.Messages.Resource;
 
 namespace KerbalSimpit.Unity.KSP1.Providers
 {
-    public static partial class VesselProviders
+    public static partial class ReosurceProviders
     {
-        public class DeltaVEnvProvider : BaseVesselProvider<VesselMessages.Outgoing.DeltaVEnv>
+        public abstract class BaseResourceProvider<T> : GenericUpdateProvider<T>
+            where T : ISimpitMessageData, ResourceMessagess.IBasicResource, new()
         {
-            protected override VesselMessages.Outgoing.DeltaVEnv GetOutgoingData()
+            private readonly PartResourceDefinition _resource;
+
+            public BaseResourceProvider(string resourceName = null)
             {
-                DeltaVStageInfo currentStageInfo = getCurrentStageDeltaV();
-                if (currentStageInfo == null)
+                if (resourceName == null)
                 {
-                    return default;
+                    resourceName = typeof(T).Name;
                 }
 
-                return new VesselMessages.Outgoing.DeltaVEnv()
-                {
-                    StageDeltaVASL = (float)currentStageInfo.deltaVatASL,
-                    StageDeltaVVac = (float)currentStageInfo.deltaVinVac,
-                    TotalDeltaVASL = (float)FlightGlobals.ActiveVessel.VesselDeltaV.TotalDeltaVASL,
-                    TotalDeltaVVac = (float)FlightGlobals.ActiveVessel.VesselDeltaV.TotalDeltaVVac,
-                };
+                _resource = PartResourceLibrary.Instance.GetDefinition(resourceName);
+            }
+
+            protected override T GetOutgoingData()
+            {
+                T instance = new T();
+
+                FlightGlobals.ActiveVessel.GetConnectedResourceTotals(_resource.id, out double available, out double max);
+                instance.Available = (float)available;
+                instance.Max = (float)max;
+
+                return instance;
             }
         }
 
-        public class DeltaVProvider : BaseVesselProvider<VesselMessages.Outgoing.DeltaV>
-        {
-            protected override VesselMessages.Outgoing.DeltaV GetOutgoingData()
-            {
-                DeltaVStageInfo currentStageInfo = getCurrentStageDeltaV();
-                if (currentStageInfo == null)
-                {
-                    return default;
-                }
-
-                return new VesselMessages.Outgoing.DeltaV()
-                {
-                    StageDeltaV = (float)currentStageInfo.deltaVActual,
-                    TotalDeltaV = (float)FlightGlobals.ActiveVessel.VesselDeltaV.TotalDeltaVActual
-                };
-            }
-        }
+        public class LiquidFuelProvider : BaseResourceProvider<ResourceMessagess.LiquidFuel> { }
+        public class OxidizerProvider : BaseResourceProvider<ResourceMessagess.Oxidizer> { }
+        public class SolidFuelProvider : BaseResourceProvider<ResourceMessagess.SolidFuel> { }
+        public class MonoPropellantProvider : BaseResourceProvider<ResourceMessagess.MonoPropellant> { }
+        public class ElectricChargeProvider : BaseResourceProvider<ResourceMessagess.ElectricCharge> { }
+        public class OreProvider : BaseResourceProvider<ResourceMessagess.Ore> { }
+        public class AblatorProvider : BaseResourceProvider<ResourceMessagess.Ablator> { }
+        public class XenonGasProvider : BaseResourceProvider<ResourceMessagess.XenonGas> { }
     }
 }

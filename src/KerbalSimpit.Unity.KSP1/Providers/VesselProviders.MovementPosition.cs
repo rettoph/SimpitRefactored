@@ -1,5 +1,6 @@
 ﻿using KerbalSimpit.Core.KSP.Enums;
 using KerbalSimpit.Core.KSP.Utilities;
+using KerbalSimpit.Unity.KSP1.Helpers;
 using System;
 using UnityEngine;
 using VesselMessages = KerbalSimpit.Core.KSP.Messages.Vessel;
@@ -70,8 +71,8 @@ namespace KerbalSimpit.Unity.KSP1.Providers
 
                 Vector3d attitude = Quaternion.Inverse(Quaternion.Euler(90, 0, 0) * Quaternion.Inverse(FlightGlobals.ActiveVessel.GetTransform().rotation) * Quaternion.LookRotation(north, up)).eulerAngles;
 
-                WorldVecToNavHeading(FlightGlobals.ActiveVessel, FlightGlobals.ActiveVessel.srf_velocity.normalized, out float surfaceVelocityHeading, out float surfaceVelocityPitch);
-                WorldVecToNavHeading(FlightGlobals.ActiveVessel, FlightGlobals.ActiveVessel.obt_velocity.normalized, out float orbitalVelocityHeading, out float orbitalVelocityPitch);
+                TelemetryHelper.WorldVecToNavHeading(FlightGlobals.ActiveVessel, FlightGlobals.ActiveVessel.srf_velocity.normalized, out float surfaceVelocityHeading, out float surfaceVelocityPitch);
+                TelemetryHelper.WorldVecToNavHeading(FlightGlobals.ActiveVessel, FlightGlobals.ActiveVessel.obt_velocity.normalized, out float orbitalVelocityHeading, out float orbitalVelocityPitch);
 
                 return new VesselMessages.Outgoing.Rotation()
                 {
@@ -140,7 +141,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
                             maneuver.TimeToNextManeuver = (float)(maneuverNodes[0].UT - Planetarium.GetUniversalTime());
                             maneuver.DeltaVNextManeuver = (float)maneuverNodes[0].GetPartialDv().magnitude;
 
-                            WorldVecToNavHeading(FlightGlobals.ActiveVessel, maneuverNodes[0].GetBurnVector(maneuverNodes[0].patch), out float headingNextManeuver, out float pitchNextManeuver);
+                            TelemetryHelper.WorldVecToNavHeading(FlightGlobals.ActiveVessel, maneuverNodes[0].GetBurnVector(maneuverNodes[0].patch), out float headingNextManeuver, out float pitchNextManeuver);
                             maneuver.HeadingNextManeuver = headingNextManeuver;
                             maneuver.PitchNextManeuver = pitchNextManeuver;
 
@@ -163,32 +164,6 @@ namespace KerbalSimpit.Unity.KSP1.Providers
                 }
 
                 return maneuver;
-            }
-        }
-
-        public class TempLimitProvider : BaseVesselProvider<VesselMessages.Outgoing.TempLimit>
-        {
-            protected override VesselMessages.Outgoing.TempLimit GetOutgoingData()
-            {
-                double maxTempPercentage = 0.0;
-                double maxSkinTempPercentage = 0.0;
-
-                // Iterate on a copy ?
-                foreach (Part part in FlightGlobals.ActiveVessel.Parts)
-                {
-                    maxTempPercentage = Math.Max(maxTempPercentage, 100.0 * part.temperature / part.maxTemp);
-                    maxSkinTempPercentage = Math.Max(maxSkinTempPercentage, 100.0 * part.skinTemperature / part.skinMaxTemp);
-                }
-
-                //Prevent the byte to overflow in case of extremely hot vessel
-                if (maxTempPercentage > 255) maxTempPercentage = 255;
-                if (maxSkinTempPercentage > 255) maxSkinTempPercentage = 255;
-
-                return new VesselMessages.Outgoing.TempLimit()
-                {
-                    TempLimitPercentage = (byte)Math.Round(maxTempPercentage),
-                    SkinTempLimitPercentage = (byte)Math.Round(maxSkinTempPercentage),
-                };
             }
         }
 
@@ -228,26 +203,6 @@ namespace KerbalSimpit.Unity.KSP1.Providers
 
                 return sasInfo;
             }
-        }
-
-        // Convert a direction given in world space v into a heading and a pitch, relative to the vessel passed as a paramater
-        private static void WorldVecToNavHeading(Vessel activeVessel, Vector3d v, out float heading, out float pitch)
-        {
-            Vector3d CoM, north, up, east;
-            CoM = activeVessel.CoM;
-            up = (CoM - activeVessel.mainBody.position).normalized;
-            north = Vector3d.Exclude(up, (activeVessel.mainBody.position + activeVessel.mainBody.transform.up * (float)activeVessel.mainBody.Radius) - CoM).normalized;
-            east = Vector3d.Cross(up, north);
-
-            // Code from KSPIO to do angle conversions : https://github.com/zitron-git/KSPSerialIO/blob/062d97e892077ea14737f5e79268c0c4d067f5b6/KSPSerialIO/KSPIO.cs#L1301-L1313
-            pitch = (float)-((Vector3d.Angle(up, v)) - 90.0f);
-            Vector3d progradeFlat = Vector3d.Exclude(up, v);
-            float NAngle = (float)Vector3d.Angle(north, progradeFlat);
-            float EAngle = (float)Vector3d.Angle(east, progradeFlat);
-            if (EAngle < 90)
-                heading = NAngle;
-            else
-                heading = -NAngle + 360;
         }
 
         //Return the DeltaVStageInfo of the first stage to consider for deltaV and burn time computation

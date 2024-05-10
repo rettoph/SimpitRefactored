@@ -66,7 +66,7 @@ namespace KerbalSimpit.Core.Peers
             }
         }
 
-        internal void Initialize(Simpit simpit)
+        public virtual void Initialize(Simpit simpit)
         {
             if (_initialized == true)
             {
@@ -196,6 +196,11 @@ namespace KerbalSimpit.Core.Peers
             this.OnOutgoingMessage?.Invoke(this, message);
 
             return true;
+        }
+
+        protected int GetEnqueuedOutgoingCount()
+        {
+            return _write.Count;
         }
 
         protected void EnqueueOutgoingSubscriptions()

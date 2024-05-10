@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.KSP.Enums
 {
     [Flags]
     public enum ActionGroupFlags : byte
     {
+        None = 0,
         Stage = 1,
         Gear = 2,
         Light = 4,

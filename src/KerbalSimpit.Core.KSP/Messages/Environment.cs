@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.KSP.Messages
 {
@@ -71,6 +67,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             [Flags]
             public enum AtmoCharacteristicsFlags : byte
             {
+                None = 0,
                 HasAtmosphere = 1,
                 HasOxygen = 2,
                 IsVesselInAtmosphere = 4

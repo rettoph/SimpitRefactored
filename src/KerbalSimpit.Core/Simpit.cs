@@ -30,6 +30,7 @@ namespace KerbalSimpit.Core
 
         public bool Running { get; private set; }
         public ISimpitLogger Logger => _logger;
+        public ISimpitConfiguration Configuration { get; private set; }
 
         public event EventHandler<SimpitPeer> OnPeerAdded;
         public event EventHandler<SimpitPeer> OnPeerRemoved;
@@ -100,6 +101,7 @@ namespace KerbalSimpit.Core
         public Simpit Start(ISimpitConfiguration configuration)
         {
             _cancellationTokenSource = new CancellationTokenSource();
+            this.Configuration = configuration;
 
             // TODO: This should not be hardcoded for serial peers.
             foreach (ISerialConfiguration serial in configuration.Serial)

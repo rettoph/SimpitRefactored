@@ -21,7 +21,7 @@ namespace KerbalSimpit.Debugger
 
         public string Documentation { get; set; } = string.Empty;
         public bool Verbose { get; set; } = false;
-        public int RefreshRate { get; set; } = 125;
+        public int RefreshRate { get; set; } = 128;
         public SimpitLogLevelEnum LogLevel { get; set; } = SimpitLogLevelEnum.Information;
 
         public List<SerialConfiguration> Serial { get; set; } = new List<SerialConfiguration>();

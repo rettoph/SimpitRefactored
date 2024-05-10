@@ -9,6 +9,7 @@ namespace KerbalSimpit.Core.Peers
     public class SerialPeer : SimpitPeer
     {
         private readonly SerialPort _port;
+        private Simpit _simpit;
         private Thread _inboundThread;
         private Thread _outboundThread;
 
@@ -26,6 +27,13 @@ namespace KerbalSimpit.Core.Peers
             // To allow communication from a Pi Pico, the DTR seems to be mandatory to allow the connection
             // This does not seem to prevent communication from Arduino.
             _port.DtrEnable = true;
+        }
+
+        public override void Initialize(Simpit simpit)
+        {
+            base.Initialize(simpit);
+
+            _simpit = simpit;
         }
 
         protected override bool TryOpen()
@@ -113,13 +121,20 @@ namespace KerbalSimpit.Core.Peers
                 {
                     this.EnqueueOutgoingSubscriptions();
 
+                    int enqueuedOutgoingCount = this.GetEnqueuedOutgoingCount();
+                    if (enqueuedOutgoingCount == 0)
+                    {
+                        Thread.Sleep(_simpit.Configuration.RefreshRate);
+                        continue;
+                    }
+
+                    int refreshSliceRate = _simpit.Configuration.RefreshRate / enqueuedOutgoingCount;
                     while (this.cancellationToken.IsCancellationRequested == false && _inboundRunning && this.DequeueOutgoing(out SimpitStream outbound))
                     {
                         byte[] data = outbound.ReadAll(out int offset, out int count);
                         _port.Write(data, offset, count);
+                        Thread.Sleep(refreshSliceRate);
                     }
-
-                    Thread.Sleep(10); // TODO: Tune this.
                 }
                 catch (Exception ex)
                 {
