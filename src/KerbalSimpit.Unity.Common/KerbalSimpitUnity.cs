@@ -6,8 +6,8 @@ namespace KerbalSimpit.Unity.Common
 {
     public abstract class KerbalSimpitUnity : MonoBehaviour
     {
-        public static SimpitLogger Logger { get; private set; }
-        public static Simpit Simpit { get; private set; }
+        internal static SimpitLogger Logger { get; private set; }
+        internal static Simpit Simpit { get; private set; }
 
         public virtual void Start()
         {

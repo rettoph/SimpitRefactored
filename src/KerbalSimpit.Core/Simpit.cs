@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 
 namespace KerbalSimpit.Core
@@ -157,18 +158,28 @@ namespace KerbalSimpit.Core
                 throw new InvalidOperationException(string.Format("{0}::{1} - Unknown outgoing message type {2}", nameof(Simpit), nameof(SetOutgoingData), typeof(T).Name));
             }
 
-            Simpit.OutgoingData<T> data = this.GetOutgoingData(type);
+            OutgoingData<T> data = this.GetOutgoingData(type);
             lock (data)
             {
                 data.SetValue(value, force);
             }
         }
 
-        public bool HasAnyOutgoingSubscribers<T>()
-            where T : unmanaged, ISimpitMessageData
+        public IEnumerable<SimpitPeer> GetOutgoingSubscribers<T>()
+            where T : ISimpitMessageData
         {
-            // TODO: Actually keep track of this.
-            return true;
+            if (this.Messages.TryGetOutgoingType<T>(out SimpitMessageType<T> type) == false)
+            {
+                throw new InvalidOperationException(string.Format("{0}::{1} - Unknown outgoing message type {2}", nameof(Simpit), nameof(GetOutgoingSubscribers), typeof(T).Name));
+            }
+
+            foreach (SimpitPeer peer in _peers)
+            {
+                if (peer.OutgoingSubscriptions.Contains(type) == true)
+                {
+                    yield return peer;
+                }
+            }
         }
 
         public OutgoingData<T> GetOutgoingData<T>(SimpitMessageType<T> type)
@@ -179,7 +190,20 @@ namespace KerbalSimpit.Core
                 return (OutgoingData<T>)uncasted;
             }
 
-            OutgoingData<T> data = OutgoingData<T>.Create();
+            OutgoingData<T> data = (OutgoingData<T>)type.CreateOutgoingData();
+            _outgoing.TryAdd(type, data);
+
+            return data;
+        }
+
+        public OutgoingData GetOutgoingData(SimpitMessageType type)
+        {
+            if (_outgoing.TryGetValue(type, out OutgoingData data))
+            {
+                return data;
+            }
+
+            data = type.CreateOutgoingData();
             _outgoing.TryAdd(type, data);
 
             return data;

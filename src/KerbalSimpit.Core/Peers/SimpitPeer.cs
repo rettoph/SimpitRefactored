@@ -229,7 +229,7 @@ namespace KerbalSimpit.Core.Peers
 
         }
 
-        internal void EnqueueOutgoingSubscription<T>(SimpitMessageType type, Simpit.OutgoingData<T> data)
+        internal void EnqueueOutgoingSubscription<T>(SimpitMessageType type, OutgoingData<T> data)
             where T : ISimpitMessageData
         {
             this.EnqueueOutgoing(data.Value);

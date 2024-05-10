@@ -1,5 +1,6 @@
 ﻿using KerbalSimpit.Core.Enums;
 using KerbalSimpit.Core.Utilities;
+using KerbalSimpit.Unity.Common;
 using KSP.UI.Screens;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
 {
     // Start at main menu
     [KSPAddon(KSPAddon.Startup.MainMenu, true)]
-    public class AppButton : MonoBehaviour
+    public class AppButton : SimpitBehaviour
     {
         const ApplicationLauncher.AppScenes buttonScenes = ApplicationLauncher.AppScenes.SPACECENTER | ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW;
         private static ApplicationLauncherButton button;
@@ -65,13 +66,13 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
         {
             if (button == null) return; // button not yet initialised ?
 
-            if (KerbalSimpitUnityKSP1.Simpit.Peers.Count == 0)
+            if (this.simpit.Peers.Count == 0)
             {
                 button.SetTexture(iconRed);
                 return;
             }
 
-            ConnectionStatusEnum status = KerbalSimpitUnityKSP1.Simpit.Peers[0].Status;
+            ConnectionStatusEnum status = this.simpit.Peers[0].Status;
             if (status == ConnectionStatusEnum.CLOSED || status == ConnectionStatusEnum.ERROR)
             {
                 button.SetTexture(iconRed);
@@ -92,7 +93,7 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
 
             //All cases should be covered, this should not happen.
             button.SetTexture(iconRed);
-            KerbalSimpitUnityKSP1.Logger.LogWarning("{0}::{1} - Unreachable state detected {2}", nameof(AppButton), nameof(Update), status);
+            this.logger.LogWarning("{0}::{1} - Unreachable state detected {2}", nameof(AppButton), nameof(Update), status);
         }
     }
 

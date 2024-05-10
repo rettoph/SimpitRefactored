@@ -31,6 +31,8 @@ namespace KerbalSimpit.Core
 
         internal abstract void TryEnqueueOutgoingData(SimpitPeer peer, int lastChangeId, Simpit simpit, bool force);
         internal abstract void TryEnqueueOutgoingData(SimpitPeer peer, Simpit simpit);
+
+        internal abstract OutgoingData CreateOutgoingData();
     }
 
     public sealed class SimpitMessageType<TContent> : SimpitMessageType
@@ -66,7 +68,7 @@ namespace KerbalSimpit.Core
 
         internal override void TryEnqueueOutgoingData(SimpitPeer peer, int lastChangeId, Simpit simpit, bool force)
         {
-            Simpit.OutgoingData<TContent> data = simpit.GetOutgoingData(this);
+            OutgoingData<TContent> data = simpit.GetOutgoingData(this);
             lock (data)
             {
                 if (force == false && data.ChangeId == lastChangeId)
@@ -80,11 +82,16 @@ namespace KerbalSimpit.Core
 
         internal override void TryEnqueueOutgoingData(SimpitPeer peer, Simpit simpit)
         {
-            Simpit.OutgoingData<TContent> data = simpit.GetOutgoingData(this);
+            OutgoingData<TContent> data = simpit.GetOutgoingData(this);
             lock (data)
             {
                 peer.EnqueueOutgoing(data.Value);
             }
+        }
+
+        internal override OutgoingData CreateOutgoingData()
+        {
+            return OutgoingData<TContent>.Create();
         }
 
         public override string ToString()

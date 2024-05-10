@@ -39,6 +39,7 @@ namespace KerbalSimpit.Core.Peers
                 {
                     this.logger.LogVerbose("{0}::{1} - {2} subscribing to message type {3}", nameof(Simpit), nameof(Process), this, type);
                     _outgoingSubscriptions.TryAdd(type, default);
+                    _simpit.GetOutgoingData(type).AddSubscriber(this);
                     this.OnOutgoingSubscribed?.Invoke(this, type);
                 }
                 catch
@@ -62,6 +63,7 @@ namespace KerbalSimpit.Core.Peers
                 {
                     this.logger.LogVerbose("{0}::{1} - Peer {2} unsubscribing from message type {3}", nameof(Simpit), nameof(ISimpitMessageSubscriber<RegisterHandler>.Process), this, type);
                     _outgoingSubscriptions.TryRemove(type, out _);
+                    _simpit.GetOutgoingData(type).RemoveSubscriber(this);
                     this.OnOutgoingUnsubscribed?.Invoke(this, type);
                 }
                 catch

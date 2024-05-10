@@ -116,7 +116,7 @@ namespace KerbalSimpit.Core.KSP.Messages
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
             public struct ThrottleCmd : ISimpitMessageData
             {
-                public short Throttle { get; set; }
+                public short Value { get; set; }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]

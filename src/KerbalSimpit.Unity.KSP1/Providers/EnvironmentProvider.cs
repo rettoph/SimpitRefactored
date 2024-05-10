@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+﻿using KerbalSimpit.Unity.Common;
 using EnvironmentMessages = KerbalSimpit.Core.KSP.Messages.Environment;
 
 namespace KerbalSimpit.Unity.KSP1.Providers
 {
     [KSPAddon(KSPAddon.Startup.Instantly, true)]
-    public class EnvironmentProvider : MonoBehaviour
+    public class EnvironmentProvider : SimpitBehaviour
     {
         public void Start()
         {
@@ -30,7 +30,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
 
         private void FlightReadyHandler()
         {
-            KerbalSimpitUnityKSP1.Simpit.SetOutgoingData(new EnvironmentMessages.SceneChange()
+            this.simpit.SetOutgoingData(new EnvironmentMessages.SceneChange()
             {
                 Type = EnvironmentMessages.SceneChange.SceneChangeTypeEnum.Flight
             });
@@ -43,7 +43,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
                 return;
             }
 
-            KerbalSimpitUnityKSP1.Simpit.SetOutgoingData(new EnvironmentMessages.SceneChange()
+            this.simpit.SetOutgoingData(new EnvironmentMessages.SceneChange()
             {
                 Type = EnvironmentMessages.SceneChange.SceneChangeTypeEnum.NotFlight
             });
@@ -51,7 +51,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
 
         private void VesselDockingHandler(uint data0, uint data1)
         {
-            KerbalSimpitUnityKSP1.Simpit.SetOutgoingData(new EnvironmentMessages.VesselChange()
+            this.simpit.SetOutgoingData(new EnvironmentMessages.VesselChange()
             {
                 Type = EnvironmentMessages.VesselChange.TypeEnum.Docking
             });
@@ -59,7 +59,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
 
         private void VesselUndockingHandler(Vessel data0, Vessel data1)
         {
-            KerbalSimpitUnityKSP1.Simpit.SetOutgoingData(new EnvironmentMessages.VesselChange()
+            this.simpit.SetOutgoingData(new EnvironmentMessages.VesselChange()
             {
                 Type = EnvironmentMessages.VesselChange.TypeEnum.Undocking
             });
@@ -67,7 +67,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
 
         private void VesselSwitchingHandler(Vessel data0, Vessel data1)
         {
-            KerbalSimpitUnityKSP1.Simpit.SetOutgoingData(new EnvironmentMessages.VesselChange()
+            this.simpit.SetOutgoingData(new EnvironmentMessages.VesselChange()
             {
                 Type = EnvironmentMessages.VesselChange.TypeEnum.Switching
             });

@@ -1,4 +1,5 @@
 ﻿using KerbalSimpit.Core.Peers;
+using KerbalSimpit.Unity.Common;
 using UnityEngine;
 
 namespace KerbalSimpit.Unity.KSP1.SimpitGUI
@@ -17,7 +18,7 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
 
     }
 
-    public class Window : MonoBehaviour
+    public class Window : SimpitBehaviour
     {
         static Rect windowpos;
         private static bool gui_enabled;
@@ -93,7 +94,7 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
         {
             GUILayout.BeginVertical();
 
-            foreach (SimpitPeer peer in KerbalSimpitUnityKSP1.Simpit.Peers)
+            foreach (SimpitPeer peer in this.simpit.Peers)
             {
                 GUILayout.Label(peer + ": " + peer.Status);
 
@@ -110,18 +111,18 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
                 GUILayout.EndHorizontal();
             }
 
-            if (KerbalSimpitUnityKSP1.Simpit.Peers.Count > 1)
+            if (this.simpit.Peers.Count > 1)
             {
                 //only put the Start all/Close all button if there is several ports
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Open all"))
                 {
-                    KerbalSimpitUnityKSP1.Simpit.OpenAll();
+                    this.simpit.OpenAll();
                 }
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Close all"))
                 {
-                    KerbalSimpitUnityKSP1.Simpit.CloseAll();
+                    this.simpit.CloseAll();
                 }
                 GUILayout.EndHorizontal();
             }
