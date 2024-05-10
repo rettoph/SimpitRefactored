@@ -14,27 +14,26 @@ namespace KerbalSimpit.Core
             where T : ISimpitMessageData
         {
             private int _changeId;
-            private T _data;
+            private T _value;
 
             public override int ChangeId => _changeId;
             public T Value
             {
-                get => _data;
-                set
-                {
-                    if (this.Equals(in _data, in value) == true)
-                    { // No change
-                        return;
-                    }
-
-                    _data = value;
-                    _changeId++;
-                }
+                get => _value;
             }
 
             protected OutgoingData()
             {
 
+            }
+
+            public void SetValue(in T value, bool force)
+            {
+                if (force == true || this.Equals(in _value, in value) == false)
+                {
+                    _value = value;
+                    _changeId++;
+                }
             }
 
             protected abstract bool Equals(in T x, in T y);

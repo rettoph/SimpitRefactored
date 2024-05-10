@@ -160,12 +160,7 @@ namespace KerbalSimpit.Core
             Simpit.OutgoingData<T> data = this.GetOutgoingData(type);
             lock (data)
             {
-                if (force == false && data.Value.Equals(value))
-                {
-                    return;
-                }
-
-                data.Value = value;
+                data.SetValue(value, force);
             }
         }
 
