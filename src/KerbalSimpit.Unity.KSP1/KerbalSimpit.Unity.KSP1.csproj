@@ -56,10 +56,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KerbalSimpitUnity.cs" />
+    <Compile Include="KerbalSimpitUnityKSP1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CoreProvider.cs" />
     <Compile Include="Providers\EnvironmentProvider.cs" />
+    <Compile Include="Providers\VesselProvider.cs" />
     <Compile Include="SimpitGUI\Toolbar.cs" />
     <Compile Include="SimpitGUI\Window.cs" />
   </ItemGroup>

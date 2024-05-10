@@ -12,6 +12,10 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\..\libraries\UnityMainThreadDispatcher\Runtime\*.cs" Link="%(Filename)%(Extension)" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\KerbalSimpit.Core\KerbalSimpit.Core.csproj" />

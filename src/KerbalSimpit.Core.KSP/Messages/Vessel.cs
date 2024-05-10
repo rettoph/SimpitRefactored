@@ -65,9 +65,9 @@ namespace KerbalSimpit.Core.KSP.Messages
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
             public struct Airspeed : ISimpitMessageData
             {
-                public float IAS { get; set; }
+                public float IndicatedAirSpeed { get; set; }
                 public float MachNumber { get; set; }
-                public float GForces { get; set; }
+                public float GeeForce { get; set; }
             }
 
             public struct Maneuver : ISimpitMessageData

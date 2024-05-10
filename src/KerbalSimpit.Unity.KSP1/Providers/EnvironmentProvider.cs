@@ -30,7 +30,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
 
         private void FlightReadyHandler()
         {
-            KerbalSimpitUnity.Simpit.SetOutgoingData(new EnvironmentMessages.SceneChange()
+            KerbalSimpitUnityKSP1.Simpit.SetOutgoingData(new EnvironmentMessages.SceneChange()
             {
                 Type = EnvironmentMessages.SceneChange.SceneChangeTypeEnum.Flight
             });
@@ -43,7 +43,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
                 return;
             }
 
-            KerbalSimpitUnity.Simpit.SetOutgoingData(new EnvironmentMessages.SceneChange()
+            KerbalSimpitUnityKSP1.Simpit.SetOutgoingData(new EnvironmentMessages.SceneChange()
             {
                 Type = EnvironmentMessages.SceneChange.SceneChangeTypeEnum.NotFlight
             });
@@ -51,7 +51,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
 
         private void VesselDockingHandler(uint data0, uint data1)
         {
-            KerbalSimpitUnity.Simpit.SetOutgoingData(new EnvironmentMessages.VesselChange()
+            KerbalSimpitUnityKSP1.Simpit.SetOutgoingData(new EnvironmentMessages.VesselChange()
             {
                 Type = EnvironmentMessages.VesselChange.TypeEnum.Docking
             });
@@ -59,7 +59,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
 
         private void VesselUndockingHandler(Vessel data0, Vessel data1)
         {
-            KerbalSimpitUnity.Simpit.SetOutgoingData(new EnvironmentMessages.VesselChange()
+            KerbalSimpitUnityKSP1.Simpit.SetOutgoingData(new EnvironmentMessages.VesselChange()
             {
                 Type = EnvironmentMessages.VesselChange.TypeEnum.Undocking
             });
@@ -67,7 +67,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
 
         private void VesselSwitchingHandler(Vessel data0, Vessel data1)
         {
-            KerbalSimpitUnity.Simpit.SetOutgoingData(new EnvironmentMessages.VesselChange()
+            KerbalSimpitUnityKSP1.Simpit.SetOutgoingData(new EnvironmentMessages.VesselChange()
             {
                 Type = EnvironmentMessages.VesselChange.TypeEnum.Switching
             });

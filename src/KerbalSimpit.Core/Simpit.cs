@@ -169,6 +169,13 @@ namespace KerbalSimpit.Core
             }
         }
 
+        public bool HasAnyOutgoingSubscribers<T>()
+            where T : unmanaged, ISimpitMessageData
+        {
+            // TODO: Actually keep track of this.
+            return true;
+        }
+
         public OutgoingData<T> GetOutgoingData<T>(SimpitMessageType<T> type)
             where T : ISimpitMessageData
         {
@@ -177,7 +184,7 @@ namespace KerbalSimpit.Core
                 return (OutgoingData<T>)uncasted;
             }
 
-            OutgoingData<T> data = new OutgoingData<T>();
+            OutgoingData<T> data = OutgoingData<T>.Create();
             _outgoing.TryAdd(type, data);
 
             return data;

@@ -16,21 +16,21 @@ namespace KerbalSimpit.Unity.KSP1.Providers
         {
             DontDestroyOnLoad(this); // Make this provider persistent
 
-            KerbalSimpitUnity.Simpit.AddIncomingSubscriber<EchoRequest>(this);
-            KerbalSimpitUnity.Simpit.AddIncomingSubscriber<EchoResponse>(this);
-            KerbalSimpitUnity.Simpit.AddIncomingSubscriber<CustomLog>(this);
+            KerbalSimpitUnityKSP1.Simpit.AddIncomingSubscriber<EchoRequest>(this);
+            KerbalSimpitUnityKSP1.Simpit.AddIncomingSubscriber<EchoResponse>(this);
+            KerbalSimpitUnityKSP1.Simpit.AddIncomingSubscriber<CustomLog>(this);
         }
 
         public void OnDestroy()
         {
-            KerbalSimpitUnity.Simpit.RemoveIncomingSubscriber<EchoRequest>(this);
-            KerbalSimpitUnity.Simpit.RemoveIncomingSubscriber<EchoResponse>(this);
-            KerbalSimpitUnity.Simpit.RemoveIncomingSubscriber<CustomLog>(this);
+            KerbalSimpitUnityKSP1.Simpit.RemoveIncomingSubscriber<EchoRequest>(this);
+            KerbalSimpitUnityKSP1.Simpit.RemoveIncomingSubscriber<EchoResponse>(this);
+            KerbalSimpitUnityKSP1.Simpit.RemoveIncomingSubscriber<CustomLog>(this);
         }
 
         void ISimpitMessageSubscriber<EchoRequest>.Process(SimpitPeer peer, ISimpitMessage<EchoRequest> message)
         {
-            KerbalSimpitUnity.Logger.LogVerbose("Echo request on peer {0}. Replying.", peer);
+            KerbalSimpitUnityKSP1.Logger.LogVerbose("Echo request on peer {0}. Replying.", peer);
             peer.EnqueueOutgoing(new EchoResponse()
             {
                 Data = message.Data.Data
@@ -39,14 +39,14 @@ namespace KerbalSimpit.Unity.KSP1.Providers
 
         void ISimpitMessageSubscriber<EchoResponse>.Process(SimpitPeer peer, ISimpitMessage<EchoResponse> message)
         {
-            KerbalSimpitUnity.Logger.LogVerbose("Echo reply received on port {0}", peer);
+            KerbalSimpitUnityKSP1.Logger.LogVerbose("Echo reply received on port {0}", peer);
         }
 
         void ISimpitMessageSubscriber<CustomLog>.Process(SimpitPeer peer, ISimpitMessage<CustomLog> message)
         {
             if (message.Data.Flags.HasFlag(CustomLog.FlagsEnum.Verbose))
             {
-                KerbalSimpitUnity.Logger.LogVerbose(message.Data.Value);
+                KerbalSimpitUnityKSP1.Logger.LogVerbose(message.Data.Value);
             }
 
             if (message.Data.Flags.HasFlag(CustomLog.FlagsEnum.PrintToScreen))

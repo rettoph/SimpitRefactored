@@ -65,13 +65,13 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
         {
             if (button == null) return; // button not yet initialised ?
 
-            if (KerbalSimpitUnity.Simpit.Peers.Count == 0)
+            if (KerbalSimpitUnityKSP1.Simpit.Peers.Count == 0)
             {
                 button.SetTexture(iconRed);
                 return;
             }
 
-            ConnectionStatusEnum status = KerbalSimpitUnity.Simpit.Peers[0].Status;
+            ConnectionStatusEnum status = KerbalSimpitUnityKSP1.Simpit.Peers[0].Status;
             if (status == ConnectionStatusEnum.CLOSED || status == ConnectionStatusEnum.ERROR)
             {
                 button.SetTexture(iconRed);
@@ -92,7 +92,7 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
 
             //All cases should be covered, this should not happen.
             button.SetTexture(iconRed);
-            KerbalSimpitUnity.Logger.LogWarning("{0}::{1} - Unreachable state detected {2}", nameof(AppButton), nameof(Update), status);
+            KerbalSimpitUnityKSP1.Logger.LogWarning("{0}::{1} - Unreachable state detected {2}", nameof(AppButton), nameof(Update), status);
         }
     }
 

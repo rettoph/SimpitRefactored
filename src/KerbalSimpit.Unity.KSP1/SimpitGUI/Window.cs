@@ -93,7 +93,7 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
         {
             GUILayout.BeginVertical();
 
-            foreach (SimpitPeer peer in KerbalSimpitUnity.Simpit.Peers)
+            foreach (SimpitPeer peer in KerbalSimpitUnityKSP1.Simpit.Peers)
             {
                 GUILayout.Label(peer + ": " + peer.Status);
 
@@ -110,18 +110,18 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
                 GUILayout.EndHorizontal();
             }
 
-            if (KerbalSimpitUnity.Simpit.Peers.Count > 1)
+            if (KerbalSimpitUnityKSP1.Simpit.Peers.Count > 1)
             {
                 //only put the Start all/Close all button if there is several ports
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Open all"))
                 {
-                    KerbalSimpitUnity.Simpit.OpenAll();
+                    KerbalSimpitUnityKSP1.Simpit.OpenAll();
                 }
                 GUILayout.FlexibleSpace();
                 if (GUILayout.Button("Close all"))
                 {
-                    KerbalSimpitUnity.Simpit.CloseAll();
+                    KerbalSimpitUnityKSP1.Simpit.CloseAll();
                 }
                 GUILayout.EndHorizontal();
             }
