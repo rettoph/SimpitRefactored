@@ -2,9 +2,24 @@
 
 namespace KerbalSimpit.Unity.KSP1.Controllers
 {
+    [KSPAddon(KSPAddon.Startup.Flight, false)]
     public partial class VesselController : SimpitBehaviour
     {
         private Vessel _vessel;
+
+        public KSPActionGroup[] ActionGroupIDs = new KSPActionGroup[] {
+            KSPActionGroup.None,
+            KSPActionGroup.Custom01,
+            KSPActionGroup.Custom02,
+            KSPActionGroup.Custom03,
+            KSPActionGroup.Custom04,
+            KSPActionGroup.Custom05,
+            KSPActionGroup.Custom06,
+            KSPActionGroup.Custom07,
+            KSPActionGroup.Custom08,
+            KSPActionGroup.Custom09,
+            KSPActionGroup.Custom10
+        };
 
         public override void Start()
         {

@@ -84,12 +84,15 @@ namespace KerbalSimpit.Core.KSP.Extensions
             simpit.Messages.RegisterIncomingType<Vessel.Incoming.WheelControl>(MessageTypeIds.Incoming.WheelControl);
             simpit.Messages.RegisterIncomingType<Vessel.Incoming.Throttle>(MessageTypeIds.Incoming.Throttle);
             simpit.Messages.RegisterIncomingType<Vessel.Incoming.AutopilotMode>(MessageTypeIds.Incoming.AutopilotMode);
-            simpit.Messages.RegisterIncomingType<Vessel.Incoming.CameraMode>(MessageTypeIds.Incoming.CameraMode);
-            simpit.Messages.RegisterIncomingType<Vessel.Incoming.CameraRotation>(MessageTypeIds.Incoming.CameraRotation);
-            simpit.Messages.RegisterIncomingType<Vessel.Incoming.CameraTranslation>(MessageTypeIds.Incoming.CameraTranslation);
-            simpit.Messages.RegisterIncomingType<Vessel.Incoming.WarpChange>(MessageTypeIds.Incoming.WarpChange);
-            simpit.Messages.RegisterIncomingType<Vessel.Incoming.TimewarpTo>(MessageTypeIds.Incoming.TimewarpTo);
-            simpit.Messages.RegisterIncomingType<Vessel.Incoming.NavballMode>(MessageTypeIds.Incoming.NavballMode);
+
+            simpit.Messages.RegisterIncomingType<Camera.CameraMode>(MessageTypeIds.Incoming.CameraMode);
+            simpit.Messages.RegisterIncomingType<Camera.CameraRotation>(MessageTypeIds.Incoming.CameraRotation);
+            simpit.Messages.RegisterIncomingType<Camera.CameraTranslation>(MessageTypeIds.Incoming.CameraTranslation);
+
+            simpit.Messages.RegisterIncomingType<Warp.WarpChange>(MessageTypeIds.Incoming.WarpChange);
+            simpit.Messages.RegisterIncomingType<Warp.TimewarpTo>(MessageTypeIds.Incoming.TimewarpTo);
+
+            simpit.Messages.RegisterIncomingType<NavBall.NavballMode>(MessageTypeIds.Incoming.NavballMode);
 
             simpit.Messages.RegisterIncomingType<KeyboardEmulator>(MessageTypeIds.Incoming.KeyboardEmulator);
             #endregion

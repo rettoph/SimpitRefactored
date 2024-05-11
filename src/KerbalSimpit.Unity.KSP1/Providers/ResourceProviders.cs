@@ -105,27 +105,13 @@ namespace KerbalSimpit.Unity.KSP1.Providers
 
         public class CustomActionGroupsProvider : BaseVesselProvider<VesselMessages.Outgoing.CustomActionGroups>
         {
-            private static KSPActionGroup[] ActionGroupIDs = new KSPActionGroup[] {
-                KSPActionGroup.None,
-                KSPActionGroup.Custom01,
-                KSPActionGroup.Custom02,
-                KSPActionGroup.Custom03,
-                KSPActionGroup.Custom04,
-                KSPActionGroup.Custom05,
-                KSPActionGroup.Custom06,
-                KSPActionGroup.Custom07,
-                KSPActionGroup.Custom08,
-                KSPActionGroup.Custom09,
-                KSPActionGroup.Custom10
-            };
-
             protected unsafe override VesselMessages.Outgoing.CustomActionGroups GetOutgoingData()
             {
                 VesselMessages.Outgoing.CustomActionGroups result = new VesselMessages.Outgoing.CustomActionGroups();
 
-                for (int i = 1; i < ActionGroupIDs.Length; i++) //Ignoring 0 since there is no Action Group 0
+                for (int i = 1; i < this.controller.ActionGroupIDs.Length; i++) //Ignoring 0 since there is no Action Group 0
                 {
-                    if (FlightGlobals.ActiveVessel.ActionGroups[ActionGroupIDs[i]])
+                    if (FlightGlobals.ActiveVessel.ActionGroups[this.controller.ActionGroupIDs[i]])
                     {
                         result.Status[i / 8] |= (byte)(1 << (i % 8)); //Set the selected bit to 1
                     }

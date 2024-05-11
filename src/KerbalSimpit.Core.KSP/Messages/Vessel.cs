@@ -281,90 +281,6 @@ namespace KerbalSimpit.Core.KSP.Messages
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct CameraMode : ISimpitMessageData
-            {
-                public enum ValueEnum : byte
-                {
-                    FlightMode = 1,
-                    Auto = 2,
-                    Free = 3,
-                    Orbital = 4,
-                    Chase = 5,
-                    Locked = 6,
-                    IVAMode = 10,
-                    PlanetaryMode = 20,
-                    NextCamera = 50,
-                    PreviousCamera = 51,
-                    NextCameraModeState = 52,
-                    PreviousCameraModeState = 53
-                }
-
-                public ValueEnum Value { get; set; }
-            }
-
-            [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct CameraRotation : ISimpitMessageData
-            {
-                public short Pitch;
-                public short Roll;
-                public short Yaw;
-                public short Zoom;
-                public byte Mask;
-            }
-
-            [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct CameraTranslation : ISimpitMessageData
-            {
-                public short X;
-                public short Y;
-                public short Z;
-                public byte Mask;
-            }
-
-            [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct WarpChange : ISimpitMessageData
-            {
-                public enum RateEnum : byte
-                {
-                    WarpRate1 = 0,
-                    WarpRate2 = 1,
-                    WarpRate3 = 2,
-                    WarpRate4 = 3,
-                    WarpRate5 = 4,
-                    WarpRate6 = 5,
-                    WarpRate7 = 6,
-                    WarpRate8 = 7,
-                    WarpRatePhys1 = 8,
-                    WarpRatePhys2 = 9,
-                    WarpRatePhys3 = 10,
-                    WarpRatePhys4 = 11,
-                    WarpRateUp = 12,
-                    WarpRateDown = 13,
-                    WarpCancelAutoWarp = 255,
-                }
-
-                public RateEnum Rate { get; set; }
-            }
-
-            [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            public struct TimewarpTo : ISimpitMessageData
-            {
-                public enum InstanceEnum : byte
-                {
-                    TimewarpToNow = 0,
-                    TimewarpToManeuver = 1,
-                    TimewarpToBurn = 2,
-                    TimewarpToNextSOI = 3,
-                    TimewarpToApoapsis = 4,
-                    TimewarpToPeriapsis = 5,
-                    TimewarpToNextMorning = 6
-                }
-
-                public InstanceEnum Instant;
-                public float Delay; // negative for warping before the instant
-            }
-
-            [StructLayout(LayoutKind.Sequential, Pack = 1)]
             public struct CustomAxix : ISimpitMessageData
             {
                 public short Custom1 { get; set; }
@@ -372,12 +288,6 @@ namespace KerbalSimpit.Core.KSP.Messages
                 public short Custom3 { get; set; }
                 public short Custom4 { get; set; }
                 public byte Mask { get; set; }
-            }
-
-            public struct NavballMode : ISimpitMessageData
-            {
-                // TODO: Check if any data is actually transmitted with this message
-                // If there is, it seems unnecessary
             }
         }
     }

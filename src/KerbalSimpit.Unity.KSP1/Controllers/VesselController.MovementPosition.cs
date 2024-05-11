@@ -6,7 +6,6 @@ using VesselMessages = KerbalSimpit.Core.KSP.Messages.Vessel;
 
 namespace KerbalSimpit.Unity.KSP1.Controllers
 {
-    [KSPAddon(KSPAddon.Startup.Flight, false)]
     public partial class VesselController :
         ISimpitMessageSubscriber<VesselMessages.Incoming.Rotation>,
         ISimpitMessageSubscriber<VesselMessages.Incoming.Translation>,

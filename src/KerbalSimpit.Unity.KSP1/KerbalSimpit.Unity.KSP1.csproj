@@ -32,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="$(KSPDIR)\KSP_x64_Data\Managed\Assembly*.dll">
@@ -57,8 +58,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\NavBallController.cs" />
+    <Compile Include="Controllers\WarpController.cs" />
+    <Compile Include="Controllers\CameraController.cs" />
     <Compile Include="Controllers\VesselController.Core.cs" />
+    <Compile Include="Controllers\VesselController.Details.cs" />
     <Compile Include="Controllers\VesselController.MovementPosition.cs" />
+    <Compile Include="Helpers\OrbitalHelper.cs" />
     <Compile Include="Helpers\TelemetryHelper.cs" />
     <Compile Include="KerbalSimpitUnityKSP1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

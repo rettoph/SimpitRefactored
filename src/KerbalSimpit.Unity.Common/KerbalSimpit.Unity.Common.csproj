@@ -16,8 +16,13 @@
   <ItemGroup>
     <Compile Include="..\..\libraries\UnityMainThreadDispatcher\Runtime\*.cs" Link="%(Filename)%(Extension)" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="InputSimulator" Version="1.0.4" />
+  </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\KerbalSimpit.Core.KSP\KerbalSimpit.Core.KSP.csproj" />
     <ProjectReference Include="..\KerbalSimpit.Core\KerbalSimpit.Core.csproj" />
   </ItemGroup>
   

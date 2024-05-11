@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KerbalSimpit.Core.KSP.Constants
+﻿namespace KerbalSimpit.Core.KSP.Constants
 {
     internal static class MessageTypeIds
     {
@@ -98,8 +92,8 @@ namespace KerbalSimpit.Core.KSP.Constants
             public const byte ActionGroupActivate = 13;
             public const byte ActionGroupDeactivate = 14;
             public const byte ActionGroupToggle = 15;
-            public const byte SetSingleActionGroup = 58;
-            public const byte SetSingleCAG = 59;
+            // public const byte SetSingleActionGroup = 58;
+            // public const byte SetSingleCAG = 59;
             public const byte Rotation = 16;
             public const byte Translation = 17;
             public const byte WheelControl = 18;
