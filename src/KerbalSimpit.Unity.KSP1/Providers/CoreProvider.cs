@@ -12,20 +12,11 @@ namespace KerbalSimpit.Unity.KSP1.Providers
         ISimpitMessageSubscriber<EchoResponse>,
         ISimpitMessageSubscriber<CustomLog>
     {
-        public void Start()
+        public override void Start()
         {
+            base.Start();
+
             DontDestroyOnLoad(this); // Make this provider persistent
-
-            this.simpit.AddIncomingSubscriber<EchoRequest>(this);
-            this.simpit.AddIncomingSubscriber<EchoResponse>(this);
-            this.simpit.AddIncomingSubscriber<CustomLog>(this);
-        }
-
-        public void OnDestroy()
-        {
-            this.simpit.RemoveIncomingSubscriber<EchoRequest>(this);
-            this.simpit.RemoveIncomingSubscriber<EchoResponse>(this);
-            this.simpit.RemoveIncomingSubscriber<CustomLog>(this);
         }
 
         void ISimpitMessageSubscriber<EchoRequest>.Process(SimpitPeer peer, ISimpitMessage<EchoRequest> message)

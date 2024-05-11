@@ -104,15 +104,17 @@ namespace KerbalSimpit.Unity.KSP1.Providers
         [KSPAddon(KSPAddon.Startup.Flight, false)]
         public class SceneChangeProvider : SimpitBehaviour
         {
-            public void Start()
+            public override void Start()
             {
+                base.Start();
+
                 this.simpit.SetOutgoingData(new EnvironmentMessages.SceneChange()
                 {
                     Type = EnvironmentMessages.SceneChange.SceneChangeTypeEnum.Flight
                 });
             }
 
-            public void OnDestroy()
+            public override void OnDestroy()
             {
                 this.simpit.SetOutgoingData(new EnvironmentMessages.SceneChange()
                 {
@@ -253,15 +255,19 @@ namespace KerbalSimpit.Unity.KSP1.Providers
         [KSPAddon(KSPAddon.Startup.Flight, false)]
         public class VesselChangeProvider : SimpitBehaviour
         {
-            public void Start()
+            public override void Start()
             {
+                base.Start();
+
                 GameEvents.onVesselDocking.Add(this.VesselDockingHandler);
                 GameEvents.onVesselsUndocking.Add(this.VesselUndockingHandler);
                 GameEvents.onVesselSwitching.Add(this.VesselSwitchingHandler);
             }
 
-            public void OnDestroy()
+            public override void OnDestroy()
             {
+                base.OnDestroy();
+
                 GameEvents.onVesselDocking.Remove(this.VesselDockingHandler);
                 GameEvents.onVesselsUndocking.Remove(this.VesselUndockingHandler);
                 GameEvents.onVesselSwitching.Remove(this.VesselSwitchingHandler);

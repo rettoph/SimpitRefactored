@@ -1,5 +1,4 @@
 ﻿using KerbalSimpit.Unity.Common;
-using VesselMessages = KerbalSimpit.Core.KSP.Messages.Vessel;
 
 namespace KerbalSimpit.Unity.KSP1.Controllers
 {
@@ -7,30 +6,18 @@ namespace KerbalSimpit.Unity.KSP1.Controllers
     {
         private Vessel _vessel;
 
-        public void Start()
+        public override void Start()
         {
-            // Movement/Position
-            this.simpit.AddIncomingSubscriber<VesselMessages.Incoming.Rotation>(this);
-            this.simpit.AddIncomingSubscriber<VesselMessages.Incoming.Translation>(this);
-            this.simpit.AddIncomingSubscriber<VesselMessages.Incoming.WheelControl>(this);
-            this.simpit.AddIncomingSubscriber<VesselMessages.Incoming.CustomAxix>(this);
-            this.simpit.AddIncomingSubscriber<VesselMessages.Incoming.Throttle>(this);
-            this.simpit.AddIncomingSubscriber<VesselMessages.Incoming.AutopilotMode>(this);
+            base.Start();
 
             GameEvents.onVesselChange.Add(this.OnVesselChangeHandler);
 
             this.Clean(FlightGlobals.ActiveVessel);
         }
 
-        public void OnDestroy()
+        public override void OnDestroy()
         {
-            // Movement/Position
-            this.simpit.RemoveIncomingSubscriber<VesselMessages.Incoming.Rotation>(this);
-            this.simpit.RemoveIncomingSubscriber<VesselMessages.Incoming.Translation>(this);
-            this.simpit.RemoveIncomingSubscriber<VesselMessages.Incoming.WheelControl>(this);
-            this.simpit.RemoveIncomingSubscriber<VesselMessages.Incoming.CustomAxix>(this);
-            this.simpit.RemoveIncomingSubscriber<VesselMessages.Incoming.Throttle>(this);
-            this.simpit.RemoveIncomingSubscriber<VesselMessages.Incoming.AutopilotMode>(this);
+            base.OnDestroy();
 
             GameEvents.onVesselChange.Remove(this.OnVesselChangeHandler);
 

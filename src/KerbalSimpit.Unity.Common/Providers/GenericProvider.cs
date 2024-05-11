@@ -9,8 +9,10 @@ namespace KerbalSimpit.Unity.Common.Providers
     {
         private OutgoingData<T> _outgoing;
 
-        public virtual void Start()
+        public override void Start()
         {
+            base.Start();
+
             if (this.simpit.Messages.TryGetOutgoingType<T>(out SimpitMessageType<T> type) == false)
             {
                 throw new InvalidOperationException($"{this.GetType().Name}::{nameof(Start)} - Unknown message type {typeof(T).Name}");

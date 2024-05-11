@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 namespace KerbalSimpit.Core
@@ -237,6 +238,36 @@ namespace KerbalSimpit.Core
         {
             SimpitMessagePublisher<T> publisher = this.GetPublisher(typeof(T)) as SimpitMessagePublisher<T>;
             publisher.RemoveSubscriber(subscriber);
+
+            return this;
+        }
+
+        private static MethodInfo GenericAddIncomingSubscriberMethod = typeof(Simpit).GetMethod(nameof(Simpit.AddIncomingSubscriber));
+        public Simpit AddIncomingSubscribers(object instance)
+        {
+            IEnumerable<Type> subscriberTypes = instance.GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ISimpitMessageSubscriber<>));
+
+            foreach (Type subscriberType in subscriberTypes)
+            {
+                Type messageDataType = subscriberType.GenericTypeArguments[0];
+                MethodInfo addIncomingSubscriberMethod = GenericAddIncomingSubscriberMethod.MakeGenericMethod(messageDataType);
+                addIncomingSubscriberMethod.Invoke(this, new object[] { instance });
+            }
+
+            return this;
+        }
+
+        private static MethodInfo GenericRemoveIncomingSubscriberMethod = typeof(Simpit).GetMethod(nameof(Simpit.RemoveIncomingSubscriber));
+        public Simpit RemoveIncomingSubscribers(object instance)
+        {
+            IEnumerable<Type> subscriberTypes = instance.GetType().GetInterfaces().Where(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ISimpitMessageSubscriber<>));
+
+            foreach (Type subscriberType in subscriberTypes)
+            {
+                Type messageDataType = subscriberType.GenericTypeArguments[0];
+                MethodInfo removeIncomingSubscriberMethod = GenericRemoveIncomingSubscriberMethod.MakeGenericMethod(messageDataType);
+                removeIncomingSubscriberMethod.Invoke(this, new object[] { instance });
+            }
 
             return this;
         }

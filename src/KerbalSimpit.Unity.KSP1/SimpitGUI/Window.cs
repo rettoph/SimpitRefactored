@@ -78,16 +78,20 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
             GameEvents.onShowUI.Add(onShowUI);
         }
 
-        void OnDestroy()
+        public override void Start()
         {
+            base.Start();
+
+            UpdateGUIState();
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+
             instance = null;
             GameEvents.onHideUI.Remove(onHideUI);
             GameEvents.onShowUI.Remove(onShowUI);
-        }
-
-        void Start()
-        {
-            UpdateGUIState();
         }
 
         void WindowGUI(int windowID)

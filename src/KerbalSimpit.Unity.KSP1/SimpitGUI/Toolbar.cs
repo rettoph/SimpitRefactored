@@ -38,8 +38,10 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
             Toggle();
         }
 
-        public void Start()
+        public override void Start()
         {
+            base.Start();
+
             iconRed = GameDatabase.Instance.GetTexture("KerbalSimpit/Simpit_icon_red", false);
             iconOrange = GameDatabase.Instance.GetTexture("KerbalSimpit/Simpit_icon_orange", false);
             iconGreen = GameDatabase.Instance.GetTexture("KerbalSimpit/Simpit_icon_green", false);
@@ -48,8 +50,10 @@ namespace KerbalSimpit.Unity.KSP1.SimpitGUI
             GameEvents.onGUIApplicationLauncherReady.Add(OnGUIAppLauncherReady);
         }
 
-        void OnDestroy()
+        public override void OnDestroy()
         {
+            base.OnDestroy();
+
             GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
         }
 
