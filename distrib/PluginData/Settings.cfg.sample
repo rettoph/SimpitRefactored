@@ -1,7 +1,7 @@
 KerbalSimpit
 {
 	Documentation = https://kerbalsimpitrevamped-arduino.readthedocs.io
-	Verbose = False
+	LogLevel = Information
 	RefreshRate = 125
 	SerialPort
 	{
