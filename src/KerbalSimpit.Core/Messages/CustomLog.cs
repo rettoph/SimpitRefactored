@@ -1,11 +1,14 @@
-﻿using System;
+﻿using KerbalSimpit.Core.Utilities;
+using System;
+using System.Runtime.InteropServices;
 
 namespace KerbalSimpit.Core.Messages
 {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct CustomLog : ISimpitMessageData
     {
         [Flags]
-        public enum FlagsEnum
+        public enum FlagsEnum : byte
         {
             None = 0,
             Verbose = 1,
@@ -14,15 +17,6 @@ namespace KerbalSimpit.Core.Messages
         }
 
         public FlagsEnum Flags { get; set; }
-        public string Value { get; set; }
-
-        internal static CustomLog Deserialize(SimpitStream input)
-        {
-            return new CustomLog()
-            {
-                Flags = (FlagsEnum)input.ReadByte(),
-                Value = input.ReadString(input.Length - 1)
-            };
-        }
+        public FixedString Value { get; set; }
     }
 }

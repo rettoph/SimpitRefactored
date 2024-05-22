@@ -61,7 +61,7 @@ namespace KerbalSimpit.Core
 
         internal override ISimpitMessage Deserialize(SimpitStream input)
         {
-            // TODO: Maybe someday pool and reuse these message intnaces?
+            // TODO: Maybe someday pool and reuse these message instances?
             TContent content = _deserializer(input);
             return new SimpitMessage<TContent>(this, content);
         }

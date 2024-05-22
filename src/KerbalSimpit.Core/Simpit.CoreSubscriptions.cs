@@ -56,7 +56,7 @@ namespace KerbalSimpit.Core
                 return;
             }
 
-            if (this.Messages.TryGetIncomingType(message.Data.MessageTypeId, out SimpitMessageType type) == false)
+            if (this.Messages.TryGetOutgoingType(message.Data.MessageTypeId, out SimpitMessageType type) == false)
             {
                 _logger.LogWarning("{0}::{1} - Unknown message type {2} request recieved on peer {3}.", nameof(Simpit), nameof(ISimpitMessageSubscriber<Synchronisation>.Process), message.Data.MessageTypeId, peer);
                 return;

@@ -41,9 +41,18 @@ namespace KerbalSimpit.Core
             _writeIndex = (_writeIndex + 1) % _buffer.Length;
         }
 
-        public void Write(byte[] values)
+        public void Write(byte[] values, int length = -1)
         {
-            for (int i = 0; i < values.Length; i++)
+            if (length == -1)
+            {
+                length = values.Length;
+            }
+            else
+            {
+                length = Math.Min(values.Length, length);
+            }
+
+            for (int i = 0; i < length; i++)
             {
                 this.Write(values[i]);
             }
@@ -63,7 +72,7 @@ namespace KerbalSimpit.Core
         public void Write(string value)
         {
             byte[] bytes = Encoding.ASCII.GetBytes(value);
-            this.Write(bytes);
+            this.Write(bytes, 31);
         }
 
         public unsafe void WriteUnmanaged<T>(T value)

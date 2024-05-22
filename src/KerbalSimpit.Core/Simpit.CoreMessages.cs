@@ -14,7 +14,7 @@ namespace KerbalSimpit.Core
             this.Messages.RegisterIncomingType<CloseSerialPort>(MessageTypeIds.Incoming.CloseSerialPort);
             this.Messages.RegisterIncomingType<RegisterHandler>(MessageTypeIds.Incoming.RegisterHandler, RegisterHandler.Deserialize);
             this.Messages.RegisterIncomingType<DeregisterHandler>(MessageTypeIds.Incoming.DeregisterHandler, DeregisterHandler.Deserialize);
-            this.Messages.RegisterIncomingType<CustomLog>(MessageTypeIds.Incoming.CustomLog, CustomLog.Deserialize);
+            this.Messages.RegisterIncomingType<CustomLog>(MessageTypeIds.Incoming.CustomLog);
             this.Messages.RegisterIncomingType<Request>(MessageTypeIds.Incoming.RequestMessage);
 
             // Outgoing Messages

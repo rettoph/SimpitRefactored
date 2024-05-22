@@ -26,7 +26,7 @@ namespace KerbalSimpit.Debugger
 
         private Dictionary<SimpitPeer, PeerInfo> _peers;
 
-        public MainWindow()
+        public unsafe MainWindow()
         {
             _peers = new Dictionary<SimpitPeer, PeerInfo>();
 

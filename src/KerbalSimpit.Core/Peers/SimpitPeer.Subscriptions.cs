@@ -16,7 +16,7 @@ namespace KerbalSimpit.Core.Peers
             this.EnqueueOutgoing(new Handshake()
             {
                 Payload = 0x37, // TODO: Figure out what this is.
-                HandShakeType = 0x01 // TODO: figure out what this is. KSP version?
+                HandShakeType = (byte)Synchronisation.SynchronisationMessageTypeEnum.SYNACK
             });
         }
 
@@ -29,6 +29,11 @@ namespace KerbalSimpit.Core.Peers
         {
             foreach (byte messageTypeId in message.MessageTypeIds)
             {
+                if (messageTypeId == default)
+                { // Ignore default requests
+                    continue;
+                }
+
                 if (_simpit.Messages.TryGetOutgoingType(messageTypeId, out SimpitMessageType type) == false)
                 {
                     this.logger.LogWarning("{0}::{1} - Unrecognized registration request from {2}, {3}", nameof(SimpitPeer), nameof(Process), this, messageTypeId);
@@ -53,6 +58,11 @@ namespace KerbalSimpit.Core.Peers
         {
             foreach (byte messageTypeId in message.MessageTypeIds)
             {
+                if (messageTypeId == default)
+                { // Ignore default requests
+                    continue;
+                }
+
                 if (_simpit.Messages.TryGetOutgoingType(messageTypeId, out SimpitMessageType type) == false)
                 {
                     this.logger.LogWarning("{0}::{1} - Unrecognized deregistration request from {2}, {3}", nameof(Simpit), nameof(ISimpitMessageSubscriber<RegisterHandler>.Process), this, messageTypeId);

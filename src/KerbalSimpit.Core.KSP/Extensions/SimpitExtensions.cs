@@ -32,8 +32,6 @@ namespace KerbalSimpit.Core.KSP.Extensions
             simpit.Messages.RegisterOutogingType<Resource.Ore>(MessageTypeIds.Outgoing.Ore);
             simpit.Messages.RegisterOutogingType<Resource.Ablator>(MessageTypeIds.Outgoing.Ablator);
             simpit.Messages.RegisterOutogingType<Resource.AblatorStage>(MessageTypeIds.Outgoing.AblatorStage);
-            simpit.Messages.RegisterOutogingType<TACLS.Resource>(MessageTypeIds.Outgoing.TACLSResource);
-            simpit.Messages.RegisterOutogingType<TACLS.Waste>(MessageTypeIds.Outgoing.TACLSWaste);
             simpit.Messages.RegisterOutogingType<CustomResource.One>(MessageTypeIds.Outgoing.CustomResource1);
             simpit.Messages.RegisterOutogingType<CustomResource.Two>(MessageTypeIds.Outgoing.CustomResource2);
 
