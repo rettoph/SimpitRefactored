@@ -1,5 +1,6 @@
 ﻿using KerbalSimpit.Core;
 using System;
+using System.Linq;
 
 namespace KerbalSimpit.Unity.Common.Providers
 {
@@ -25,7 +26,7 @@ namespace KerbalSimpit.Unity.Common.Providers
 
         protected virtual void CleanOutgoingData()
         {
-            if (_outgoing.Subscribers.Count == 0)
+            if (_outgoing.Subscribers.Count() == 0)
             {
                 return;
             }
