@@ -1,5 +1,6 @@
 ﻿using KerbalSimpit.Core;
 using KerbalSimpit.Core.KSP.Extensions;
+using KerbalSimpit.Core.KSP.Messages;
 using KerbalSimpit.Core.Messages;
 using KerbalSimpit.Core.Peers;
 using KerbalSimpit.Core.Utilities;
@@ -11,6 +12,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Media;
+using WindowsInput.Native;
 using Outgoing = KerbalSimpit.Core.KSP.Messages.Vessel.Outgoing;
 using Resource = KerbalSimpit.Core.KSP.Messages.Resource;
 
@@ -20,7 +22,8 @@ namespace KerbalSimpit.Debugger
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window, IDisposable,
-        ISimpitMessageSubscriber<CustomLog>
+        ISimpitMessageSubscriber<CustomLog>,
+        ISimpitMessageSubscriber<KeyboardEmulator>
     {
         public static Simpit Simpit { get; private set; } = null!;
 
@@ -39,7 +42,7 @@ namespace KerbalSimpit.Debugger
                 }
             }) ?? new SimpitConfiguration();
 
-            MainWindow.Simpit = new Simpit(new BasicSimpitLogger(configuration.LogLevel)).RegisterKerbal().AddIncomingSubscriber<CustomLog>(this);
+            MainWindow.Simpit = new Simpit(new BasicSimpitLogger(configuration.LogLevel)).RegisterKerbal().AddIncomingSubscriber<CustomLog>(this).AddIncomingSubscriber<KeyboardEmulator>(this);
 
             InitializeComponent();
 
@@ -176,6 +179,11 @@ namespace KerbalSimpit.Debugger
         private void ToggleRatio_Unchecked(object sender, RoutedEventArgs e)
         {
             DebugHelper.Ratio = false;
+        }
+
+        public void Process(SimpitPeer peer, ISimpitMessage<KeyboardEmulator> message)
+        {
+            Simpit.Logger.LogInformation($"{nameof(KeyboardEmulator)} - {(VirtualKeyCode)message.Data.Key}, {message.Data.Modifier}");
         }
     }
 }

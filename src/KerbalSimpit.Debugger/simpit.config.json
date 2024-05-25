@@ -4,6 +4,10 @@
     {
       "PortName": "COM3",
       "BaudRate": 115200
+    },
+    {
+      "PortName": "COM4",
+      "BaudRate": 115200
     }
   ]
 }

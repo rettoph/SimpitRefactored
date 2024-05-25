@@ -49,6 +49,11 @@ namespace KerbalSimpit.Debugger.Services
         {
             foreach (byte actionGroup in message.Data.GroupIds)
             {
+                if (actionGroup == 0)
+                {
+                    continue;
+                }
+
                 bool current = this.Get(actionGroup);
                 this.Set(actionGroup, !current);
                 this.SetIsChecked((int)actionGroup, !current);

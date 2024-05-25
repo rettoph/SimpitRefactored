@@ -35,6 +35,11 @@ namespace KerbalSimpit.Unity.KSP1.Controllers
         {
             foreach (int idx in message.Data.GroupIds)
             {
+                if (idx == 0)
+                {
+                    continue;
+                }
+
                 FlightGlobals.ActiveVessel.ActionGroups.ToggleGroup(this.ActionGroupIDs[idx]);
             }
         }
