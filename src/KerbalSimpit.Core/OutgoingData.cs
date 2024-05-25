@@ -2,22 +2,20 @@
 using KerbalSimpit.Core.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace KerbalSimpit.Core
 {
     public abstract class OutgoingData
     {
-        internal List<SimpitPeer> _subscribers;
+        internal HashSet<SimpitPeer> _subscribers;
 
         public abstract int ChangeId { get; }
 
-        public ReadOnlyCollection<SimpitPeer> Subscribers { get; }
+        public IEnumerable<SimpitPeer> Subscribers => _subscribers;
 
         protected internal OutgoingData()
         {
-            _subscribers = new List<SimpitPeer>();
-            this.Subscribers = new ReadOnlyCollection<SimpitPeer>(_subscribers);
+            _subscribers = new HashSet<SimpitPeer>();
         }
 
         internal void AddSubscriber(SimpitPeer peer)

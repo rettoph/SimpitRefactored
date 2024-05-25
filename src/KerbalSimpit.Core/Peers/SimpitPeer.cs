@@ -254,6 +254,7 @@ namespace KerbalSimpit.Core.Peers
             {
                 SimpitMessageType type = _outgoingSubscriptions.First().Key;
                 _outgoingSubscriptions.TryRemove(type, out _);
+                _simpit.GetOutgoingData(type).RemoveSubscriber(this);
                 this.OnOutgoingUnsubscribed?.Invoke(this, type);
             }
             _outgoingSubscriptions.Clear();
