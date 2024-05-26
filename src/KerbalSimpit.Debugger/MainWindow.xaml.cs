@@ -23,7 +23,8 @@ namespace KerbalSimpit.Debugger
     /// </summary>
     public partial class MainWindow : Window, IDisposable,
         ISimpitMessageSubscriber<CustomLog>,
-        ISimpitMessageSubscriber<KeyboardEmulator>
+        ISimpitMessageSubscriber<KeyboardEmulator>,
+        ISimpitMessageSubscriber<EchoRequest>
     {
         public static Simpit Simpit { get; private set; } = null!;
 
@@ -42,7 +43,7 @@ namespace KerbalSimpit.Debugger
                 }
             }) ?? new SimpitConfiguration();
 
-            MainWindow.Simpit = new Simpit(new BasicSimpitLogger(configuration.LogLevel)).RegisterKerbal().AddIncomingSubscriber<CustomLog>(this).AddIncomingSubscriber<KeyboardEmulator>(this);
+            MainWindow.Simpit = new Simpit(new BasicSimpitLogger(configuration.LogLevel)).RegisterKerbal().AddIncomingSubscribers(this);
 
             InitializeComponent();
 
@@ -184,6 +185,15 @@ namespace KerbalSimpit.Debugger
         public void Process(SimpitPeer peer, ISimpitMessage<KeyboardEmulator> message)
         {
             Simpit.Logger.LogInformation($"{nameof(KeyboardEmulator)} - {(VirtualKeyCode)message.Data.Key}, {message.Data.Modifier}");
+        }
+
+        public void Process(SimpitPeer peer, ISimpitMessage<EchoRequest> message)
+        {
+            Simpit.Logger.LogVerbose("Echo request on peer {0}. Replying.", peer);
+            peer.EnqueueOutgoing(new EchoResponse()
+            {
+                Data = message.Data.Data
+            });
         }
     }
 }
