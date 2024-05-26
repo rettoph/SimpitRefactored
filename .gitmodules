@@ -1,6 +1,3 @@
-[submodule "libraries/KerbalSimpitRevamped-Arduino"]
-	path = libraries/KerbalSimpitRevamped-Arduino
-	url = https://github.com/rettoph/KerbalSimpitRevamped-Arduino/
 [submodule "libraries/UnityMainThreadDispatcher"]
 	path = libraries/UnityMainThreadDispatcher
 	url = https://github.com/PimDeWitte/UnityMainThreadDispatcher
