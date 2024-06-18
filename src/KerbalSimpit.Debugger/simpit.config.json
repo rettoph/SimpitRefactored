@@ -1,15 +1,10 @@
 {
   "LogLevel": "Verbose",
+  "TcpListenerPort": 1337,
   "SerialPeers": [
     {
       "PortName": "COM4",
       "BaudRate": 115200
-    }
-  ],
-  "TcpPeers": [
-    {
-      "Host": "localhost",
-      "Port": 1337
     }
   ]
 }

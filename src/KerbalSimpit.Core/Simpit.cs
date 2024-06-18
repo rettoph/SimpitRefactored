@@ -106,16 +106,15 @@ namespace KerbalSimpit.Core
             _cancellationTokenSource = new CancellationTokenSource();
             this.Configuration = configuration;
 
+            if (this.Configuration.TcpListenerPort != null)
+            {
+                this.AddTcpPeer(this.Configuration.TcpListenerPort.Value);
+            }
+
             // TODO: This should not be hardcoded for serial peers.
             foreach (ISerialPeerConfiguration serial in configuration.SerialPeers)
             {
                 this.AddSerialPeer(serial.PortName, serial.BaudRate);
-            }
-
-            // TODO: This should not be hardcoded for tcp peers.
-            foreach (ITcpPeerConfiguration tcp in configuration.TcpPeers)
-            {
-                this.AddTcpPeer(tcp.Host, tcp.Port);
             }
 
             foreach (SimpitPeer peer in _peers)

@@ -8,9 +8,9 @@ namespace KerbalSimpit.Core.Configuration
         string Documentation { get; }
         int RefreshRate { get; }
         SimpitLogLevelEnum LogLevel { get; }
+        int? TcpListenerPort { get; }
 
         IEnumerable<ISerialPeerConfiguration> SerialPeers { get; }
-        IEnumerable<ITcpPeerConfiguration> TcpPeers { get; }
         IEnumerable<ICustomResourceMessageConfiguration> CustomResourceMessages { get; }
     }
 }
