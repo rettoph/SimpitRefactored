@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace KerbalSimpit.Core.Peers
 {
@@ -22,6 +23,7 @@ namespace KerbalSimpit.Core.Peers
         private readonly SimpitStream _encodeBuffer;
         private readonly SimpitStream _decodeBuffer;
         private readonly ConcurrentDictionary<SimpitMessageType, int> _outgoingSubscriptions;
+        private Task _connection;
 
         private Thread _inboundThread;
         private Thread _outboundThread;
@@ -99,33 +101,37 @@ namespace KerbalSimpit.Core.Peers
                 throw new InvalidOperationException(string.Format("{0}::{1} - Unable to start, already open.", nameof(SimpitPeer), nameof(Open), nameof(SimpitPeer)));
             }
 
-            if (this.Running == true)
+            Task.Run(() =>
             {
-                this.logger.LogWarning("{0}::{1} - Already running", nameof(SimpitPeer), nameof(TryClose));
-                return;
-            }
-
-            try
-            {
-                _inboundThread = new Thread(this.InboundLoop);
-                _outboundThread = new Thread(this.OutboundLoop);
-
-                if (this.TryOpen() == false)
+                if (this.Running == true)
                 {
+                    this.logger.LogWarning("{0}::{1} - Already running", nameof(SimpitPeer), nameof(TryClose));
                     return;
                 }
 
-                _inboundThread.Start();
-                _outboundThread.Start();
+                try
+                {
+                    this.Status = ConnectionStatusEnum.WAITING_HANDSHAKE;
 
-                this.Reset();
+                    _inboundThread = new Thread(this.InboundLoop);
+                    _outboundThread = new Thread(this.OutboundLoop);
+                    if (this.TryOpen() == false)
+                    {
+                        this.Status = ConnectionStatusEnum.ERROR;
+                        return;
+                    }
 
-                this.Status = ConnectionStatusEnum.WAITING_HANDSHAKE;
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SimpitPeer), nameof(TryOpen));
-            }
+                    _inboundThread.Start();
+                    _outboundThread.Start();
+
+                    this.Reset();
+                }
+                catch (Exception ex)
+                {
+                    this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SimpitPeer), nameof(TryOpen));
+                    this.Status = ConnectionStatusEnum.ERROR;
+                }
+            });
         }
 
         public void Close()

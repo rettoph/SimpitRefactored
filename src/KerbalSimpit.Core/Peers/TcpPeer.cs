@@ -1,44 +1,53 @@
 ﻿using KerbalSimpit.Common.Core;
+using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace KerbalSimpit.Core.Peers
 {
     public class TcpPeer : SimpitPeer
     {
-        private readonly string _host;
-        private readonly int _port;
-        private readonly TcpClient _client;
+        private readonly TcpListener _listener;
+        private Socket _socket;
         private NetworkStream _stream;
 
-        public TcpPeer(string host, int port) : base($"{host}:{port}")
+        public TcpPeer(int port) : base($"{port}")
         {
-            _host = host;
-            _port = port;
-            _client = new TcpClient();
+            _listener = new TcpListener(IPAddress.Any, port);
         }
 
         protected override bool TryOpen()
         {
-            _client.Connect(_host, _port);
-            if (_client.Connected == false)
+            _listener.Start();
+
+            for (int i = 0; i < 5; i++)
             {
-                return false;
+                if (_listener.Pending() == false)
+                {
+                    Thread.Sleep(1000);
+                    continue;
+                }
+
+                _socket = _listener.AcceptSocket();
+                _stream = new NetworkStream(_socket);
+                return true;
             }
 
-            _stream = _client.GetStream();
-            return true;
+            return false;
         }
 
         protected override bool TryClose()
         {
-            _client.Close();
+            _socket?.Close();
+            _stream?.Dispose();
+            _listener.Stop();
 
             return true;
         }
 
         protected override bool TryReadByte(out byte value)
         {
-            if (_client.Available == 0)
+            if (_stream.DataAvailable == false)
             {
                 value = default;
                 return false;
