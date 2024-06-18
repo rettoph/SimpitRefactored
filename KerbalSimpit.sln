@@ -44,7 +44,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KerbalSimpit.Common.Core", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "proxy", "proxy", "{FB82D677-0ADD-4A2C-B335-8B71C8F4A606}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KerbalSimpit.Proxy.SerialThroughTCP", "KerbalSimpit.Proxy.SerialThroughTCP\KerbalSimpit.Proxy.SerialThroughTCP.csproj", "{046CB203-A612-48EA-A256-6BDA4B5C495D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KerbalSimpit.Proxy.SerialThroughTCP", "src\KerbalSimpit.Proxy.SerialThroughTCP\KerbalSimpit.Proxy.SerialThroughTCP.csproj", "{52369914-519B-408E-AFC3-A50A846B8ADB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,10 +88,10 @@ Global
 		{950281F4-336B-40D5-86C0-A48D5BAC4CBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{950281F4-336B-40D5-86C0-A48D5BAC4CBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{950281F4-336B-40D5-86C0-A48D5BAC4CBD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{046CB203-A612-48EA-A256-6BDA4B5C495D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{046CB203-A612-48EA-A256-6BDA4B5C495D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{046CB203-A612-48EA-A256-6BDA4B5C495D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{046CB203-A612-48EA-A256-6BDA4B5C495D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52369914-519B-408E-AFC3-A50A846B8ADB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52369914-519B-408E-AFC3-A50A846B8ADB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52369914-519B-408E-AFC3-A50A846B8ADB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52369914-519B-408E-AFC3-A50A846B8ADB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,7 +112,7 @@ Global
 		{154EDE36-81F4-4D7C-BAD8-ACF84B490200} = {AD04774F-734E-4A1A-90AE-EE57FC6F3D5B}
 		{950281F4-336B-40D5-86C0-A48D5BAC4CBD} = {154EDE36-81F4-4D7C-BAD8-ACF84B490200}
 		{FB82D677-0ADD-4A2C-B335-8B71C8F4A606} = {AD04774F-734E-4A1A-90AE-EE57FC6F3D5B}
-		{046CB203-A612-48EA-A256-6BDA4B5C495D} = {FB82D677-0ADD-4A2C-B335-8B71C8F4A606}
+		{52369914-519B-408E-AFC3-A50A846B8ADB} = {FB82D677-0ADD-4A2C-B335-8B71C8F4A606}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6AA82C42-BDA1-4B49-9C6F-1DE87648D6DA}

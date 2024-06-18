@@ -8,6 +8,10 @@ KerbalSimpit
 		PortName = 
 		BaudRate = 115200
 	}
+	Tcp
+	{
+		Port = 1337
+	}
 	CustomResourceMessages
 	{
 		resourceName1 = None
