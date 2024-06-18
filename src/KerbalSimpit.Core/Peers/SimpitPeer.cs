@@ -23,10 +23,18 @@ namespace KerbalSimpit.Core.Peers
         private readonly SimpitStream _decodeBuffer;
         private readonly ConcurrentDictionary<SimpitMessageType, int> _outgoingSubscriptions;
 
+        private Thread _inboundThread;
+        private Thread _outboundThread;
+
+        private bool _inboundRunning;
+        private bool _outboundRunning;
+
         protected ISimpitLogger logger => _simpit.Logger;
         protected CancellationToken cancellationToken => _simpit.CancellationToken;
+        protected Simpit simpit => _simpit;
 
-        public abstract bool Running { get; }
+        public virtual bool Running => this.cancellationToken.IsCancellationRequested == false && (_inboundRunning || _outboundRunning);
+        public readonly string Name;
 
         public IEnumerable<SimpitMessageType> OutgoingSubscriptions => _outgoingSubscriptions.Keys;
 
@@ -46,7 +54,7 @@ namespace KerbalSimpit.Core.Peers
         public event EventHandler<ISimpitMessage> OnIncomingMessage;
         public event EventHandler<ISimpitMessage> OnOutgoingMessage;
 
-        public SimpitPeer()
+        public SimpitPeer(string name)
         {
             _read = new ConcurrentQueue<ISimpitMessage>();
             _write = new ConcurrentQueue<ISimpitMessage>();
@@ -56,6 +64,8 @@ namespace KerbalSimpit.Core.Peers
             _outgoing = new SimpitStream();
             _encodeBuffer = new SimpitStream();
             _decodeBuffer = new SimpitStream();
+
+            this.Name = name;
         }
 
         public void Dispose()
@@ -89,27 +99,61 @@ namespace KerbalSimpit.Core.Peers
                 throw new InvalidOperationException(string.Format("{0}::{1} - Unable to start, already open.", nameof(SimpitPeer), nameof(Open), nameof(SimpitPeer)));
             }
 
-            if (this.TryOpen() == true)
+            if (this.Running == true)
             {
+                this.logger.LogWarning("{0}::{1} - Already running", nameof(SimpitPeer), nameof(TryClose));
+                return;
+            }
+
+            try
+            {
+                _inboundThread = new Thread(this.InboundLoop);
+                _outboundThread = new Thread(this.OutboundLoop);
+
+                if (this.TryOpen() == false)
+                {
+                    return;
+                }
+
+                _inboundThread.Start();
+                _outboundThread.Start();
+
                 this.Reset();
 
                 this.Status = ConnectionStatusEnum.WAITING_HANDSHAKE;
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SimpitPeer), nameof(TryOpen));
             }
         }
 
         public void Close()
         {
-            if (this.TryClose())
+            try
             {
+                _inboundRunning = false;
+                _outboundRunning = false;
+
+                if (this.TryClose() == false)
+                {
+                    return;
+                }
+
                 this.Reset();
 
                 this.Status = ConnectionStatusEnum.CLOSED;
             }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SimpitPeer), nameof(TryClose));
+            }
         }
 
         protected abstract bool TryOpen();
-
         protected abstract bool TryClose();
+        protected abstract bool TryReadByte(out byte value);
+        protected abstract void WriteBytes(byte[] data, int offset, int length);
 
         /// <summary>
         /// Enqueue an outgoing message to be sent within the outbound thread.
@@ -258,6 +302,73 @@ namespace KerbalSimpit.Core.Peers
                 this.OnOutgoingUnsubscribed?.Invoke(this, type);
             }
             _outgoingSubscriptions.Clear();
+        }
+
+        private void InboundLoop()
+        {
+            this.logger.LogDebug("Inbound thread for port {0} starting.", this.Name);
+            _inboundRunning = true;
+
+            while (this.Running)
+            {
+                try
+                {
+                    while (this.Running && this.TryReadByte(out byte value))
+                    {
+                        this.IncomingDataRecieved(value);
+                    }
+
+                    Thread.Sleep(10); // TODO: Tune this.
+                }
+                catch (Exception ex)
+                {
+                    this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SimpitPeer), nameof(InboundLoop));
+                }
+            }
+
+            this.logger.LogDebug("Inbound thread for port {0} exiting.", this.Name);
+            this.Close();
+        }
+
+        private void OutboundLoop()
+        {
+            this.logger.LogDebug("Outbound thread for port {0} starting.", this.Name);
+            _inboundRunning = true;
+
+            while (this.Running)
+            {
+                try
+                {
+                    this.EnqueueOutgoingSubscriptions();
+
+                    int enqueuedOutgoingCount = this.GetEnqueuedOutgoingCount();
+                    if (enqueuedOutgoingCount == 0)
+                    {
+                        Thread.Sleep(this.simpit.Configuration.RefreshRate);
+                        continue;
+                    }
+
+                    int refreshSliceRate = this.simpit.Configuration.RefreshRate / enqueuedOutgoingCount;
+                    while (this.Running && this.DequeueOutgoing(out SimpitStream outbound))
+                    {
+                        byte[] data = outbound.ReadAll(out int offset, out int count);
+                        this.WriteBytes(data, offset, count);
+                        Thread.Sleep(refreshSliceRate);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SimpitPeer), nameof(OutboundLoop));
+                }
+            }
+
+            this.logger.LogDebug("Outbound thread for port {0} exiting.", this.Name);
+            this.Close();
+        }
+
+        public override string ToString()
+        {
+            return $"{this.GetType().Name}.{this.Name}";
         }
     }
 }
