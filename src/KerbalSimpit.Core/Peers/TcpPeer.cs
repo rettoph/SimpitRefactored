@@ -8,6 +8,7 @@ namespace KerbalSimpit.Core.Peers
     public class TcpPeer : SimpitPeer
     {
         private readonly TcpListener _listener;
+        private Socket _socket;
         private NetworkStream _stream;
 
         public TcpPeer(int port) : base($"{port}")
@@ -27,7 +28,8 @@ namespace KerbalSimpit.Core.Peers
                     continue;
                 }
 
-                _stream = new NetworkStream(_listener.AcceptSocket());
+                _socket = _listener.AcceptSocket();
+                _stream = new NetworkStream(_socket);
                 return true;
             }
 
@@ -36,6 +38,7 @@ namespace KerbalSimpit.Core.Peers
 
         protected override bool TryClose()
         {
+            _socket?.Close();
             _stream?.Dispose();
             _listener.Stop();
 

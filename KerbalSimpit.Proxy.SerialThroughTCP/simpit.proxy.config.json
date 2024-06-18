@@ -1,0 +1,8 @@
+[
+  {
+    "SerialPortName": "COM4",
+    "SerialBaudRate": 115200,
+    "TcpClientHost": "localhost",
+    "TcpClientPort": 1337
+  }
+]
