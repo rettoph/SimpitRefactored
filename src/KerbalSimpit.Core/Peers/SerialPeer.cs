@@ -1,5 +1,5 @@
-﻿using KerbalSimpit.Core.Constants;
-using KerbalSimpit.Core.Utilities;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Common.Core.Utilities;
 using System;
 using System.IO.Ports;
 using System.Threading;
@@ -90,7 +90,7 @@ namespace KerbalSimpit.Core.Peers
                     {
                         int data = _port.ReadByte();
 
-                        if (data == SpecialBytes.EndOfData)
+                        if (data == Common.Core.Constants.EndOfData)
                         { // This should not happen thanks to the while check above
                             throw new NotImplementedException();
                         }

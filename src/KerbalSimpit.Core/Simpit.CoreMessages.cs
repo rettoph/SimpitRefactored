@@ -1,4 +1,4 @@
-﻿using KerbalSimpit.Core.Constants;
+﻿using KerbalSimpit.Common.Core;
 using KerbalSimpit.Core.Messages;
 
 namespace KerbalSimpit.Core
@@ -8,18 +8,18 @@ namespace KerbalSimpit.Core
         private void RegisterCoreMessages()
         {
             // Incoming Messages
-            this.Messages.RegisterIncomingType<Synchronisation>(MessageTypeIds.Incoming.Synchronisation, Synchronisation.Deserialize);
-            this.Messages.RegisterIncomingType<EchoRequest>(MessageTypeIds.Incoming.EchoRequest, EchoRequest.Deserialize);
-            this.Messages.RegisterIncomingType<EchoResponse>(MessageTypeIds.Incoming.EchoResponse, EchoResponse.Deserialize);
-            this.Messages.RegisterIncomingType<CloseSerialPort>(MessageTypeIds.Incoming.CloseSerialPort);
-            this.Messages.RegisterIncomingType<RegisterHandler>(MessageTypeIds.Incoming.RegisterHandler, RegisterHandler.Deserialize);
-            this.Messages.RegisterIncomingType<DeregisterHandler>(MessageTypeIds.Incoming.DeregisterHandler, DeregisterHandler.Deserialize);
-            this.Messages.RegisterIncomingType<CustomLog>(MessageTypeIds.Incoming.CustomLog);
-            this.Messages.RegisterIncomingType<Request>(MessageTypeIds.Incoming.RequestMessage);
+            this.Messages.RegisterIncomingType<Synchronisation>(Constants.MessageTypeIds.Incoming.Synchronisation);
+            this.Messages.RegisterIncomingType<EchoRequest>(Constants.MessageTypeIds.Incoming.EchoRequest);
+            this.Messages.RegisterIncomingType<EchoResponse>(Constants.MessageTypeIds.Incoming.EchoResponse);
+            this.Messages.RegisterIncomingType<CloseSerialPort>(Constants.MessageTypeIds.Incoming.CloseSerialPort);
+            this.Messages.RegisterIncomingType<RegisterHandler>(Constants.MessageTypeIds.Incoming.RegisterHandler);
+            this.Messages.RegisterIncomingType<DeregisterHandler>(Constants.MessageTypeIds.Incoming.DeregisterHandler);
+            this.Messages.RegisterIncomingType<CustomLog>(Constants.MessageTypeIds.Incoming.CustomLog);
+            this.Messages.RegisterIncomingType<Request>(Constants.MessageTypeIds.Incoming.RequestMessage);
 
             // Outgoing Messages
-            this.Messages.RegisterOutogingType<Handshake>(MessageTypeIds.Outgoing.HandshakeMessage);
-            this.Messages.RegisterOutogingType<EchoResponse>(MessageTypeIds.Outgoing.EchoResponse, EchoResponse.Serialize);
+            this.Messages.RegisterOutogingType<Handshake>(Constants.MessageTypeIds.Outgoing.HandshakeMessage);
+            this.Messages.RegisterOutogingType<EchoResponse>(Constants.MessageTypeIds.Outgoing.EchoResponse);
         }
     }
 }

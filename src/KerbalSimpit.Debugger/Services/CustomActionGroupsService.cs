@@ -47,7 +47,7 @@ namespace KerbalSimpit.Debugger.Services
 
         public void Process(SimpitPeer peer, ISimpitMessage<Vessel.Incoming.CustomActionGroupToggle> message)
         {
-            foreach (byte actionGroup in message.Data.GroupIds)
+            foreach (byte actionGroup in message.Data.GroupIds.ToList<byte>())
             {
                 if (actionGroup == 0)
                 {
@@ -62,7 +62,7 @@ namespace KerbalSimpit.Debugger.Services
 
         public void Process(SimpitPeer peer, ISimpitMessage<Vessel.Incoming.CustomActionGroupEnable> message)
         {
-            foreach (byte actionGroup in message.Data.GroupIds)
+            foreach (byte actionGroup in message.Data.GroupIds.ToList<byte>())
             {
                 this.Set(actionGroup, true);
                 this.SetIsChecked((int)actionGroup, true);
@@ -71,7 +71,7 @@ namespace KerbalSimpit.Debugger.Services
 
         public void Process(SimpitPeer peer, ISimpitMessage<Vessel.Incoming.CustomActionGroupDisable> message)
         {
-            foreach (byte actionGroup in message.Data.GroupIds)
+            foreach (byte actionGroup in message.Data.GroupIds.ToList<byte>())
             {
                 this.Set(actionGroup, false);
                 this.SetIsChecked((int)actionGroup, false);

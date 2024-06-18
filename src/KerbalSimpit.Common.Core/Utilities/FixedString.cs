@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace KerbalSimpit.Core.Utilities
+namespace KerbalSimpit.Common.Core.Utilities
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public unsafe struct FixedString

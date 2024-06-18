@@ -1,4 +1,6 @@
-﻿using KerbalSimpit.Core.Configuration;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core.Configuration;
 using KerbalSimpit.Core.Extensions;
 using KerbalSimpit.Core.Peers;
 using KerbalSimpit.Core.Services;
@@ -153,7 +155,7 @@ namespace KerbalSimpit.Core
         }
 
         public void SetOutgoingData<T>(T value, bool force = false)
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
 
         {
             if (this.Messages.TryGetOutgoingType<T>(out SimpitMessageType<T> type) == false)
@@ -169,7 +171,7 @@ namespace KerbalSimpit.Core
         }
 
         public IEnumerable<SimpitPeer> GetOutgoingSubscribers<T>()
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
         {
             if (this.Messages.TryGetOutgoingType<T>(out SimpitMessageType<T> type) == false)
             {
@@ -186,7 +188,7 @@ namespace KerbalSimpit.Core
         }
 
         public OutgoingData<T> GetOutgoingData<T>(SimpitMessageType<T> type)
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
         {
             if (_outgoing.TryGetValue(type, out OutgoingData uncasted))
             {
@@ -225,7 +227,7 @@ namespace KerbalSimpit.Core
         }
 
         public Simpit AddIncomingSubscriber<T>(ISimpitMessageSubscriber<T> subscriber)
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
         {
             SimpitMessagePublisher<T> publisher = this.GetPublisher(typeof(T)) as SimpitMessagePublisher<T>;
             publisher.AddSubscriber(subscriber);
@@ -234,7 +236,7 @@ namespace KerbalSimpit.Core
         }
 
         public Simpit RemoveIncomingSubscriber<T>(ISimpitMessageSubscriber<T> subscriber)
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
         {
             SimpitMessagePublisher<T> publisher = this.GetPublisher(typeof(T)) as SimpitMessagePublisher<T>;
             publisher.RemoveSubscriber(subscriber);

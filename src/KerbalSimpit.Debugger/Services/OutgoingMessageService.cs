@@ -1,10 +1,10 @@
-﻿using KerbalSimpit.Core;
+﻿using KerbalSimpit.Common.Core;
 using KerbalSimpit.Debugger.Controls;
 
 namespace KerbalSimpit.Debugger.Services
 {
     internal class OutgoingMessageService<T> : BaseOutgoingMessageControl
-        where T : ISimpitMessageData
+        where T : unmanaged, ISimpitMessageData
     {
         public OutgoingMessageService() : base(typeof(T))
         {

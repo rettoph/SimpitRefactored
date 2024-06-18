@@ -1,4 +1,4 @@
-﻿using KerbalSimpit.Core.Enums;
+﻿using KerbalSimpit.Common.Core.Enums;
 using System.Collections.Generic;
 
 namespace KerbalSimpit.Core.Configuration

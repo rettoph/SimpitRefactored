@@ -1,6 +1,6 @@
-﻿using KerbalSimpit.Core.Constants;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Common.Core.Utilities;
 using KerbalSimpit.Core.Enums;
-using KerbalSimpit.Core.Utilities;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -125,7 +125,7 @@ namespace KerbalSimpit.Core.Peers
         /// </summary>
         /// <param name="message"></param>
         public void EnqueueOutgoing<T>(T content)
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
         {
             try
             {
@@ -163,7 +163,7 @@ namespace KerbalSimpit.Core.Peers
         {
             _incoming.Write(data);
 
-            if (data != SpecialBytes.EndOfMessage)
+            if (data != Common.Core.Constants.EndOfMessage)
             { // More data to be read before we've recieved a complete message
                 return;
             }
@@ -235,7 +235,7 @@ namespace KerbalSimpit.Core.Peers
         }
 
         internal void EnqueueOutgoingSubscription<T>(SimpitMessageType type, OutgoingData<T> data)
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
         {
             this.EnqueueOutgoing(data.Value);
             _outgoingSubscriptions[type] = data.ChangeId;

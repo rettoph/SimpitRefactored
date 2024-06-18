@@ -1,7 +1,9 @@
-﻿namespace KerbalSimpit.Core
+﻿using KerbalSimpit.Common.Core;
+
+namespace KerbalSimpit.Core
 {
     internal class SimpitMessage<T> : ISimpitMessage<T>
-        where T : ISimpitMessageData
+        where T : unmanaged, ISimpitMessageData
     {
         public readonly SimpitMessageType<T> Type;
         public readonly T Data;

@@ -1,4 +1,6 @@
-﻿using KerbalSimpit.Core.Peers;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core.Peers;
 using System;
 using System.Collections.Generic;
 
@@ -19,7 +21,7 @@ namespace KerbalSimpit.Core.Utilities
     }
 
     internal sealed class SimpitMessagePublisher<T> : SimpitMessagePublisher
-        where T : ISimpitMessageData
+        where T : unmanaged, ISimpitMessageData
     {
         private readonly Simpit _simpit;
         private readonly HashSet<ISimpitMessageSubscriber<T>> _subscribers;

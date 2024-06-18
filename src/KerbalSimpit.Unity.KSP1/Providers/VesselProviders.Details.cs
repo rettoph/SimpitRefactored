@@ -7,7 +7,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
     public static partial class ReosurceProviders
     {
         public abstract class BaseResourceProvider<T> : GenericUpdateProvider<T>
-            where T : ISimpitMessageData, ResourceMessagess.IBasicResource, new()
+            where T : unmanaged, ISimpitMessageData, ResourceMessagess.IBasicResource, new()
         {
             private readonly PartResourceDefinition _resource;
 

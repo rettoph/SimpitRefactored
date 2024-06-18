@@ -1,4 +1,6 @@
-﻿namespace KerbalSimpit.Core.Messages
+﻿using KerbalSimpit.Common.Core;
+
+namespace KerbalSimpit.Core.Messages
 {
     public struct Request : ISimpitMessageData
     {

@@ -1,16 +1,11 @@
-﻿using KerbalSimpit.Core.Enums;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core.Enums;
 using KerbalSimpit.Core.Peers;
-using KerbalSimpit.Core.Utilities;
 using System;
 
 namespace KerbalSimpit.Core
 {
-    public delegate T DeserializeSimpitMessageContentDelegate<T>(SimpitStream input)
-        where T : ISimpitMessageData;
-
-    public delegate void SerializeSimpitMessageContentDelegate<T>(T input, SimpitStream output)
-        where T : ISimpitMessageData;
-
     public abstract class SimpitMessageType
     {
         public readonly byte Id;
@@ -36,33 +31,27 @@ namespace KerbalSimpit.Core
     }
 
     public sealed class SimpitMessageType<TContent> : SimpitMessageType
-        where TContent : ISimpitMessageData
+        where TContent : unmanaged, ISimpitMessageData
     {
-        private readonly DeserializeSimpitMessageContentDelegate<TContent> _deserializer;
-        private readonly SerializeSimpitMessageContentDelegate<TContent> _serializer;
 
         internal SimpitMessageType(
             byte id,
-            SimputMessageTypeEnum type,
-            DeserializeSimpitMessageContentDelegate<TContent> deserializer,
-            SerializeSimpitMessageContentDelegate<TContent> serializer) : base(id, type, typeof(TContent))
+            SimputMessageTypeEnum type) : base(id, type, typeof(TContent))
         {
-            _deserializer = deserializer ?? NotImplementedDeserializer;
-            _serializer = serializer ?? NotImplementedSerializer;
         }
 
         internal override void Serialize(ISimpitMessage input, SimpitStream output)
         {
             if (input is SimpitMessage<TContent> casted)
             {
-                _serializer(casted.Data, output);
+                output.WriteUnmanaged(casted.Data);
             }
         }
 
         internal override ISimpitMessage Deserialize(SimpitStream input)
         {
             // TODO: Maybe someday pool and reuse these message instances?
-            TContent content = _deserializer(input);
+            TContent content = input.ReadUnmanaged<TContent>();
             return new SimpitMessage<TContent>(this, content);
         }
 

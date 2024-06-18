@@ -1,9 +1,10 @@
-﻿using KerbalSimpit.Core;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core;
 using KerbalSimpit.Core.KSP.Extensions;
 using KerbalSimpit.Core.KSP.Messages;
 using KerbalSimpit.Core.Messages;
 using KerbalSimpit.Core.Peers;
-using KerbalSimpit.Core.Utilities;
 using KerbalSimpit.Debugger.Controls;
 using KerbalSimpit.Debugger.Services;
 using KerbalSimpit.Debugger.Utilities;
@@ -107,8 +108,8 @@ namespace KerbalSimpit.Debugger
             Application.Current.Shutdown();
         }
 
-        private void AddSimpleTextSubscriber<T>(Func<T?, string> text)
-            where T : ISimpitMessageData
+        private void AddSimpleTextSubscriber<T>(Func<T, string> text)
+            where T : unmanaged, ISimpitMessageData
         {
             SimpleTextSubscriber<T> subscriber = new SimpleTextSubscriber<T>(text);
 
@@ -187,13 +188,13 @@ namespace KerbalSimpit.Debugger
             Simpit.Logger.LogInformation($"{nameof(KeyboardEmulator)} - {(VirtualKeyCode)message.Data.Key}, {message.Data.Modifier}");
         }
 
-        public void Process(SimpitPeer peer, ISimpitMessage<EchoRequest> message)
+        public unsafe void Process(SimpitPeer peer, ISimpitMessage<EchoRequest> message)
         {
             Simpit.Logger.LogVerbose("Echo request on peer {0}. Replying.", peer);
-            peer.EnqueueOutgoing(new EchoResponse()
-            {
-                Data = message.Data.Data
-            });
+
+            EchoResponse response = new EchoResponse();
+            response.Data.Copy(message.Data.Data);
+            peer.EnqueueOutgoing(response);
         }
     }
 }

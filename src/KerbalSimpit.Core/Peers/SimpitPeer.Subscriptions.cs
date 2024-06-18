@@ -1,6 +1,7 @@
-﻿using KerbalSimpit.Core.Enums;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core.Enums;
 using KerbalSimpit.Core.Messages;
-using KerbalSimpit.Core.Utilities;
 
 namespace KerbalSimpit.Core.Peers
 {
@@ -25,10 +26,12 @@ namespace KerbalSimpit.Core.Peers
             this.Status = ConnectionStatusEnum.CONNECTED;
         }
 
-        internal void Process(RegisterHandler message)
+        internal unsafe void Process(RegisterHandler message)
         {
-            foreach (byte messageTypeId in message.MessageTypeIds)
+            for (int i = 0; i < Constants.MaximumMessageSize; i++)
             {
+                byte messageTypeId = message.MessageTypeIds[i];
+
                 if (messageTypeId == default)
                 { // Ignore default requests
                     continue;
@@ -54,10 +57,12 @@ namespace KerbalSimpit.Core.Peers
             }
         }
 
-        internal void Process(DeregisterHandler message)
+        internal unsafe void Process(DeregisterHandler message)
         {
-            foreach (byte messageTypeId in message.MessageTypeIds)
+            for (int i = 0; i < Constants.MaximumMessageSize; i++)
             {
+                byte messageTypeId = message.MessageTypeIds[i];
+
                 if (messageTypeId == default)
                 { // Ignore default requests
                     continue;

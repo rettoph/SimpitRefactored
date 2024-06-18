@@ -9,8 +9,4 @@
     <PackageReference Include="System.IO.Ports" Version="8.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\KerbalSimpit.Common.Core\KerbalSimpit.Common.Core.csproj" />
-  </ItemGroup>
-
 </Project>

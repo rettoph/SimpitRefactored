@@ -1,5 +1,5 @@
-﻿using KerbalSimpit.Core.Configuration;
-using KerbalSimpit.Core.Enums;
+﻿using KerbalSimpit.Common.Core.Enums;
+using KerbalSimpit.Core.Configuration;
 
 namespace KerbalSimpit.Debugger
 {
