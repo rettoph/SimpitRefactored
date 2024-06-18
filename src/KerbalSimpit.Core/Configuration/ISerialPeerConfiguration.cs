@@ -1,6 +1,6 @@
 ﻿namespace KerbalSimpit.Core.Configuration
 {
-    public interface ISerialConfiguration
+    public interface ISerialPeerConfiguration
     {
         string PortName { get; }
         int BaudRate { get; }

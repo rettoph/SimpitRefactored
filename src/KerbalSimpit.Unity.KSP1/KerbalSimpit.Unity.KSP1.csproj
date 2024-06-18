@@ -80,6 +80,10 @@
     <Compile Include="SimpitGUI\Window.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KerbalSimpit.Common.Core\KerbalSimpit.Common.Core.csproj">
+      <Project>{950281f4-336b-40d5-86c0-a48d5bac4cbd}</Project>
+      <Name>KerbalSimpit.Common.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KerbalSimpit.Core.KSP\KerbalSimpit.Core.KSP.csproj">
       <Project>{46c0a93c-72c6-47e8-b726-8a2062f4bac3}</Project>
       <Name>KerbalSimpit.Core.KSP</Name>

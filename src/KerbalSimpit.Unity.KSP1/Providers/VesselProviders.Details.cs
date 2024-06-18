@@ -1,4 +1,4 @@
-﻿using KerbalSimpit.Core;
+﻿using KerbalSimpit.Common.Core;
 using KerbalSimpit.Unity.Common.Providers;
 using ResourceMessagess = KerbalSimpit.Core.KSP.Messages.Resource;
 
@@ -7,7 +7,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
     public static partial class ReosurceProviders
     {
         public abstract class BaseResourceProvider<T> : GenericUpdateProvider<T>
-            where T : unmanaged, ISimpitMessageData, ResourceMessagess.IBasicResource, new()
+            where T : unmanaged, ISimpitMessageData, ResourceMessagess.IBasicResource
         {
             private readonly PartResourceDefinition _resource;
 

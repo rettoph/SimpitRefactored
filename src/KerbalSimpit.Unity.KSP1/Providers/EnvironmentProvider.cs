@@ -1,4 +1,5 @@
-﻿using KerbalSimpit.Unity.Common;
+﻿using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Unity.Common;
 using KerbalSimpit.Unity.Common.Providers;
 using KerbalSimpit.Unity.KSP1.Helpers;
 using System;
@@ -96,7 +97,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
             {
                 return new EnvironmentMessages.SoIName()
                 {
-                    Value = FlightGlobals.ActiveVessel.orbit.referenceBody.bodyName
+                    Value = new FixedString(FlightGlobals.ActiveVessel.orbit.referenceBody.bodyName)
                 };
             }
         }
@@ -247,7 +248,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
             {
                 return new EnvironmentMessages.VesselName()
                 {
-                    Value = FlightGlobals.ActiveVessel.GetDisplayName()
+                    Value = new FixedString(FlightGlobals.ActiveVessel.GetDisplayName())
                 };
             }
         }

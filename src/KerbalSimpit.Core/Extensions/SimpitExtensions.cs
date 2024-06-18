@@ -11,6 +11,11 @@ namespace KerbalSimpit.Core.Extensions
             return simpit.AddPeer(new SerialPeer(name, baudRate));
         }
 
+        public static Simpit AddTcpPeer(this Simpit simpit, string host, int port)
+        {
+            return simpit.AddPeer(new TcpPeer(host, port));
+        }
+
         public static Simpit AddIncomingConsumer<T>(this Simpit simpit, Action<SimpitPeer, ISimpitMessage<T>> consumer)
             where T : unmanaged, ISimpitMessageData
         {

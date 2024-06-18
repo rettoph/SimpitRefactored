@@ -1,6 +1,6 @@
-﻿using KerbalSimpit.Core;
+﻿using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core;
 using KerbalSimpit.Core.Peers;
-using KerbalSimpit.Core.Utilities;
 using System;
 using VesselMessages = KerbalSimpit.Core.KSP.Messages.Vessel;
 

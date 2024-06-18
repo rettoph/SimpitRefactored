@@ -1,4 +1,4 @@
-﻿using KerbalSimpit.Core;
+﻿using KerbalSimpit.Common.Core;
 
 namespace KerbalSimpit.Unity.Common.Providers
 {

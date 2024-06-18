@@ -52,7 +52,7 @@ namespace KerbalSimpit.Core.Peers
             return true;
         }
 
-        protected override void WriteBytes(byte[] data, int offset, int length)
+        protected override void Write(byte[] data, int offset, int length)
         {
             _port.Write(data, offset, length);
         }

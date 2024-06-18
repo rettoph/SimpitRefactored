@@ -153,7 +153,7 @@ namespace KerbalSimpit.Core.Peers
         protected abstract bool TryOpen();
         protected abstract bool TryClose();
         protected abstract bool TryReadByte(out byte value);
-        protected abstract void WriteBytes(byte[] data, int offset, int length);
+        protected abstract void Write(byte[] data, int offset, int length);
 
         /// <summary>
         /// Enqueue an outgoing message to be sent within the outbound thread.
@@ -352,7 +352,7 @@ namespace KerbalSimpit.Core.Peers
                     while (this.Running && this.DequeueOutgoing(out SimpitStream outbound))
                     {
                         byte[] data = outbound.ReadAll(out int offset, out int count);
-                        this.WriteBytes(data, offset, count);
+                        this.Write(data, offset, count);
                         Thread.Sleep(refreshSliceRate);
                     }
                 }
@@ -368,7 +368,7 @@ namespace KerbalSimpit.Core.Peers
 
         public override string ToString()
         {
-            return $"{this.GetType().Name}.{this.Name}";
+            return $"{this.GetType().Name}:{this.Name}";
         }
     }
 }

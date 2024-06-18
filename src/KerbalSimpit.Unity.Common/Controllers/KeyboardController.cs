@@ -1,7 +1,7 @@
-﻿using KerbalSimpit.Core;
+﻿using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core;
 using KerbalSimpit.Core.KSP.Messages;
 using KerbalSimpit.Core.Peers;
-using KerbalSimpit.Core.Utilities;
 using System;
 using WindowsInput;
 using WindowsInput.Native;

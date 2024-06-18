@@ -1,5 +1,5 @@
-﻿using KerbalSimpit.Core.Enums;
-using KerbalSimpit.Core.Utilities;
+﻿using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core.Enums;
 using KerbalSimpit.Unity.Common;
 using KSP.UI.Screens;
 using UnityEngine;

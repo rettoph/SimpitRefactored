@@ -1,7 +1,7 @@
-﻿using KerbalSimpit.Core;
+﻿using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core;
 using KerbalSimpit.Core.KSP.Messages;
 using KerbalSimpit.Core.Peers;
-using KerbalSimpit.Core.Utilities;
 using KerbalSimpit.Unity.Common;
 using System;
 using System.Collections.Generic;

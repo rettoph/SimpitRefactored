@@ -1,4 +1,4 @@
-﻿using KerbalSimpit.Core;
+﻿using KerbalSimpit.Common.Core;
 using KerbalSimpit.Unity.Common.Providers;
 using KerbalSimpit.Unity.KSP1.Controllers;
 using System;

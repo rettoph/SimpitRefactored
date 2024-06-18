@@ -1,7 +1,7 @@
-﻿using KerbalSimpit.Core;
+﻿using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core;
 using KerbalSimpit.Core.Messages;
 using KerbalSimpit.Core.Peers;
-using KerbalSimpit.Core.Utilities;
 using KerbalSimpit.Unity.Common;
 
 namespace KerbalSimpit.Unity.KSP1.Providers
