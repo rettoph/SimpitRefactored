@@ -1,4 +1,5 @@
-﻿using KerbalSimpit.Core.Peers;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Core.Peers;
 using System;
 
 namespace KerbalSimpit.Core.Extensions
@@ -10,14 +11,19 @@ namespace KerbalSimpit.Core.Extensions
             return simpit.AddPeer(new SerialPeer(name, baudRate));
         }
 
+        public static Simpit AddTcpPeer(this Simpit simpit, string host, int port)
+        {
+            return simpit.AddPeer(new TcpPeer(host, port));
+        }
+
         public static Simpit AddIncomingConsumer<T>(this Simpit simpit, Action<SimpitPeer, ISimpitMessage<T>> consumer)
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
         {
             return simpit.AddIncomingSubscriber(new RuntimeMessageConsumer<T>(consumer));
         }
 
         private class RuntimeMessageConsumer<T> : ISimpitMessageSubscriber<T>
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
         {
             private readonly Action<SimpitPeer, ISimpitMessage<T>> _consumer;
 

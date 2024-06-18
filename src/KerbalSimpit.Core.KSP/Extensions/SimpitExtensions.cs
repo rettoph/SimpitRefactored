@@ -57,23 +57,23 @@ namespace KerbalSimpit.Core.KSP.Extensions
             simpit.Messages.RegisterOutogingType<Vessel.Outgoing.DeltaV>(MessageTypeIds.Outgoing.DeltaV);
             simpit.Messages.RegisterOutogingType<Vessel.Outgoing.DeltaVEnv>(MessageTypeIds.Outgoing.DeltaVEnv);
             simpit.Messages.RegisterOutogingType<Vessel.Outgoing.BurnTime>(MessageTypeIds.Outgoing.BurnTime);
-            simpit.Messages.RegisterOutogingType<Vessel.Outgoing.CustomActionGroups>(MessageTypeIds.Outgoing.CustomActionGroups, Vessel.Outgoing.CustomActionGroups.Serialize);
+            simpit.Messages.RegisterOutogingType<Vessel.Outgoing.CustomActionGroups>(MessageTypeIds.Outgoing.CustomActionGroups);
             simpit.Messages.RegisterOutogingType<Vessel.Outgoing.TempLimit>(MessageTypeIds.Outgoing.TempLimit);
 
             // External Environment
             simpit.Messages.RegisterOutogingType<Environment.TargetInfo>(MessageTypeIds.Outgoing.TargetInfo);
-            simpit.Messages.RegisterOutogingType<Environment.SoIName>(MessageTypeIds.Outgoing.SoIName, Environment.SoIName.Serialize);
+            simpit.Messages.RegisterOutogingType<Environment.SoIName>(MessageTypeIds.Outgoing.SoIName);
             simpit.Messages.RegisterOutogingType<Environment.SceneChange>(MessageTypeIds.Outgoing.SceneChange);
             simpit.Messages.RegisterOutogingType<Environment.FlightStatus>(MessageTypeIds.Outgoing.FlightStatus);
             simpit.Messages.RegisterOutogingType<Environment.AtmoCondition>(MessageTypeIds.Outgoing.AtmoCondition);
-            simpit.Messages.RegisterOutogingType<Environment.VesselName>(MessageTypeIds.Outgoing.VesselName, Environment.VesselName.Serialize);
+            simpit.Messages.RegisterOutogingType<Environment.VesselName>(MessageTypeIds.Outgoing.VesselName);
             simpit.Messages.RegisterOutogingType<Environment.VesselChange>(MessageTypeIds.Outgoing.VesselChange);
             #endregion
 
             #region Incoming Messages
-            simpit.Messages.RegisterIncomingType<Vessel.Incoming.CustomActionGroupEnable>(MessageTypeIds.Incoming.CustomActionGroupEnable, Vessel.Incoming.CustomActionGroupEnable.Deserialize);
-            simpit.Messages.RegisterIncomingType<Vessel.Incoming.CustomActionGroupDisable>(MessageTypeIds.Incoming.CustomActionGroupDisable, Vessel.Incoming.CustomActionGroupDisable.Deserialize);
-            simpit.Messages.RegisterIncomingType<Vessel.Incoming.CustomActionGroupToggle>(MessageTypeIds.Incoming.CustomActionGroupToggle, Vessel.Incoming.CustomActionGroupToggle.Deserialize);
+            simpit.Messages.RegisterIncomingType<Vessel.Incoming.CustomActionGroupEnable>(MessageTypeIds.Incoming.CustomActionGroupEnable);
+            simpit.Messages.RegisterIncomingType<Vessel.Incoming.CustomActionGroupDisable>(MessageTypeIds.Incoming.CustomActionGroupDisable);
+            simpit.Messages.RegisterIncomingType<Vessel.Incoming.CustomActionGroupToggle>(MessageTypeIds.Incoming.CustomActionGroupToggle);
             simpit.Messages.RegisterIncomingType<Vessel.Incoming.ActionGroupActivate>(MessageTypeIds.Incoming.ActionGroupActivate);
             simpit.Messages.RegisterIncomingType<Vessel.Incoming.ActionGroupDeactivate>(MessageTypeIds.Incoming.ActionGroupDeactivate);
             simpit.Messages.RegisterIncomingType<Vessel.Incoming.ActionGroupToggle>(MessageTypeIds.Incoming.ActionGroupToggle);

@@ -1,5 +1,6 @@
-﻿using KerbalSimpit.Core.Peers;
-using KerbalSimpit.Core.Utilities;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core.Peers;
 using System;
 using System.Collections.Generic;
 
@@ -36,7 +37,7 @@ namespace KerbalSimpit.Core
     }
 
     public abstract class OutgoingData<T> : OutgoingData
-        where T : ISimpitMessageData
+        where T : unmanaged, ISimpitMessageData
     {
         private int _changeId;
         private T _value;
@@ -90,7 +91,7 @@ namespace KerbalSimpit.Core
     }
 
     internal sealed class ManagedOutgoingData<T> : OutgoingData<T>
-        where T : ISimpitMessageData
+        where T : unmanaged, ISimpitMessageData
     {
         protected override bool Equals(in T x, in T y)
         {

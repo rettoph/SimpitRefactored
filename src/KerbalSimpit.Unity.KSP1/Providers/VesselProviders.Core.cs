@@ -1,4 +1,4 @@
-﻿using KerbalSimpit.Core;
+﻿using KerbalSimpit.Common.Core;
 using KerbalSimpit.Unity.Common.Providers;
 using KerbalSimpit.Unity.KSP1.Controllers;
 using System;
@@ -8,7 +8,7 @@ namespace KerbalSimpit.Unity.KSP1.Providers
     public static partial class VesselProviders
     {
         public abstract class BaseVesselProvider<T> : GenericUpdateProvider<T>
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
         {
             protected VesselController controller { get; private set; }
 

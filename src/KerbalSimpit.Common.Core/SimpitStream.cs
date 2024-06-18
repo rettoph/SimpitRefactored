@@ -1,8 +1,8 @@
-﻿using KerbalSimpit.Core.Enums;
+﻿using KerbalSimpit.Common.Core.Enums;
+using KerbalSimpit.Common.Core.Utilities;
 using System;
-using System.Text;
 
-namespace KerbalSimpit.Core
+namespace KerbalSimpit.Common.Core
 {
     public sealed class SimpitStream
     {
@@ -45,16 +45,26 @@ namespace KerbalSimpit.Core
         {
             if (length == -1)
             {
-                length = values.Length;
+                length = MathHelper.Min(Constants.MaximumMessageSize, values.Length);
             }
             else
             {
-                length = Math.Min(values.Length, length);
+                length = MathHelper.Min(Constants.MaximumMessageSize, values.Length, length);
             }
 
             for (int i = 0; i < length; i++)
             {
                 this.Write(values[i]);
+            }
+        }
+
+        public unsafe void Write(byte* ptr, int length)
+        {
+            length = Math.Min(Constants.MaximumMessageSize, length);
+
+            for (int i = 0; i < length; i++)
+            {
+                this.Write(ptr[i]);
             }
         }
 
@@ -67,12 +77,6 @@ namespace KerbalSimpit.Core
 
             _buffer[index] = value;
             _writeIndex = Math.Max(_writeIndex, index);
-        }
-
-        public void Write(string value)
-        {
-            byte[] bytes = Encoding.ASCII.GetBytes(value);
-            this.Write(bytes, 31);
         }
 
         public unsafe void WriteUnmanaged<T>(T value)
@@ -205,25 +209,6 @@ namespace KerbalSimpit.Core
                     _readIndex += count;
                     break;
             }
-        }
-
-        /// <summary>
-        /// Return a string of the given length. This will do
-        /// straight byte to char to string conversion
-        /// </summary>
-        /// <param name="length">If zero it will read the remainder of the stream</param>
-        /// <returns></returns>
-        public string ReadString(int length = -1)
-        {
-            if (length == -1)
-            {
-                length = this.Length - 1;
-            }
-
-            string value = Encoding.UTF8.GetString(_buffer, _readIndex, length);
-            _readIndex += length;
-
-            return value;
         }
 
         public byte FastReadByte()

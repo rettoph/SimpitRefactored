@@ -1,5 +1,6 @@
-﻿using KerbalSimpit.Core.KSP.Enums;
-using System.Linq;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core.KSP.Enums;
 using System.Runtime.InteropServices;
 
 namespace KerbalSimpit.Core.KSP.Messages
@@ -165,14 +166,6 @@ namespace KerbalSimpit.Core.KSP.Messages
                     }
                     return true;
                 }
-
-                internal static void Serialize(CustomActionGroups input, SimpitStream output)
-                {
-                    for (int i = 0; i < CustomActionGroups.Length; i++)
-                    {
-                        output.Write(input.Status[i]);
-                    }
-                }
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -185,43 +178,22 @@ namespace KerbalSimpit.Core.KSP.Messages
 
         public static class Incoming
         {
-            public struct CustomActionGroupEnable : ISimpitMessageData
+            [StructLayout(LayoutKind.Sequential, Pack = 1)]
+            public unsafe struct CustomActionGroupEnable : ISimpitMessageData
             {
-                public byte[] GroupIds { get; set; }
-
-                internal static CustomActionGroupEnable Deserialize(SimpitStream input)
-                {
-                    return new CustomActionGroupEnable()
-                    {
-                        GroupIds = input.ReadAll(out int offset, out int count).Skip(offset).Take(count).ToArray()
-                    };
-                }
+                public FixedBuffer GroupIds;
             }
 
-            public struct CustomActionGroupDisable : ISimpitMessageData
+            [StructLayout(LayoutKind.Sequential, Pack = 1)]
+            public unsafe struct CustomActionGroupDisable : ISimpitMessageData
             {
-                public byte[] GroupIds { get; set; }
-
-                internal static CustomActionGroupDisable Deserialize(SimpitStream input)
-                {
-                    return new CustomActionGroupDisable()
-                    {
-                        GroupIds = input.ReadAll(out int offset, out int count).Skip(offset).Take(count).ToArray()
-                    };
-                }
+                public FixedBuffer GroupIds;
             }
 
-            public struct CustomActionGroupToggle : ISimpitMessageData
+            [StructLayout(LayoutKind.Sequential, Pack = 1)]
+            public unsafe struct CustomActionGroupToggle : ISimpitMessageData
             {
-                public byte[] GroupIds { get; set; }
-
-                internal static CustomActionGroupToggle Deserialize(SimpitStream input)
-                {
-                    return new CustomActionGroupToggle()
-                    {
-                        GroupIds = input.ReadAll(out int offset, out int count).Skip(offset).Take(count).ToArray()
-                    };
-                }
+                public FixedBuffer GroupIds;
             }
 
             [StructLayout(LayoutKind.Sequential, Pack = 1)]

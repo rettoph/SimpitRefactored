@@ -1,13 +1,15 @@
 {
-  "LogLevel": "Debug",
-  "Serial": [
-    {
-      "PortName": "COM3",
-      "BaudRate": 115200
-    },
+  "LogLevel": "Verbose",
+  "SerialPeers": [
     {
       "PortName": "COM4",
       "BaudRate": 115200
+    }
+  ],
+  "TcpPeers": [
+    {
+      "Host": "localhost",
+      "Port": 1337
     }
   ]
 }

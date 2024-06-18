@@ -1,12 +1,7 @@
-﻿using KerbalSimpit.Core.Enums;
+﻿using KerbalSimpit.Common.Core.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace KerbalSimpit.Core.Utilities
+namespace KerbalSimpit.Common.Core.Utilities
 {
     public interface ISimpitLogger
     {
@@ -36,7 +31,7 @@ namespace KerbalSimpit.Core.Utilities
         #region LogError Ex
         public static void LogError(this ISimpitLogger logger, Exception ex, string message)
         {
-            if(logger.LogLevel < SimpitLogLevelEnum.Error)
+            if (logger.LogLevel < SimpitLogLevelEnum.Error)
             {
                 return;
             }

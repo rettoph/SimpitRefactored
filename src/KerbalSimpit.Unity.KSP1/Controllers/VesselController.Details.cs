@@ -1,7 +1,7 @@
-﻿using KerbalSimpit.Core;
+﻿using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core;
 using KerbalSimpit.Core.KSP.Enums;
 using KerbalSimpit.Core.Peers;
-using KerbalSimpit.Core.Utilities;
 using KSP.UI.Screens;
 using System.Collections.Generic;
 using VesselMessages = KerbalSimpit.Core.KSP.Messages.Vessel;
@@ -17,7 +17,7 @@ namespace KerbalSimpit.Unity.KSP1.Controllers
     {
         public void Process(SimpitPeer peer, ISimpitMessage<VesselMessages.Incoming.CustomActionGroupEnable> message)
         {
-            foreach (int idx in message.Data.GroupIds)
+            foreach (int idx in message.Data.GroupIds.ToList<byte>())
             {
                 FlightGlobals.ActiveVessel.ActionGroups.SetGroup(this.ActionGroupIDs[idx], true);
             }
@@ -25,7 +25,7 @@ namespace KerbalSimpit.Unity.KSP1.Controllers
 
         public void Process(SimpitPeer peer, ISimpitMessage<VesselMessages.Incoming.CustomActionGroupDisable> message)
         {
-            foreach (int idx in message.Data.GroupIds)
+            foreach (int idx in message.Data.GroupIds.ToList<byte>())
             {
                 FlightGlobals.ActiveVessel.ActionGroups.SetGroup(this.ActionGroupIDs[idx], false);
             }
@@ -33,7 +33,7 @@ namespace KerbalSimpit.Unity.KSP1.Controllers
 
         public void Process(SimpitPeer peer, ISimpitMessage<VesselMessages.Incoming.CustomActionGroupToggle> message)
         {
-            foreach (int idx in message.Data.GroupIds)
+            foreach (int idx in message.Data.GroupIds.ToList<byte>())
             {
                 if (idx == 0)
                 {

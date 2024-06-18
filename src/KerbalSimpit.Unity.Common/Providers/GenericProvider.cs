@@ -1,4 +1,5 @@
-﻿using KerbalSimpit.Core;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Core;
 using System;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace KerbalSimpit.Unity.Common.Providers
 {
     [KSPAddon(KSPAddon.Startup.Flight, false)]
     public abstract class GenericProvider<T> : SimpitBehaviour
-        where T : ISimpitMessageData
+        where T : unmanaged, ISimpitMessageData
     {
         private OutgoingData<T> _outgoing;
 

@@ -1,11 +1,4 @@
-﻿using KerbalSimpit.Core.Constants;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KerbalSimpit.Core.Utilities
+﻿namespace KerbalSimpit.Common.Core.Utilities
 {
     public static class COBSHelper
     {
@@ -35,7 +28,7 @@ namespace KerbalSimpit.Core.Utilities
             }
 
             output.Write(distanceLastZero, lastZero);
-            output.Write(SpecialBytes.EndOfMessage);
+            output.Write(Constants.EndOfMessage);
 
             return true;
         }

@@ -1,4 +1,4 @@
-﻿namespace KerbalSimpit.Core.Utilities
+﻿namespace KerbalSimpit.Common.Core.Utilities
 {
     public static class Unmanaged
     {
@@ -21,6 +21,15 @@
             }
 
             return true;
+        }
+
+        public static unsafe void CopyTo<T>(T* src, T* dst, int length)
+            where T : unmanaged
+        {
+            for (int i = 0; i < length; i++)
+            {
+                dst[i] = src[i];
+            }
         }
     }
 }

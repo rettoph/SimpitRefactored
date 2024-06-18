@@ -1,4 +1,4 @@
-﻿using KerbalSimpit.Core.Enums;
+﻿using KerbalSimpit.Common.Core.Enums;
 using System.Collections.Generic;
 
 namespace KerbalSimpit.Core.Configuration
@@ -9,7 +9,8 @@ namespace KerbalSimpit.Core.Configuration
         int RefreshRate { get; }
         SimpitLogLevelEnum LogLevel { get; }
 
-        IEnumerable<ISerialConfiguration> Serial { get; }
+        IEnumerable<ISerialPeerConfiguration> SerialPeers { get; }
+        IEnumerable<ITcpPeerConfiguration> TcpPeers { get; }
         IEnumerable<ICustomResourceMessageConfiguration> CustomResourceMessages { get; }
     }
 }

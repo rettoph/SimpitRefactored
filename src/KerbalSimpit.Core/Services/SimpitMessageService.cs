@@ -1,6 +1,7 @@
-﻿using KerbalSimpit.Core.Enums;
-using KerbalSimpit.Core.Extensions;
-using KerbalSimpit.Core.Utilities;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Common.Core.Extensions;
+using KerbalSimpit.Common.Core.Utilities;
+using KerbalSimpit.Core.Enums;
 using System;
 
 namespace KerbalSimpit.Core.Services
@@ -24,32 +25,20 @@ namespace KerbalSimpit.Core.Services
             _outgoing.Clear();
         }
 
-        public SimpitMessageType<T> RegisterIncomingType<T>(byte id, DeserializeSimpitMessageContentDelegate<T> deserializer)
-            where T : ISimpitMessageData
-        {
-            SimpitMessageType<T> configuration = new SimpitMessageType<T>(id, SimputMessageTypeEnum.Incoming, deserializer, null);
-            _incoming.Add(configuration.Id, configuration.DataType, configuration);
-            return configuration;
-        }
-
         public SimpitMessageType<T> RegisterIncomingType<T>(byte id)
             where T : unmanaged, ISimpitMessageData
         {
-            return this.RegisterIncomingType(id, input => input.ReadUnmanaged<T>());
-        }
-
-        public SimpitMessageType<T> RegisterOutogingType<T>(byte id, SerializeSimpitMessageContentDelegate<T> serializer)
-            where T : ISimpitMessageData
-        {
-            SimpitMessageType<T> configuration = new SimpitMessageType<T>(id, SimputMessageTypeEnum.Outgoing, null, serializer);
-            _outgoing.Add(configuration.Id, configuration.DataType, configuration);
+            SimpitMessageType<T> configuration = new SimpitMessageType<T>(id, SimputMessageTypeEnum.Incoming);
+            _incoming.Add(configuration.Id, configuration.DataType, configuration);
             return configuration;
         }
 
         public SimpitMessageType<T> RegisterOutogingType<T>(byte id)
             where T : unmanaged, ISimpitMessageData
         {
-            return this.RegisterOutogingType<T>(id, (input, output) => output.WriteUnmanaged(input));
+            SimpitMessageType<T> configuration = new SimpitMessageType<T>(id, SimputMessageTypeEnum.Outgoing);
+            _outgoing.Add(configuration.Id, configuration.DataType, configuration);
+            return configuration;
         }
 
         public bool TryGetIncomingType(byte id, out SimpitMessageType type)
@@ -58,7 +47,7 @@ namespace KerbalSimpit.Core.Services
         }
 
         public bool TryGetIncomingType<T>(out SimpitMessageType<T> type)
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
         {
             if (_incoming.TryGet(typeof(T), out SimpitMessageType uncasted) && uncasted is SimpitMessageType<T> casted)
             {
@@ -76,7 +65,7 @@ namespace KerbalSimpit.Core.Services
         }
 
         public bool TryGetOutgoingType<T>(out SimpitMessageType<T> type)
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
         {
             if (_outgoing.TryGet(typeof(T), out SimpitMessageType uncasted) && uncasted is SimpitMessageType<T> casted)
             {
@@ -164,7 +153,7 @@ namespace KerbalSimpit.Core.Services
         }
 
         public ISimpitMessage<T> CreateOutgoing<T>(T content)
-            where T : ISimpitMessageData
+            where T : unmanaged, ISimpitMessageData
         {
             if (this.TryGetOutgoingType<T>(out SimpitMessageType<T> type) == true)
             {

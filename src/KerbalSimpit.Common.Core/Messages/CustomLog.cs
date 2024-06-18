@@ -1,4 +1,5 @@
-﻿using KerbalSimpit.Core.Utilities;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Common.Core.Utilities;
 using System;
 using System.Runtime.InteropServices;
 

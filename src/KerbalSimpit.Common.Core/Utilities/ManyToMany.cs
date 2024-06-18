@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KerbalSimpit.Core.Utilities
+namespace KerbalSimpit.Common.Core.Utilities
 {
     public class ManyToMany<T1, T2>
     {

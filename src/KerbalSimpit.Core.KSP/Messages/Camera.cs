@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using KerbalSimpit.Common.Core;
+using System.Runtime.InteropServices;
 
 namespace KerbalSimpit.Core.KSP.Messages
 {

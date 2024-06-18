@@ -1,10 +1,13 @@
-﻿using System;
+﻿using KerbalSimpit.Common.Core;
+using KerbalSimpit.Common.Core.Utilities;
+using System;
 using System.Runtime.InteropServices;
 
 namespace KerbalSimpit.Core.KSP.Messages
 {
     public static class Environment
     {
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct TargetInfo : ISimpitMessageData
         {
             public float Distance { get; set; }
@@ -15,16 +18,13 @@ namespace KerbalSimpit.Core.KSP.Messages
             public float VelocityPitch { get; set; }
         }
 
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct SoIName : ISimpitMessageData
         {
-            public string Value { get; set; }
-
-            internal static void Serialize(SoIName input, SimpitStream output)
-            {
-                output.Write(input.Value);
-            }
+            public FixedString Value { get; set; }
         }
 
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct SceneChange : ISimpitMessageData
         {
             public enum SceneChangeTypeEnum
@@ -79,16 +79,13 @@ namespace KerbalSimpit.Core.KSP.Messages
             public float Pressure;
         }
 
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct VesselName : ISimpitMessageData
         {
-            public string Value { get; set; }
-
-            internal static void Serialize(VesselName input, SimpitStream output)
-            {
-                output.Write(input.Value);
-            }
+            public FixedString Value { get; set; }
         }
 
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct VesselChange : ISimpitMessageData
         {
             public enum TypeEnum : byte

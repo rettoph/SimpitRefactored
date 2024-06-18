@@ -1,4 +1,6 @@
-﻿namespace KerbalSimpit.Core
+﻿using KerbalSimpit.Common.Core;
+
+namespace KerbalSimpit.Core
 {
     public interface ISimpitMessage
     {
@@ -7,7 +9,7 @@
     }
 
     public interface ISimpitMessage<TContent> : ISimpitMessage
-        where TContent : ISimpitMessageData
+        where TContent : unmanaged, ISimpitMessageData
     {
         new SimpitMessageType<TContent> Type { get; }
         new TContent Data { get; }
