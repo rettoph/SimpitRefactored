@@ -23,6 +23,14 @@ namespace KerbalSimpit.Unity.Common
             int ISerialPeerConfiguration.BaudRate => this.BaudRate;
         }
 
+        public class TcpPeerConfiguration : ITcpPeerConfiguration
+        {
+            [Persistent]
+            public int Port;
+
+            int ITcpPeerConfiguration.Port => this.Port;
+        }
+
         public class CustomResourceMessageConfiguration : ICustomResourceMessageConfiguration
         {
             [Persistent]
@@ -57,12 +65,10 @@ namespace KerbalSimpit.Unity.Common
         [Persistent]
         public SimpitLogLevelEnum LogLevel = SimpitLogLevelEnum.Information;
 
-        [Persistent]
-        public int? TcpListenerPort = null;
-
         public bool Verbose = false;
 
         public List<SerialPeerConfiguration> SerialPeers = new List<SerialPeerConfiguration>();
+        public List<TcpPeerConfiguration> TcpPeers = new List<TcpPeerConfiguration>();
         public List<CustomResourceMessageConfiguration> CustomResourceMessages = new List<CustomResourceMessageConfiguration>();
 
         string ISimpitConfiguration.Documentation => this.Documentation;
@@ -71,9 +77,9 @@ namespace KerbalSimpit.Unity.Common
 
         SimpitLogLevelEnum ISimpitConfiguration.LogLevel => this.Verbose ? SimpitLogLevelEnum.Verbose : this.LogLevel;
 
-        int? ISimpitConfiguration.TcpListenerPort => this.TcpListenerPort;
-
         IEnumerable<ISerialPeerConfiguration> ISimpitConfiguration.SerialPeers => this.SerialPeers;
+
+        IEnumerable<ITcpPeerConfiguration> ISimpitConfiguration.TcpPeers => this.TcpPeers;
 
         IEnumerable<ICustomResourceMessageConfiguration> ISimpitConfiguration.CustomResourceMessages => this.CustomResourceMessages;
 
@@ -103,6 +109,13 @@ namespace KerbalSimpit.Unity.Common
                     ConfigNode portNode = new ConfigNode("Serial");
                     portNode = ConfigNode.CreateConfigFromObject(this.SerialPeers[i], portNode);
                     node.AddNode(portNode);
+                }
+
+                for (int i = 0; i < this.TcpPeers.Count; i++)
+                {
+                    ConfigNode tcpNode = new ConfigNode("Tcp");
+                    tcpNode = ConfigNode.CreateConfigFromObject(this.TcpPeers[i], tcpNode);
+                    node.AddNode(tcpNode);
                 }
 
                 for (int i = 0; i < CustomResourceMessages.Count; i++)
@@ -145,6 +158,14 @@ namespace KerbalSimpit.Unity.Common
                         SimpitConfiguration.SerialPeerConfiguration portNode = new SimpitConfiguration.SerialPeerConfiguration();
                         ConfigNode.LoadObjectFromConfig(portNode, serialNodes[i]);
                         instance.SerialPeers.Add(portNode);
+                    }
+
+                    ConfigNode[] tcpNodes = config.GetNodes("Tcp").ToArray();
+                    for (int i = 0; i < tcpNodes.Length; i++)
+                    {
+                        SimpitConfiguration.TcpPeerConfiguration tcpNode = new SimpitConfiguration.TcpPeerConfiguration();
+                        ConfigNode.LoadObjectFromConfig(tcpNode, tcpNodes[i]);
+                        instance.TcpPeers.Add(tcpNode);
                     }
 
                     ConfigNode[] customResources = config.GetNodes("CustomResourceMessages");
