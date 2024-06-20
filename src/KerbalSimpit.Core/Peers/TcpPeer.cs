@@ -20,7 +20,7 @@ namespace KerbalSimpit.Core.Peers
         {
             _listener.Start();
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 120; i++)
             {
                 if (_listener.Pending() == false)
                 {

@@ -329,6 +329,9 @@ namespace KerbalSimpit.Core.Peers
                 catch (Exception ex)
                 {
                     this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SimpitPeer), nameof(InboundLoop));
+
+                    this.Close();
+                    this.Status = ConnectionStatusEnum.ERROR;
                 }
             }
 
@@ -365,6 +368,9 @@ namespace KerbalSimpit.Core.Peers
                 catch (Exception ex)
                 {
                     this.logger.LogError(ex, "{0}::{1} - Exception", nameof(SimpitPeer), nameof(OutboundLoop));
+
+                    this.Close();
+                    this.Status = ConnectionStatusEnum.ERROR;
                 }
             }
 

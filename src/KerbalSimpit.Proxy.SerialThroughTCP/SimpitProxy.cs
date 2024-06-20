@@ -62,6 +62,7 @@ namespace KerbalSimpit.Proxy.SerialThroughTCP
 
             if (_stream is null)
             {
+                Console.WriteLine("Stream is null");
                 return;
             }
 
