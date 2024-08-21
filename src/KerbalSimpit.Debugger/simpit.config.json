@@ -1,9 +1,0 @@
-{
-  "LogLevel": "Verbose",
-  "SerialPeers": [
-    {
-      "PortName": "COM3",
-      "BaudRate": 115200
-    }
-  ]
-}
