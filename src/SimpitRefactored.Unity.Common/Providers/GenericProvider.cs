@@ -27,6 +27,11 @@ namespace SimpitRefactored.Unity.Common.Providers
 
         protected virtual void CleanOutgoingData()
         {
+            if (_outgoing?.Subscribers == null)
+            {
+                return;
+            }
+
             if (_outgoing.Subscribers.Count() == 0)
             {
                 return;
